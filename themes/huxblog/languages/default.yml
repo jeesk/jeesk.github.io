@@ -1,0 +1,13 @@
+#prev: 上一页 
+# Older Posts
+#next: 下一页
+#  Newer Posts
+#comment: Comments
+#archive_a: Archives
+#archive_b: "Archives: %s"
+
+prev: 上一页
+next: 下一页
+comment: 留言
+archive_a: 归档
+archive_b: 归档：%s
