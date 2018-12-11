@@ -151,5 +151,4 @@ theme: huxblog
 deploy:
   type: git
   #repo: https://github.com/jeesk/jeesk.github.io
-  repo: git@github.com:jeesk/jeesk.github.io.git
-  branch: master
+  github: git@github.com:jeesk/jeesk.github.io.git,master
