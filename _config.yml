@@ -150,5 +150,5 @@ theme: huxblog
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  #repo: https://github.com/jeesk/jeesk.github.io
-  github: git@github.com:jeesk/jeesk.github.io.git,master
+  repo: git@github.com:jeesk/jeesk.github.io.git
+  branch: master
