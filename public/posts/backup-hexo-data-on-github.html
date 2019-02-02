@@ -8,16 +8,16 @@
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="一个java程序员的学习经历">
-    <meta name="keyword" content="">
+    <meta name="keyword" content="xxxxxxxx">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
     <title>
         
-          Welcome to Hux Blog - 山间草夫的博客 | jeesk&#39;s Blog
+          在github备份Hexo超级详细教程 - 山间草夫的博客 | jeesk&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://jeesk.github.io/posts/uncategorized/hello-2015.html">
+    <link rel="canonical" href="http://jeesk.github.io/posts/backup-hexo-data-on-github.html">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/archives/">文章归档</a>
+                            <a href="/about/">关于我</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">关于我</a>
+                            <a href="/archives/">文章归档</a>
                         </li>
                         
                     
@@ -155,7 +155,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('post-bg-2015.jpg')
+        background-image: url('/img/home-bg.jpg')
     }
 </style>
 <header class="intro-header">
@@ -165,14 +165,12 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#生活" title="生活">生活</a>
-                        
                     </div>
-                    <h1>Welcome to Hux Blog</h1>
-                    <h2 class="subheading"> &quot;Hello World, Hello Blog&quot;</h2>
+                    <h1>在github备份Hexo超级详细教程</h1>
+                    <h2 class="subheading"></h2>
                     <span class="meta">
-                        Posted by Hux on
-                        2014-01-29
+                        Posted by Jeesk on
+                        2017-12-13
                     </span>
                 </div>
             </div>
@@ -192,38 +190,37 @@
                 post-container">
 
                 <blockquote>
-<p>“Yeah It’s on. ”</p>
+<p> linux 用户请讲命令前面的$符号删除即可</p>
 </blockquote>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Hux 的 Blog 就这么开通了。</p>
-<p><a href="#build">跳过废话，直接看技术实现 </a></p>
-<p>2015 年，Hux 总算有个地方可以好好写点东西了。</p>
-<p>作为一个程序员， Blog 这种轮子要是挂在大众博客程序上就太没意思了。一是觉得大部分 Blog 服务都太丑，二是觉得不能随便定制不好玩。之前因为太懒没有折腾，结果就一直连个写 Blog 的地儿都没有。</p>
-<p>在玩了一段时间知乎之后，答题的快感又激起了我开博客的冲动。之前的<a href="http://huangxuan.me/portfolio" target="_blank" rel="noopener">个人网站</a>是作品集形式的（现在集成进来了），并不适合用来写博文，一不做二不休，花一天搞一个吧！</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><p id="build"></p></h2><h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>接下来说说搭建这个博客的技术细节。  </p>
-<p>正好之前就有关注过 <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> + <a href="http://jekyllrb.com/" target="_blank" rel="noopener">Jekyll</a> 快速 Building Blog 的技术方案，非常轻松时尚。</p>
-<p>其优点非常明显：</p>
-<ul>
-<li><strong>Markdown</strong> 带来的优雅写作体验</li>
-<li>非常熟悉的 Git workflow ，<strong>Git Commit 即 Blog Post</strong></li>
-<li>利用 GitHub Pages 的域名和免费无限空间，不用自己折腾主机<ul>
-<li>如果需要自定义域名，也只需要简单改改 DNS 加个 CNAME 就好了</li>
-</ul>
-</li>
-<li>Jekyll 的自定制非常容易，基本就是个模版引擎</li>
-</ul>
-<p>本来觉得最大的缺点可能是 GitHub 在国内访问起来太慢，所以第二天一起床就到 GitCafe(Chinese GitHub Copy) 迁移了一个<a href="http://huxpro.gitcafe.io" target="_blank" rel="noopener">镜像</a>出来，结果还是巨慢。</p>
-<p>哥哥可是个前端好嘛！ 果断开 Chrome DevTool 查了下网络请求，原来是 <strong>pending 在了 Google Fonts</strong> 上，页面渲染一直被阻塞到请求超时为止，难怪这么慢。<br>忍痛割爱，只好把 Web Fonts 去了（反正超时看到的也只能是 fallback ），果然一下就正常了，而且 GitHub 和 GitCafe 对比并没有感受到明显的速度差异，虽然 github 的 ping 值明显要高一些，达到了 300ms，于是用 DNSPOD 优化了一下速度。</p>
-<hr>
-<p>配置的过程中也没遇到什么坑，基本就是 Git 的流程，相当顺手</p>
-<p>大的 Jekyll 主题上直接 fork 了 Clean Blog（这个主题也相当有名，就不多赘述了。唯一的缺点大概就是没有标签支持，于是我给它补上了。）</p>
-<p>本地调试环境需要 <code>gem install jekyll</code>，结果 rubygem 的源居然被墙了……后来手动改成了我大淘宝的镜像源才成功</p>
-<p>Theme 的 CSS 是基于 Bootstrap 定制的，看得不爽的地方直接在 Less 里改就好了（平时更习惯 SCSS 些），<strong>不过其实我一直觉得 Bootstrap 在移动端的体验做得相当一般，比我在淘宝参与的团队 CSS 框架差多了……</strong>所以为了体验，也补了不少 CSS 进去</p>
-<p>最后就进入了耗时反而最长的<strong>做图、写字</strong>阶段，也算是进入了<strong>写博客</strong>的正轨，因为是类似 Hack Day 的方式去搭这个站的，所以折腾折腾着大半夜就过去了。</p>
-<p>第二天考虑中文字体的渲染，fork 了 <a href="http://www.typeisbeautiful.com/" target="_blank" rel="noopener">Type is Beautiful</a> 的 <code>font</code> CSS，调整了字号，适配了 Win 的渣渲染，中英文混排效果好多了。</p>
-<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>回顾这个博客的诞生，纯粹是出于个人兴趣。在知乎相关问题上回答并获得一定的 star 后，我决定把这个博客主题当作一个小小的开源项目来维护。</p>
-<p>在经历 v1.0 - v1.5 的蜕变后，这个博客主题愈发完整，不但增加了诸多 UI 层的优化（opinionated）；在代码层面，更加丰富的配置项也使得这个主题拥有了更好的灵活性与可拓展性。而作为一个开源项目，我也积极的为其完善文档与解决 issue。</p>
-<p>如果你恰好逛到了这里，希望你也能喜欢这个博客主题。</p>
-<p>—— Hux 后记于 2015.10</p>
+<a id="more"></a>
+<p>Hexo在发布之后在github的仓库中我们只能找到生成的静态文件，而我们的博客的源文件：主题，文章之类的，都还在本地，并没有备份。这样很危险，万一那天电脑坏了或者是出现一些其他问题，就得从头再来。正好，我们可以利用github的分支思想来备份我们的源文件。<br>备份之前，先来看一看我们的博客根目录下面有那些内容：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="selector-class">.deploy_git</span>		网站静态文件(git)</span><br><span class="line">node_modules 		插件</span><br><span class="line">public 			网站静态文件</span><br><span class="line">scaffolds 		文章模板</span><br><span class="line">source			博文等</span><br><span class="line">themes 			主题</span><br><span class="line">_config<span class="selector-class">.yml</span>		网站配置文件</span><br><span class="line">package<span class="selector-class">.json</span> 		Hexo信息</span><br><span class="line">db.json</span><br></pre></td></tr></table></figure>
+<h4 id="添加过滤内容"><a href="#添加过滤内容" class="headerlink" title="添加过滤内容"></a>添加过滤内容</h4><p>备份的时候我们把master分支放生成的静态文件，Hexo-Blog（此处文件夹必须和存储分支名字一致）放我们要备份的源文件。<br>实际备份中，.deploy_git、public文件夹和我们的master分支内容重复，所以略过。而_config.yml为我们的站点配置文件，安全起见，这个文件也不备份。所以，我们在根目录下面建一个.gitignore文件来建立“黑名单”：<br>文件内容：</p>
+<ol>
+<li>/.deploy_git</li>
+<li>/public  </li>
+<li>/_config.yml<br>好了，准备工作完成。现在开始备份。</li>
+</ol>
+<h4 id="备份"><a href="#备份" class="headerlink" title="备份"></a>备份</h4><p>打开git-bash</p>
+<ol>
+<li>$ git init</li>
+<li>$ git remote add origin <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:username/username.github.io.git        </li>
+<li>$ git add .</li>
+<li>$ git commit -m “blog”</li>
+<li>$ git push origin master:Hexo-Blog</li>
+</ol>
+<p>现在你会发现github你的博客仓库已经有了一个新分支Hexo-Blog，我们的备份工作完成。<br>后续</p>
+<p>以后，本地写好博文之后，可以先执行</p>
+<ol>
+<li>$ git add .</li>
+<li>$ git commit -m “blog”</li>
+<li>$ git push origin master:Hexo-Blog</li>
+</ol>
+<p>进行备份，然后</p>
+<ol>
+<li>$ hexo d -g</li>
+</ol>
+<p>进行更新静态文件。<br>这里推荐先进行备份，因为万一更新网站之后不小心丢失了源文件，就又得重新再来了。</p>
 
 
                 <hr>
@@ -233,12 +230,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/posts/uncategorized/js-version.html" data-toggle="tooltip" data-placement="top" title="Example Post">&larr; 上一篇文章</a>
+                            <a href="/posts/derby-database.html" data-toggle="tooltip" data-placement="top" title="三分钟学会使用Derby数据库">&larr; 上一篇文章</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/posts/uncategorized/js-module-loader.html" data-toggle="tooltip" data-placement="top" title="Example Post with Code Highlight">下一篇文章 &rarr;</a>
+                            <a href="/posts/hello-world.html" data-toggle="tooltip" data-placement="top" title="Hello World">下一篇文章 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -271,8 +268,6 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#生活" title="生活">生活</a>
-                        
                     </div>
                 </section>
                 
@@ -311,8 +306,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "hexo-theme-huxblog";
-    var disqus_identifier = "http://jeesk.github.io/posts/uncategorized/hello-2015.html";
-    var disqus_url = "http://jeesk.github.io/posts/uncategorized/hello-2015.html";
+    var disqus_identifier = "http://jeesk.github.io/posts/backup-hexo-data-on-github.html";
+    var disqus_url = "http://jeesk.github.io/posts/backup-hexo-data-on-github.html";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -382,7 +377,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; 山间草夫的博客 2018 
+                    Copyright &copy; 山间草夫的博客 2019 
                     <br>
 
                     <span style="margin-top: 6px;display:inline-block;">

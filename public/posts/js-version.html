@@ -8,16 +8,16 @@
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="一个java程序员的学习经历">
-    <meta name="keyword" content="">
+    <meta name="keyword" content="xxxxxxxx">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
     <title>
         
-          Linux中kbhit()函数的实现(检测按键) - 山间草夫的博客 | jeesk&#39;s Blog
+          Example Post - 山间草夫的博客 | jeesk&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://jeesk.github.io/posts/C和C/LinuxInkbhit-Function.html">
+    <link rel="canonical" href="http://jeesk.github.io/posts/js-version.html">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -90,14 +90,14 @@
 
                         
                         <li>
-                            <a href="/archives/">文章归档</a>
+                            <a href="/about/">关于我</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">关于我</a>
+                            <a href="/archives/">文章归档</a>
                         </li>
                         
                     
@@ -155,7 +155,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('/img/home-bg.jpg')
+        background-image: url('post-bg-js-version.jpg')
     }
 </style>
 <header class="intro-header">
@@ -165,12 +165,18 @@
                 <div class="post-heading">
                     <div class="tags">
                         
+                          <a class="tag" href="/tags/#前端开发" title="前端开发">前端开发</a>
+                        
+                          <a class="tag" href="/tags/#JavaScript" title="JavaScript">JavaScript</a>
+                        
+                          <a class="tag" href="/tags/#翻译" title="翻译">翻译</a>
+                        
                     </div>
-                    <h1>Linux中kbhit()函数的实现(检测按键)</h1>
+                    <h1>Example Post</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
-                        Posted by Jeesk on
-                        2017-12-16
+                        Posted by Hux on
+                        2014-09-22
                     </span>
                 </div>
             </div>
@@ -189,9 +195,43 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2 id="第一种方案"><a href="#第一种方案" class="headerlink" title="第一种方案"></a>第一种方案</h2><a id="more"></a>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#include &lt;stdio.h&gt;  </span></span><br><span class="line"><span class="comment">#include &lt;termios.h&gt;  </span></span><br><span class="line"><span class="comment">#include &lt;term.h&gt;  </span></span><br><span class="line"></span><br><span class="line"><span class="comment">#include &lt;curses.h&gt;  </span></span><br><span class="line"><span class="comment">#include &lt;unistd.h&gt;  </span></span><br><span class="line"><span class="comment">#include  &lt;stdlib.h&gt;  </span></span><br><span class="line">static struct termios initial_settings, new_settings;  </span><br><span class="line">static int peek_character = -1;  </span><br><span class="line">void init_keyboard();  </span><br><span class="line">void close_keyboard();  </span><br><span class="line">int kbhit();  </span><br><span class="line">int readch();  </span><br><span class="line">  </span><br><span class="line">int main()  </span><br><span class="line">&#123;  </span><br><span class="line">    int ch = 0;  </span><br><span class="line">    init_keyboard();  </span><br><span class="line">    <span class="keyword">while</span>(ch != <span class="string">'q'</span>) &#123;  </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"looping\n"</span>);  </span><br><span class="line">        sleep(1);  </span><br><span class="line">        <span class="keyword">if</span>(kbhit()) &#123;  </span><br><span class="line">            ch = readch();  </span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"you hit %c\n"</span>,ch);  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    close_keyboard();  </span><br><span class="line">    <span class="built_in">exit</span>(0);  </span><br><span class="line">    <span class="built_in">return</span> 0;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">void init_keyboard()  </span><br><span class="line">&#123;  </span><br><span class="line">    tcgetattr(0,&amp;initial_settings);  </span><br><span class="line">    new_settings = initial_settings;  </span><br><span class="line">    new_settings.c_lflag &amp;= ~ICANON;  </span><br><span class="line">    new_settings.c_lflag &amp;= ~ECHO;  </span><br><span class="line">    new_settings.c_lflag &amp;= ~ISIG;  </span><br><span class="line">    new_settings.c_cc[VMIN] = 1;  </span><br><span class="line">    new_settings.c_cc[VTIME] = 0;  </span><br><span class="line">    tcsetattr(0, TCSANOW, &amp;new_settings);  </span><br><span class="line">&#125;  </span><br><span class="line">void close_keyboard()  </span><br><span class="line">&#123;  </span><br><span class="line">    tcsetattr(0, TCSANOW, &amp;initial_settings);  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">int kbhit()  </span><br><span class="line">&#123;  </span><br><span class="line">    char ch;  </span><br><span class="line">    int nread;  </span><br><span class="line">    <span class="keyword">if</span>(peek_character != -1)  </span><br><span class="line">        <span class="built_in">return</span> 1;  </span><br><span class="line">    new_settings.c_cc[VMIN]=0;  </span><br><span class="line">    tcsetattr(0, TCSANOW, &amp;new_settings);  </span><br><span class="line">    nread = <span class="built_in">read</span>(0,&amp;ch,1);  </span><br><span class="line">    new_settings.c_cc[VMIN]=1;  </span><br><span class="line">    tcsetattr(0, TCSANOW, &amp;new_settings);  </span><br><span class="line"><span class="keyword">if</span>(nread == 1) &#123;  </span><br><span class="line">      peek_character = ch;  </span><br><span class="line">      <span class="built_in">return</span> 1;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="built_in">return</span> 0;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">int readch()  </span><br><span class="line">&#123;  </span><br><span class="line">    char ch;  </span><br><span class="line">    <span class="keyword">if</span>(peek_character != -1) &#123;  </span><br><span class="line">        ch = peek_character;  </span><br><span class="line">        peek_character = -1;  </span><br><span class="line">        <span class="built_in">return</span> ch;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="built_in">read</span>(0,&amp;ch,1);  </span><br><span class="line">    <span class="built_in">return</span> ch;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">## 第二种方案</span><br><span class="line"> <span class="comment">//用非阻塞io  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;termios.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;  </span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">kbhit</span><span class="params">(<span class="keyword">void</span>)</span>  </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">termios</span> <span class="title">oldt</span>, <span class="title">newt</span>;</span>  </span><br><span class="line"><span class="keyword">int</span> ch;  </span><br><span class="line"><span class="keyword">int</span> oldf;  </span><br><span class="line">tcgetattr(STDIN_FILENO, &amp;oldt);  </span><br><span class="line">newt = oldt;  </span><br><span class="line">newt.c_lflag &amp;= ~(ICANON | ECHO);  </span><br><span class="line">tcsetattr(STDIN_FILENO, TCSANOW, &amp;newt);  </span><br><span class="line">oldf = fcntl(STDIN_FILENO, F_GETFL, <span class="number">0</span>);  </span><br><span class="line">fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);  </span><br><span class="line">ch = getchar();  </span><br><span class="line">tcsetattr(STDIN_FILENO, TCSANOW, &amp;oldt);  </span><br><span class="line">fcntl(STDIN_FILENO, F_SETFL, oldf);  </span><br><span class="line"><span class="keyword">if</span>(ch != EOF)  </span><br><span class="line">&#123;  </span><br><span class="line">ungetc(ch, <span class="built_in">stdin</span>);  </span><br><span class="line"><span class="keyword">return</span> <span class="number">1</span>;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span>  </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line"><span class="keyword">while</span>(!kbhit())  </span><br><span class="line"><span class="built_in">puts</span>(<span class="string">"Press a key!"</span>);  </span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"You pressed '%c'!/n"</span>, getchar());  </span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+                <p>JavaScript 有着很奇怪的命名史。</p>
+<p>1995 年，它作为网景浏览器（Netscape Navigator）的一部分首次发布，网景给这个新语言命名为 LiveScript。一年后，为了搭上当时媒体热炒 Java 的顺风车，临时改名为了 JavaScript <em>（当然，Java 和 JavaScript 的关系，就和雷锋和雷锋塔一样 —— 并没有什么关系）</em></p>
+<p><img src="javascript-java.jpg" alt="java-javascript"><br><small class="img-hint">歪果仁的笑话怎么一点都不好笑</small></p>
+<blockquote>
+<p>译者注：<a href="https://en.wikipedia.org/wiki/JavaScript#History" target="_blank" rel="noopener">wikipedia 的 JavaScript 词条</a> 更详细的叙述了这段历史</p>
+</blockquote>
+<p>1996 年，网景将 JavaScript 提交给 <a href="http://www.ecma-international.org/" target="_blank" rel="noopener">ECMA International（欧洲计算机制造商协会）</a> 进行标准化，并最终确定出新的语言标准，它就是 ECMAScript。自此，ECMAScript 成为所有 JavaScript 实现的基础，不过，由于 JavaScript 名字的历史原因和市场原因（很显然 ECMAScript 这个名字并不令人喜欢……），现实中我们只用 ECMAScript 称呼标准，平时都还是使用 JavaScript 来称呼这个语言。</p>
+<blockquote>
+<p>术语（译者注）：</p>
+<ul>
+<li><em>标准（Standard）</em>： 用于定义与其他事物区别的一套规则</li>
+<li><em>实现（Implementation）</em>： 某个标准的具体实施/真实实践</li>
+</ul>
+</blockquote>
+<p>不过，JavaScript 开发者们并不怎么在乎这些，因为在诞生之后的 15 年里，ECMAScript 并没有多少变化，而且现实中的很多实现都已经和标准大相径庭。其实在第一版的 ECMAScript 发布后，很快又跟进发布了两个版本，但是自从 1999 年 ECMAScript 3 发布后，十年内都没有任何改动被成功添加到官方规范里。取而代之的，是各大浏览器厂商们争先进行自己的语言拓展，web 开发者们别无选择只能去尝试并且支持这些 API。即使是在 2009 年 ECMAScript 5 发布之后，仍然用了数年这些新规范才得到了浏览器的广泛支持，可是大部分开发者还是写着 ECMAScript 3 风格的代码，并不觉得有必要去了解这些规范。</p>
+<blockquote>
+<p>译者注：<a href="https://en.wikipedia.org/wiki/ECMAScript#4th_Edition_.28abandoned.29" target="_blank" rel="noopener">ECMAScript 第四版草案</a>由于太过激进而被抛弃，Adobe 的 <a href="https://en.wikipedia.org/wiki/ActionScript" target="_blank" rel="noopener">ActionScript 3.0</a> 是 ECMAScript edition 4 的唯一实现（ Flash 差点就统一 Web 了）</p>
+</blockquote>
+<p>到了 2012 年，事情突然开始有了转变。大家开始推动停止对旧版本 IE 浏览器的支持，用 ECMAScript 5 (ES5) 风格来编写代码也变得更加可行。与此同时，一个新的 ECMAScript 规范也开始启动。到了这时，大家开始逐渐习惯以对 ECMAScript 规范的版本支持程度来形容各种 JavaScript 实现。在正式被指名为 ECMAScript 第 6 版 (ES6) 之前，这个新的标准原本被称为 ES.Harmony（和谐）。2015 年，负责制定 ECMAScript 规范草案的委员会 TC39 决定将定义新标准的制度改为一年一次，这意味着每个新特性一旦被批准就可以添加，而不像以往一样，规范只有在整个草案完成，所有特性都没问题后才能被定稿。因此，ECMAScript 第 6 版在六月份公布之前，又被重命名为了 ECMAScript 2015（ES2015）</p>
+<p>目前，仍然有很多新的 JavaScript 特性或语法正在提议中，包括 <a href="https://github.com/wycats/javascript-decorators" target="_blank" rel="noopener">decorators（装饰者）</a>，<a href="https://github.com/lukehoban/ecmascript-asyncawait" target="_blank" rel="noopener">async-await（async-await 异步编程模型）</a> 和 <a href="https://github.com/jeffmo/es-class-properties" target="_blank" rel="noopener">static class properties（静态类属性）</a>。它们通常被称为 ES7，ES2016 或者 ES.Next 的特性，不过实际上它们只能被称作提案或者说可能性，毕竟 ES2016 的规范还没有完成，有可能全部都会引入，也有可能一个都没有。TC39 把一个提案分为 4 个阶段，你可以在 <a href="https://babeljs.io/docs/usage/experimental/" target="_blank" rel="noopener">Babel 的官网</a> 上查看各个提案目前都在哪个阶段了。</p>
+<p>所以，我们该如何使用这一大堆术语呢？下面的列表或许能帮助到你：</p>
+<ul>
+<li><strong>ECMAScript</strong>：一个由 ECMA International 进行标准化，TC39 委员会进行监督的语言。通常用于指代标准本身。</li>
+<li><strong>JavaScript</strong>：ECMAScript 标准的各种实现的最常用称呼。这个术语并不局限于某个特定版本的 ECMAScript 规范，并且可能被用于任何不同程度的任意版本的 ECMAScript 的实现。</li>
+<li><strong>ECMAScript 5 (ES5)</strong>：ECMAScript 的第五版修订，于 2009 年完成标准化。这个规范在所有现代浏览器中都相当完全的实现了。</li>
+<li><strong>ECMAScript 6 (ES6) / ECMAScript 2015 (ES2015)</strong>：ECMAScript 的第六版修订，于 2015 年完成标准化。这个标准被部分实现于大部分现代浏览器。可以查阅<a href="http://kangax.github.io/compat-table/es6/" target="_blank" rel="noopener">这张兼容性表</a>来查看不同浏览器和工具的实现情况。</li>
+<li><strong>ECMAScript 2016</strong>：预计的第七版 ECMAScript 修订，计划于明年夏季发布。这份规范具体将包含哪些特性还没有最终确定</li>
+<li><strong>ECMAScript Proposals</strong>：被考虑加入未来版本 ECMAScript 标准的特性与语法提案，他们需要经历五个阶段：Strawman（稻草人），Proposal（提议），Draft（草案），Candidate（候选）以及 Finished （完成）。</li>
+</ul>
+<p>在这整个 Blog 中，我将把目前的 ECMAScript 版本称作 ES6（因为这是大部分开发者最习以为常的），把明年的规范称作 ES2016（因为，与 ES6/ES2015 不同，这个名字将在整个标准化过程中沿用）并且将那些还没有成为 ECMAScript 定稿或草案的未来语言概念称为 ECMAScript 提案或者 JavaScript 提案。我将尽我所能在任何可能引起困惑的场合沿用这篇文章。</p>
+<h4 id="一些资源"><a href="#一些资源" class="headerlink" title="一些资源"></a>一些资源</h4><ul>
+<li>TC39 的 <a href="https://github.com/tc39/ecma262" target="_blank" rel="noopener">Github 仓库</a>上可以看到所有目前公开的提案</li>
+<li>如果你还不熟悉 ES6，Babel 有一个<a href="https://babeljs.io/docs/learn-es2015/" target="_blank" rel="noopener">很不错的特性概览</a></li>
+<li>如果你希望深入 ES6，这里有两本很不错的书： Axel Rauschmayer 的 <a href="http://exploringjs.com/" target="_blank" rel="noopener">Exploring ES6</a>和 Nicholas Zakas 的 <a href="https://leanpub.com/understandinges6" target="_blank" rel="noopener">Understanding ECMAScript 6</a>。Axel 的博客 <a href="http://www.2ality.com/" target="_blank" rel="noopener">2ality</a> 也是很不错的 ES6 资源</li>
+</ul>
+<p><img class="shadow" width="320" src="keep-calm-and-learn-javascript.png"><br><small class="img-hint">来学 JavaScript 吧！</small></p>
+<h4 id="著作权声明"><a href="#著作权声明" class="headerlink" title="著作权声明"></a>著作权声明</h4><p>本文译自 <a href="http://benmccormick.org/2015/09/14/es5-es6-es2016-es-next-whats-going-on-with-javascript-versioning/" target="_blank" rel="noopener">ES5, ES6, ES2016, ES.Next: What’s going on with JavaScript versioning?</a><br>译者 <a href="http://weibo.com/huxpro" target="_blank" rel="noopener">黄玄</a>，首次发布于 <a href="http://huangxuan.me" target="_blank" rel="noopener">Hux Blog</a>，转载请保留以上链接</p>
 
 
                 <hr>
@@ -201,12 +241,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/posts/DATABASE/derby-database.html" data-toggle="tooltip" data-placement="top" title="三分钟学会使用Derby数据库">&larr; 上一篇文章</a>
+                            <a href="/posts/unix-linux-note.html" data-toggle="tooltip" data-placement="top" title="Example Post With Default Header Image">&larr; 上一篇文章</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/posts/生活随笔/backup-hexo-data-on-github.html" data-toggle="tooltip" data-placement="top" title="在github备份Hexo超级详细教程">下一篇文章 &rarr;</a>
+                            <a href="/posts/hello-2015.html" data-toggle="tooltip" data-placement="top" title="Welcome to Hux Blog">下一篇文章 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -239,6 +279,12 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
+                          <a class="tag" href="/tags/#前端开发" title="前端开发">前端开发</a>
+                        
+                          <a class="tag" href="/tags/#JavaScript" title="JavaScript">JavaScript</a>
+                        
+                          <a class="tag" href="/tags/#翻译" title="翻译">翻译</a>
+                        
                     </div>
                 </section>
                 
@@ -277,8 +323,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "hexo-theme-huxblog";
-    var disqus_identifier = "http://jeesk.github.io/posts/C和C/LinuxInkbhit-Function.html";
-    var disqus_url = "http://jeesk.github.io/posts/C和C/LinuxInkbhit-Function.html";
+    var disqus_identifier = "http://jeesk.github.io/posts/js-version.html";
+    var disqus_url = "http://jeesk.github.io/posts/js-version.html";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -348,7 +394,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; 山间草夫的博客 2018 
+                    Copyright &copy; 山间草夫的博客 2019 
                     <br>
 
                     <span style="margin-top: 6px;display:inline-block;">
