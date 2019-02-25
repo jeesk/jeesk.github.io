@@ -184,6 +184,30 @@
 
 <div class="post-preview">
 
+    <a href="/posts/make-tomcat-by-myself.html">
+        <h2 class="post-title">
+            30分钟手写一个Tomcat服务器
+        </h2>
+        <h3 class="post-subtitle">
+            不适合人类阅读，非常水的自我笔记
+        </h3>
+        <div class="post-content-preview">
+            
+​    阅读本教程需要了解Http协议, Java Socket,Java反射的等相关内容. 
+
+1:  了解Http请求和响应1234567891011121314151617181920212223242526浏览器的请求// 请求的方式   参数GET /login?username=username&amp;passwd=passwd&amp;books=1&amp;books=......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by jeesk on
+        2019-02-25
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/posts/redis-shell.html">
         <h2 class="post-title">
             使用shell 操作Redis数据库
@@ -192,10 +216,8 @@
             不适合人类阅读，非常水的自我笔记
         </h3>
         <div class="post-content-preview">
-            业务需求:
-将Redis数据库里面的一些key大10倍(其实这不止是这么简单的需求)
-
-123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960#!/bin/bash# Redis客户端的执行路径REDISCLI=/home/j......
+            
+将Redis数据库里面的一些key大10倍(其实这不止是这么简单的需求, 不过我这里面就简单举个例子就好,这一个例子可以举一反三实现对Redis的crud), 由于Redis里面的数据是实时用到到缓存, 项目做了集群, 所以要操作Redis也可以使用Java在项目里面操作,比如使用Spring的项目可以 使用Spring的启动机制执行,但是要控制好只执行一次才行.  所以我采取了Shell......
         </div>
     </a>
     <p class="post-meta">
@@ -429,36 +451,6 @@ Stream 的特点:
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/posts/Junit-test-and-use-annotation-tomake-JunitMock.html">
-        <h2 class="post-title">
-            java软件测试JUnit
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            使用Junit进行单元测试
-Java的单元测试:Junit,存在两个版本.
-
-
-junit3.x   针对于Java5之前的版本,没有注解,得按照规范来写测试.,Android中使用junit3.x (不研究).
-junit4.x   针对于Java5以及之后的版本,使用注解,推荐.
-
-
-
-Tip: Junit 的@Test方法只能是公共无参无返回的参数,该类最多有一个无参的构造器,不能有任......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Jeesk on
-        2018-05-22
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -503,6 +495,8 @@ Tip: Junit 的@Test方法只能是公共无参无返回的参数,该类最多有
                         
                             
                             <a href="/tags/#JavaScript" title="JavaScript" rel="3">JavaScript</a>
+                            
+                        
                             
                         
                             
