@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="我家有两颗树,一棵树是枣树,另外一棵也是枣树.">
+    <meta name="keyword" content="xxxxxxxx">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          JDBC的事务介绍 - 山间草夫
+        
+    </title>
+
+    <link rel="canonical" href="https://shanjiancaofu.com/posts/JDBC-3-transaction.html">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">山间草夫</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">首页</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">文章归档</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">标签</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                    </div>
+                    <h1>JDBC的事务介绍</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Jeesk on
+                        2018-05-26
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-10 
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h4 id="银行转账案例"><a href="#银行转账案例" class="headerlink" title="银行转账案例"></a>银行转账案例</h4><p>●银行转账案例:<br>从xx 账户上给 苍老师 转10000块钱.<br>   <a id="more"></a><br>●准备:account(账户表):</p>
+<p>建表语句:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">事务的转账案例</span><br><span class="line"> 创建表:</span><br><span class="line"> create table account(</span><br><span class="line">  id bigint primary key auto_increment,</span><br><span class="line">	name varchar(20),</span><br><span class="line"> 	money Decimal(10,2)</span><br><span class="line"> );</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> # 插入数据</span><br><span class="line"> insert into account values (&quot;小明&quot;,20000),(&quot;仓老师&quot;,0);</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意只有Innodb的数据库引擎才能使用事务</p>
+</blockquote>
+<hr>
+<ul>
+<li>id            name(账号,唯一)           balance(余额)</li>
+<li>1            小明                           20000</li>
+<li>2            苍老师                               0</li>
+</ul>
+<hr>
+<blockquote>
+<p>转账操作步骤:</p>
+<ol>
+<li>检查余额是否&gt;=10000<br>select * from account where name=’江文龙’ and balance &gt;= 10000<br>查到了:表示余额满足,可以转账<br>没查到:提示越不足</li>
+</ol>
+</blockquote>
+<ol start="2">
+<li>修改小明的账户余额-10000<br>update account set balance = balance - 10000 where name = ‘江文龙’;</li>
+</ol>
+<p>假设中间操作停电了怎么办? 模拟停电int i = 1/0;</p>
+<ol start="3">
+<li>修改苍老师的账户余额+10000<br>update account set balance = balance + 10000 where name = ‘苍老师’;</li>
+</ol>
+<hr>
+<p>●悲剧的事情来了:当程序执行到第2步和第3步之间,突然停电了.<br>              使用异常来模拟停电: int i = 1 / 0;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">package com.shanjiancao.smis.test;</span><br><span class="line"></span><br><span class="line">import java.sql.Connection;</span><br><span class="line">import java.sql.PreparedStatement;</span><br><span class="line">import java.sql.ResultSet;</span><br><span class="line">import java.sql.SQLException;</span><br><span class="line"></span><br><span class="line">import org.junit.Test;</span><br><span class="line"></span><br><span class="line">import com.shanjiancao.smis.util.DbUtil;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * TransformDemo.java</span><br><span class="line"> * @version</span><br><span class="line"> * @date 2018年5月26日 上午11:48:30</span><br><span class="line"> * @author jeesk</span><br><span class="line"> * @since 1.0</span><br><span class="line"> *   事务的转账案例</span><br><span class="line"> *   创建表:</span><br><span class="line"> *   create table account(</span><br><span class="line"> *   	name varchar(20),</span><br><span class="line"> *   	money Decimal(10,2)</span><br><span class="line"> *   );</span><br><span class="line"> *   </span><br><span class="line"> *   insert into account values (&quot;小明&quot;,20000),(&quot;仓老师&quot;,0);</span><br><span class="line"> *   注意只有Innodb的数据库引擎才能使用事务</span><br><span class="line"> *   </span><br><span class="line"> */</span><br><span class="line">public class TransformDemo &#123;</span><br><span class="line">	@Test</span><br><span class="line">	public void testTransf() &#123;</span><br><span class="line">		// 1; 获得连接</span><br><span class="line">		Connection conn = DbUtil.getConnection();</span><br><span class="line">		// 查询张三是否满足转账的条件</span><br><span class="line">		//	判断转账条件否满足</span><br><span class="line">		String sql = &quot;select * from account where name = &apos;小明&apos; and money &gt;=20000&quot;;</span><br><span class="line">		PreparedStatement prepareStatement = null;</span><br><span class="line">		try &#123;</span><br><span class="line">			prepareStatement = conn.prepareStatement(sql);</span><br><span class="line">			ResultSet ret = prepareStatement.executeQuery();</span><br><span class="line">			while (!ret.next()) &#123;</span><br><span class="line"></span><br><span class="line">				System.out.println(&quot;余额不足, 转账失败&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; catch (SQLException e1) &#123;</span><br><span class="line">			e1.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		try &#123;</span><br><span class="line">			//	开启事务</span><br><span class="line">			conn.setAutoCommit(false);</span><br><span class="line">			System.out.println(&quot;开始 转账操作&quot;);</span><br><span class="line">			sql = &quot;update account set money = 10000 where name = &apos;小明&apos;&quot;;</span><br><span class="line">			// 执行转账操作,减少小明账户里面的钱</span><br><span class="line">			prepareStatement = conn.prepareStatement(sql);</span><br><span class="line">			prepareStatement.executeUpdate();</span><br><span class="line">			</span><br><span class="line">			int i = 1 / 0; // 如果中断了,开启了事务则会回滚数据,执行小明的操作会回滚</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">			//  修改仓老师账户里面的钱</span><br><span class="line">			sql = &quot;update account set money = money+10000 where name = &apos;仓老师&apos;&quot;;</span><br><span class="line">			prepareStatement = conn.prepareStatement(sql);</span><br><span class="line">			prepareStatement.executeUpdate();</span><br><span class="line">			// 提交事务</span><br><span class="line">			conn.commit();</span><br><span class="line">			System.out.println(&quot;转账成功&quot;);</span><br><span class="line">		&#125; catch (SQLException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">			try &#123;</span><br><span class="line">				conn.rollback();</span><br><span class="line">				// 回滚事物</span><br><span class="line">			&#125; catch (SQLException e1) &#123;</span><br><span class="line">				e1.printStackTrace();</span><br><span class="line">			&#125; finally &#123;</span><br><span class="line">				// 释放资源</span><br><span class="line">				DbUtil.close(prepareStatement, null, conn);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="一、事务概述"><a href="#一、事务概述" class="headerlink" title="一、事务概述"></a>一、事务概述</h4><p>事务(Transaction,简写为tx):<br>在数据库中,所谓事务是指一组逻辑操作,不论成功与失败都作为一个整体进行工作,要么全部执行，要么全不执行。<br>简单理解为，由一条或多条SQL语句组成的一组的操作(比如说转账)，在执行时，要么都成功，要么都失败。<br>如果成功就确认操作，称为提交commit；<br>失败就恢复数据/撤销，称为回滚rollback</p>
+<h4 id="二、处理事务的两个动作"><a href="#二、处理事务的两个动作" class="headerlink" title="二、处理事务的两个动作:"></a>二、处理事务的两个动作:</h4><pre><code>提交/确认:commit:    当整个事务中,所有的逻辑操作都正常执行成功.       ----&gt;提交事务.
+回滚/撤销:rollback:   当整个事务中,有一个或多个逻辑操作执行失败,       ----&gt;回滚事务. 撤销该事务中的所有操作,恢复到最初的状态.
+</code></pre><p>####　三、事务的ACID属性:</p>
+<ol>
+<li>原子性（Atomicity）:事务是应用中不可再分的最小逻辑执行单位体，要么都执行，要么都不执行； </li>
+<li>一致性（Consistency）:事务结束后，数据库内的数据是合法正确的、不被破坏的；(例如A账户1000，B账户1000元，转账前后共2000元应该保持一致)</li>
+<li>隔离性（Isolation）: 并发执行的事务之间彼此相互独立、互不干扰； (学持久层框架时再讲)</li>
+<li>持久性（Durability）:事务提交后，数据会持久化到数据库中,不可再回滚了；  </li>
+</ol>
+<h2 id="事务的并发性造成的问题、数据库的隔离级别后面学持久层框架时再讲"><a href="#事务的并发性造成的问题、数据库的隔离级别后面学持久层框架时再讲" class="headerlink" title="事务的并发性造成的问题、数据库的隔离级别后面学持久层框架时再讲"></a>事务的并发性造成的问题、数据库的隔离级别后面学持久层框架时再讲</h2><h4 id="四、如何在代码中去处理事务"><a href="#四、如何在代码中去处理事务" class="headerlink" title="四、如何在代码中去处理事务:"></a>四、如何在代码中去处理事务:</h4><p>操作事务的API<br>1.在JDBC中缺省情况下,事务是自动提交的,控制事务必须先设置事务为手动提交.<br>connection对象.setAutoCommit(false);//设置事务为手动提交.<br>2.提交事务.<br>connection对象.commit();<br>3.若出现异常必须回滚事务:<br>connection对象.rollback();</p>
+<p>那接下来就可以写代码实现了！</p>
+<p>####　五、注意事项</p>
+<p>1.　在JDBC在事务是默认提交的,那是在什么时候提交的?在执行一个DML/DDL操作的时候,就已经提交事务了.<br>2.　针对于CRUD操作,DML操作才需要事务,查询操作不需要事务(但也可以加上事务).</p>
+<p>3.不回滚事务,发现总余额依然是正确的(因为出现异常后没有提交),但是还是要回滚事务,因为不回滚不会释放数据库资源.</p>
+<p>4.　MySQL中,InnoDB支持外键.支持事务;MyISAM不支持外键,不支持事务.(alter table account engine = ‘myisam’)</p>
+<p>5.　以后事务我们不应该在DAO层处理,应该在service层控制.<br>6.　以后,凡是发现自己编写的代码是正确的,测试也通过,但是就是数据库表中的数据不变—–&gt;这时要记得看看事务有没有提交?.</p>
+<p>7.　更加详细的事务相关知识在MyBatis,Spring,项目的时候都会再讲.</p>
+<h3 id="获得自动生成的主键"><a href="#获得自动生成的主键" class="headerlink" title="获得自动生成的主键"></a>获得自动生成的主键</h3><h4 id="一、为什么需要获取自动生成的主键"><a href="#一、为什么需要获取自动生成的主键" class="headerlink" title="一、为什么需要获取自动生成的主键"></a>一、为什么需要获取自动生成的主键</h4><ul>
+<li>1):进入一个注册界面,填写注册信息,点击[注册]功能.————–&gt;保存一条数据.</li>
+<li>2):跳转到了一个填写详细信息的界面.</li>
+<li>3):填写个人的详细信息,最后再点击[保存].—————&gt;更新一条数据.</li>
+</ul>
+<hr>
+<p>在开发中,获取自动生成的主键的案例很多,比如后面要学习的单据和单据明细之间的关系.</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Connection.prepareStatement(String sql,int autoGeneratedKeys) :创建PreparedStatement对象,指定是否需要返回生成的主键. </span><br><span class="line"></span><br><span class="line">   常量值:Statement.RETURN_GENERATED_KEYS</span><br><span class="line">PreparedStatement .getGeneratedKeys():获取自动生成的主键返回ResultSet</span><br></pre></td></tr></table></figure>
+<p>MyBatis中获取自动生成主键,原理就是下面的代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">package com.shanjiancao.smis.test;</span><br><span class="line"></span><br><span class="line">import static org.junit.Assert.*;</span><br><span class="line"></span><br><span class="line">import java.sql.Connection;</span><br><span class="line">import java.sql.PreparedStatement;</span><br><span class="line">import java.sql.ResultSet;</span><br><span class="line"></span><br><span class="line">import org.junit.Test;</span><br><span class="line"></span><br><span class="line">import com.mysql.jdbc.Statement;</span><br><span class="line">import com.shanjiancao.smis.util.DbUtil;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * GetGeneratedKeyDemo.java</span><br><span class="line"> * @version</span><br><span class="line"> * @date 2018年5月26日 下午1:15:16</span><br><span class="line"> * @author jeesk</span><br><span class="line"> * @since 1.0</span><br><span class="line"> *  在执行插入操作的时候获得自动生成的主键演示\</span><br><span class="line"> *  </span><br><span class="line"> *  步骤:</span><br><span class="line"> *  1);  创建一个名字为小红的账户, 拥有金钱为50000</span><br><span class="line"> *  2):  获得连接</span><br><span class="line"> *  3):  在获得sql语句对象 的时候 ,指定要生成主键</span><br><span class="line"> *  4):  执行插入语句	</span><br><span class="line"> *  5):  获得生成的主键的值</span><br><span class="line"> *  6):  关闭资源</span><br><span class="line"> */</span><br><span class="line">public class GetGeneratedKeyDemo &#123;</span><br><span class="line">	@Test</span><br><span class="line">	public void testGetGeneratedKey() throws Exception &#123;</span><br><span class="line">		// 创建一个名字为小红的账户, 拥有金钱为50000</span><br><span class="line">		String sql = &quot;insert into account values(&apos;小红&apos;,50000)&quot;;</span><br><span class="line">		// 获得连接</span><br><span class="line">		Connection conn = DbUtil.getConnection();</span><br><span class="line">		// 在获得sql语句对象 的时候 ,指定要生成主键</span><br><span class="line">		PreparedStatement prepareStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);</span><br><span class="line">		// 执行插入语句	</span><br><span class="line">		prepareStatement.executeUpdate();</span><br><span class="line">		// 获得生成的主键的值</span><br><span class="line">		ResultSet rs = prepareStatement.getGeneratedKeys();</span><br><span class="line"></span><br><span class="line">		while (rs.next()) &#123;</span><br><span class="line">			Long key = rs.getLong(1);</span><br><span class="line">			System.out.println(&quot;生成的主键 是: &quot; + key);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		// 关闭资源</span><br><span class="line">		DbUtil.close(prepareStatement, rs, conn);</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">/*</span><br><span class="line"> * 小结: </span><br><span class="line"> * 		如果要获得执行插入语句自动 生成的主键, 可以在获得sql语句对象 的时候指定 </span><br><span class="line"> * 		connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);</span><br><span class="line"> * 		在执行了插入语句后,用preparedStatement获得返回的主键的ResultSet,遍历获得主键的值 </span><br><span class="line"> * </span><br><span class="line"> * */</span><br></pre></td></tr></table></figure></p>
+<h3 id="使用内省获把ResultSet转换成javaBean对象"><a href="#使用内省获把ResultSet转换成javaBean对象" class="headerlink" title="使用内省获把ResultSet转换成javaBean对象"></a>使用内省获把ResultSet转换成javaBean对象</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface IResultSetLHandler&lt;T&gt; &#123;</span><br><span class="line">	</span><br><span class="line">	T hanlder(ResultSet rs);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">package com.shanjiancao.smis.hanlde;</span><br><span class="line"></span><br><span class="line">import java.beans.BeanInfo;</span><br><span class="line">import java.beans.IntrospectionException;</span><br><span class="line">import java.beans.Introspector;</span><br><span class="line">import java.beans.PropertyDescriptor;</span><br><span class="line">import java.lang.reflect.InvocationTargetException;</span><br><span class="line">import java.sql.ResultSet;</span><br><span class="line">import java.sql.SQLException;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * StudentResultSetHandlerImpl.java</span><br><span class="line"> * @version</span><br><span class="line"> * @date 2018年5月26日 上午10:15:57</span><br><span class="line"> * @author jeesk</span><br><span class="line"> * @since 1.0</span><br><span class="line"> *  将传入的ResultSet转为指定的JavaBaean对象</span><br><span class="line"> */</span><br><span class="line">public class StudentResultSetHandlerImpl&lt;T&gt; implements IResultSetLHandler&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">	private Class&lt;T&gt; t;</span><br><span class="line"></span><br><span class="line">	public StudentResultSetHandlerImpl(Class&lt;T&gt; t) &#123;</span><br><span class="line">		this.t = t;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public T hanlder(ResultSet rs) &#123;</span><br><span class="line"></span><br><span class="line">		T newInstance = null;</span><br><span class="line">		try &#123;</span><br><span class="line">			newInstance = t.newInstance();</span><br><span class="line">		&#125; catch (InstantiationException | IllegalAccessException e1) &#123;</span><br><span class="line">			e1.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		try &#123;</span><br><span class="line">			while (rs.next()) &#123;</span><br><span class="line">				//	获得这一对象的JavaBean</span><br><span class="line">				BeanInfo beanInfo = Introspector.getBeanInfo(newInstance.getClass(), Object.class);</span><br><span class="line">				PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();</span><br><span class="line">				for (PropertyDescriptor propertyDescriptor : propertyDescriptors) &#123;</span><br><span class="line">					// 遍历属性 获得这一个属性的写方法， 使用这一个属性的name作为key从Resultset获得对应的Value，然后将这一个value设置到JavaBean对象的属性</span><br><span class="line">					propertyDescriptor.getWriteMethod().invoke(newInstance, rs.getObject(propertyDescriptor.getName()));</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">			&#125;</span><br><span class="line">		&#125; catch (SQLException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; catch (IllegalAccessException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; catch (IntrospectionException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; catch (IllegalArgumentException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; catch (InvocationTargetException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		return newInstance;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * 使用内省将Result转换成JavaBean</span><br><span class="line"> *  1): 获得指定对象的PropertyDescriptors(); 然后遍历</span><br><span class="line"> *  2): 先获得这一个属性的name,先name作为key获得对应的value</span><br><span class="line"> *  3); 获得这一个属性的读方法,将value作为参数设置给javaBean</span><br><span class="line"> *  4): 每一个Resulet遍历一次可以获得一个对象, 如果获得多个对象,可以将对象添加到集合中去</span><br><span class="line"> * </span><br><span class="line"> * </span><br><span class="line"> * </span><br><span class="line"> * */</span><br></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/posts/Mybaties-Introduction.html" data-toggle="tooltip" data-placement="top" title="Mybaties入门详解">&larr; 上一篇文章</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/posts/how-to-use-jdbc-Connection-pool.html" data-toggle="tooltip" data-placement="top" title="如何使用JDBC的线程池">下一篇文章 &rarr;</a>
+                        </li>
+                    
+                </ul>
+                
+
+                <div class="comment" id="vcomments"></div>
+
+               
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks" target="_blank">Kaijun&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me" target="_blank">Hux Blog</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8  col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 山间草夫 2019 
+                    <br>
+
+                    <span style="margin-top: 6px;display:inline-block;">
+                    Powered by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>  |
+                    
+                    Theme —  <a href="https://github.com/Huxpro/huxpro.github.io">Huxpro</a>   |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=jeesk&repo=jsp_servlet_mysql_basicProject&type=star&count=true">
+                    </iframe>
+<span>
+                </span></span></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!--载入js，在</body>之前插入即可-->
+    <!--Leancloud 操作库:-->
+    <script src="/js/av-min.js"></script>
+    <!--Valine 的核心代码库-->
+    <script src="/js/Valine.min.js"></script>
+
+
+<script>
+    new Valine({
+        av: AV,
+        el: '#vcomments',
+        placeholder: '欢迎留下您的评论，支持部分Markdown语法，如 *斜体*、**加粗**、`行内代码`、[超链接](链接地址)、![图片](图片地址) 等',
+        appId: 'WvcpILV0ImhrHowrLek0rAn9-gzGzoHsz',
+        appKey: 'N84KdKuNF8feKKf0bV3dM2Yc',
+        pageSize: 100,
+        avatar:'',
+        visitor: true,
+        notify: false,
+        verify: false
+    })
+</script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://shanjiancaofu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
