@@ -90,6 +90,13 @@
 
                         
                         <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
                             <a href="/archives/">文章归档</a>
                         </li>
                         
@@ -98,13 +105,6 @@
                         
                         <li>
                             <a href="/tags/">标签</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/about/">关于我</a>
                         </li>
                         
                     
@@ -261,6 +261,29 @@ sql语句写死在代码中，不方便维护
 
 <div class="post-preview">
 
+    <a href="/posts/JDBC-2-template.html">
+        <h2 class="post-title">
+            抽取JDBC的模版
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            使用PrepareedStatement代替使用StatementPreparedStatement相对于Statement的优势:
+拼接SQL上,操作更简单(更好的可读性,可维护性). –能理解即可,以后使用PreparedStatement不会进行sql语句的字符串拼接
+预编译的性能会更加......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Jeesk on
+        2018-05-25
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/posts/how-to-use-jdbc-Connection-pool.html">
         <h2 class="post-title">
             如何使用JDBC的线程池
@@ -307,29 +330,6 @@ sql语句写死在代码中，不方便维护
 表名字的的注解12
 
 package com.shanjiancao.smis.d......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Jeesk on
-        2018-05-25
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/posts/JDBC-2-template.html">
-        <h2 class="post-title">
-            抽取JDBC的模版
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            使用PrepareedStatement代替使用StatementPreparedStatement相对于Statement的优势:
-拼接SQL上,操作更简单(更好的可读性,可维护性). –能理解即可,以后使用PreparedStatement不会进行sql语句的字符串拼接
-预编译的性能会更加......
         </div>
     </a>
     <p class="post-meta">
@@ -420,24 +420,19 @@ Stream 的定义 :1支持数据处理操作的源生成的元素序......
 
 <div class="post-preview">
 
-    <a href="/posts/Junit-test-and-use-annotation-tomake-JunitMock.html">
+    <a href="/posts/Javase-Enhance-Reflect-detailed-explanation.html">
         <h2 class="post-title">
-            java软件测试JUnit
+            javaSe基础加强之反射
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview" style="text-indent: 10px;">
-            使用Junit进行单元测试
-Java的单元测试:Junit,存在两个版本.
+            类加载机制(强迫症请跳过)
+什么是类加载机制当一个class文件被加载进内存时，在JVM中将形成一份描述该class文件结构的元信息对象Class，通过该对象可以获知class文件的结构信息：如构造器，字段，方法等。
 
 
-junit3.x   针对于Java5之前的版本,没有注解,得按照规范来写测试.,Android中使用junit3.x (不研究).
-junit4.x   针对于Java5以及之后的版本,使用注解,推荐.
-
-
-
-T......
+虚拟机把描述类的数据从class文件加载到内存，并对数据进行校验，转换解......
         </div>
     </a>
     <p class="post-meta">
@@ -487,6 +482,14 @@ T......
                     <div class="tags">
                         
                             
+                            <a href="/tags/#-Git使用" title="-Git使用" rel="3">-Git使用</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
                         
                             
                         
@@ -510,16 +513,6 @@ T......
                         
                             
                         
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                            <a href="/tags/#-Git使用" title="-Git使用" rel="3">-Git使用</a>
                             
                         
                             
