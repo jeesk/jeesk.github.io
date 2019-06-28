@@ -13,11 +13,11 @@
 
     <title>
         
-          Mysql4种事务隔离级别案例详解 - 山间草夫
+          JDK 8 新特性 （What&#39;s New in JDK 8） - 山间草夫
         
     </title>
 
-    <link rel="canonical" href="https://shanjiancaofu.com/posts/mysql-trsation.html">
+    <link rel="canonical" href="https://shanjiancaofu.com/posts/What&#39;s-New-in-JDK-8.html">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -165,14 +165,14 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#-Mysql" title="-Mysql">-Mysql</a>
+                          <a class="tag" href="/tags/#-JAVA-DOC" title="-JAVA-DOC">-JAVA-DOC</a>
                         
                     </div>
-                    <h1>Mysql4种事务隔离级别案例详解</h1>
-                    <h2 class="subheading">不适合人类阅读，非常水的自我笔记</h2>
+                    <h1>JDK 8 新特性 （What&#39;s New in JDK 8）</h1>
+                    <h2 class="subheading">翻译</h2>
                     <span class="meta">
                         Posted by jeesk on
-                        2019-04-09
+                        2019-06-28
                     </span>
                 </div>
             </div>
@@ -191,91 +191,237 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>隔离级别</p>
-<blockquote>
-<p>​     ✔   可能出现         ✘    不会出现</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th style="text-align:center"></th>
-<th>脏读</th>
-<th style="text-align:center">不可重复读</th>
-<th>幻读</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">READ UNCOMMITED</td>
-<td>✔</td>
-<td style="text-align:center">✔</td>
-<td>✔</td>
-</tr>
-<tr>
-<td style="text-align:center">READ COMMITTED</td>
-<td>✔</td>
-<td style="text-align:center">✘</td>
-<td>✘</td>
-</tr>
-<tr>
-<td style="text-align:center">REPETABLE READ</td>
-<td>✘</td>
-<td style="text-align:center">✘</td>
-<td>✔</td>
-</tr>
-<tr>
-<td style="text-align:center">SERIALIZABLE</td>
-<td>✘</td>
-<td style="text-align:center">✘</td>
-<td>✘</td>
-</tr>
-</tbody>
-</table>
-<p>首先创建创建一张表：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE PERSON (</span><br><span class="line">    id INT PRIMARY KEY,</span><br><span class="line">    name VARCHAR(100)</span><br><span class="line">) Engine=InnoDB CHARSET=utf8;</span><br></pre></td></tr></table></figure>
-<p>​    插入一条数据：</p>
-<p><code>INSERT INTO PERSON(id,name) value(1,&#39;小明&#39;);</code></p>
-<h2 id="READ-UNCOMMITED"><a href="#READ-UNCOMMITED" class="headerlink" title="READ UNCOMMITED"></a>READ UNCOMMITED</h2><p>顾名思义， 读未提交。</p>
-<p>案例1:    </p>
-<p>A 用户执行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">在DataGrip开启两个数据库连接(窗口)</span><br><span class="line">A 用户执行</span><br><span class="line">SET TRANSACTION  ISOLATION LEVEL READ UNCOMMITTED;</span><br><span class="line">start transaction;</span><br><span class="line">UPDATE PERSON SET NAME = &apos;大黄&apos; WHERE ID = 1;</span><br></pre></td></tr></table></figure>
-<p>B 用户执行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">SELECT * FROM WHERE ID = 1;</span><br><span class="line"></span><br><span class="line">+----+-------+</span><br><span class="line">| id | name  |</span><br><span class="line">+----+-------+</span><br><span class="line">|  1 | HELLO |</span><br><span class="line">+----+-------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
-<p>这个时候 B用户 看到的数据， 竟然是 A   连接  <code>没有提交的事务</code>  的数据， 这就叫做 READ UNCOMMITED， 同时读出来的数据还可能产生脏数据。 A 用户执行的时候，设置了事务级别，同时这也时Mysql的默认隔离级别。</p>
-<p>这种隔离级别是非常不安全的， 尽量避免使用这种隔离级别。</p>
-<h2 id="READ-COMMITTED"><a href="#READ-COMMITTED" class="headerlink" title="READ COMMITTED"></a>READ COMMITTED</h2><p>案例2：</p>
-<p>A 用户</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SET TRANSACTION  ISOLATION LEVEL READ COMMITTED ;</span><br><span class="line">start transaction;</span><br><span class="line">UPDATE PERSON SET NAME = &apos;小猫猫&apos; WHERE ID = 1;</span><br></pre></td></tr></table></figure>
-<p>B 用户</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from PERSON where id = 1;</span><br><span class="line">+----+--------+</span><br><span class="line">| id | name   |</span><br><span class="line">+----+--------+</span><br><span class="line">|  1 | 大黄   |</span><br><span class="line">+----+--------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
-<p>当前事务隔离级别下面，已经不能独到，另外一个事务没有提交的数据了。</p>
-<p>A 用户提交事务后，B 用户继续查询。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">COMMIT;</span><br></pre></td></tr></table></figure>
-<p>B 用户 查询</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from PERSON where id = 1;</span><br><span class="line">+----+-----------+</span><br><span class="line">| id | name      |</span><br><span class="line">+----+-----------+</span><br><span class="line">|  1 | 小猫猫    |</span><br><span class="line">+----+-----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
-<p>B 用户可以查询到最新别人提交的数据了，这种事务级别就叫  READ COMMITTED</p>
-<h2 id="REPETABLE-READ"><a href="#REPETABLE-READ" class="headerlink" title="REPETABLE READ"></a>REPETABLE READ</h2><p>案例3：</p>
-<p>B 用户  开启一个事务后，一直读取 ID = 1 的数据。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SET TRANSACTION  ISOLATION LEVEL REPEATABLE READ ;</span><br><span class="line">start transaction;</span><br><span class="line">SELECT * FROM PERSON WHERE ID = 1;</span><br></pre></td></tr></table></figure>
-<p>A 用户  修改 ID = 1 的这一条数据</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SET TRANSACTION  ISOLATION LEVEL REPEATABLE READ ;</span><br><span class="line">start transaction;</span><br><span class="line">UPDATE PERSON SET NAME = &apos;小猫猫我爱你&apos; WHERE ID = 1;</span><br><span class="line">## show create table EMPLOYEE;</span><br><span class="line">COMMIT ;</span><br></pre></td></tr></table></figure>
-<p>B 用户继续查询  ID = 1 的这一条数据,但是不提交数据。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM PERSON WHERE ID = 1;</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from PERSON where id = 1;</span><br><span class="line">+----+-----------+</span><br><span class="line">| id | name      |</span><br><span class="line">+----+-----------+</span><br><span class="line">|  1 | 小猫猫    |</span><br><span class="line">+----+-----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
-<p>你会发现， 在当前事务,  及时另外一个事务修改了数据已经提交事务，但是读到的数据产生了幻觉。 这就叫可以重复读。也叫幻读。</p>
-<h2 id="SERIALIZABLE"><a href="#SERIALIZABLE" class="headerlink" title="SERIALIZABLE"></a>SERIALIZABLE</h2><p><strong>串行化</strong>， 以上3种隔离级别都允许对同一条记录进行<code>读-读</code>、<code>读-写</code>、<code>写-读</code>的并发操作，如果我们不允许<code>读-写</code>、<code>写-读</code>的并发操作，可以使用<code>SERIALIZABLE</code>隔离级别，示意图如下：</p>
-<p>A 用户</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SET TRANSACTION  ISOLATION LEVEL SERIALIZABLE ;</span><br><span class="line">start transaction;</span><br><span class="line">UPDATE PERSON SET NAME = &apos;我爱你祖国&apos; WHERE ID = 1;</span><br></pre></td></tr></table></figure>
-<p>B 用户</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SET TRANSACTION  ISOLATION LEVEL SERIALIZABLE ;</span><br><span class="line">start transaction;</span><br><span class="line">UPDATE PERSON SET NAME = &apos;我爱你祖国&apos; WHERE ID = 1;</span><br></pre></td></tr></table></figure>
-<p>B 用户执行查询语句， 发现已经被阻塞了。</p>
-<p>A 用户 提交事务</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">COMMIT;</span><br></pre></td></tr></table></figure>
-<p>B 用户 立刻获得数据</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from PERSON where id = 1;</span><br><span class="line">+----+-----------+</span><br><span class="line">| id | name      |</span><br><span class="line">+----+-----------+</span><br><span class="line">|  1 | 我爱你祖国    |</span><br><span class="line">+----+-----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
-<p>当<code>用户 A中的事务更新了</code>id<code>为</code>1<code>的记录后，之后</code>用户 B<code>中的事务再去访问这条记录时就被卡住了，直到</code>用户 A<code>中的事务提交之后</code>，<code>用户 B</code>中的事务才可以获取到查询结果。 发现，这 <code>SERIALIZABLE</code> 这种事务模式下面的效率非常低， 因为当某条数据被事务占用的时候， 另外的连接无法修改，并且连查询也不能。</p>
-<blockquote>
-<p>​    今天的讲解就到这儿， 你明白了数据库的隔离级别了吗？ </p>
-</blockquote>
+                <h1 id="JDK-8-新特性-（What’s-New-in-JDK-8）"><a href="#JDK-8-新特性-（What’s-New-in-JDK-8）" class="headerlink" title="JDK 8 新特性 （What’s New in JDK 8）"></a>JDK 8 新特性 （What’s New in JDK 8）</h1><ul>
+<li><p>Java 程序语言</p>
+<ul>
+<li>Lambda 表达式， Java 的新语言特性。 它们能够使你轻松的将 <code>功能</code> 参数化，或者是代码作为数据。 Lambda 表示大 允许你更加 紧凑的标识单个方法的接口（也叫函数式接口）。</li>
+<li>为已经有了名字的方法提供了 Lambda方法引用，更加易于阅读。</li>
+<li>接口可以拥有默认方法， 并且可以和老版本编写的代码能够二进制兼容。</li>
+<li>注解提供重复标记的功能。（ Ex： @Repeatable）。</li>
+<li>类型注解提供了 在使用注解的审核地方，而不仅仅是申明。与可插拔类型系统一起使用的时候， ， 此功能可以改进代码的类型检查。 </li>
+<li>改进类型推断。</li>
+<li>方法参数反射功能。</li>
+</ul>
+</li>
+<li><p>集合 （ Collections）</p>
+<ul>
+<li><p>新增 <code>java.util.stream</code> 包，提供了 Stream Api 支持函数式编程。 Stream Api 可以集成到Collections Api， 可以对集合批量操作， 比如  顺序 或者是并行 map-reduce 转换。</p>
+</li>
+<li><p>关键冲突的 HashMaps 的性能提升</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>Compact Profiles 包含的Java SE 预定义的子集， 小型设备上 不需要运行整个库，就能运行这些应用程序。</p>
+</li>
+<li><p>安全 （ Security ）</p>
+<ul>
+<li><p>默认启动客户端 TLS 1.2 (安全传输层协议)。</p>
+</li>
+<li><p>新的变体 AccessController.doPrivileged 是代码能够断言其特权的子集 ， 而不会阻止短暂的完整遍历 来检查其他权限。</p>
+</li>
+<li><p>更加强大的加密算法支持。</p>
+</li>
+<li><p>SSL/TLS 服务管理拓展支持 JSSE Sever。</p>
+</li>
+<li><p>支持 AEAD 算法。   SUNJCE 提供程序支持 AES/GCM/ NOPadding 密码 实现 GCM 算法参数。</p>
+<p>SunJSSE 提供了基于密码套件的增强模式AEAD 。 详情请看 Oracel 提供文档  JEP 115;。</p>
+</li>
+</ul>
+<ul>
+<li><p>秘钥库增加 包括新的 <code>java.security.DomainLoadStoreParameter</code> ， 新的命令选项 <code>importpassword</code></p>
+</li>
+<li><p>SHA-224 信息摘要</p>
+</li>
+<li><p>增强 NSA 套件 B 的密码支持</p>
+</li>
+<li><p>增强 高随机数生成</p>
+</li>
+<li><p>新的 <code>java.security.cert.PKIXRevocationChecker</code>  配置 X.509 吊销检查新类</p>
+</li>
+<li><p>适用于Window 64 位的 PLCS11 </p>
+</li>
+<li><p>New rcache Types in Kerberos 5 Replay Caching</p>
+</li>
+<li><p>Support for Kerberos 5 Protocol Transition and Constrained Delegation</p>
+</li>
+<li><p>Kerberos 5 weak encryption types disabled by default</p>
+</li>
+<li><p>Unbound SASL for the GSS-API/Kerberos 5 mechanism</p>
+</li>
+<li><p>多个主机名的 SASL 服务</p>
+</li>
+<li><p>JNI 桥接到Mac Osx 的本地JGSS上</p>
+</li>
+<li><p>Support for stronger strength ephemeral DH keys in the SunJSSE provider</p>
+</li>
+<li><p>Support for server-side cipher suites preference customization in JSSE</p>
+</li>
+</ul>
+</li>
+<li><p>JavaFX</p>
+<pre><code>- 新的 Mondena 主题 已经在正式版本中实现了。
+
+-    SwingNode class 可以帮助开发者将Swing 的带入到JavaFx 应用中 .
+
+-    新的UI 控制  [`DatePicker`](http://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/DatePicker.html) and the [`TreeTableView`](http://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/TreeTableView.html) 。
+
+-    `javafx.print` 包提供了 JavaFX 打印API。 详情 [javadoc](http://docs.oracle.com/javase/8/javafx/api/javafx/print/package-summary.html) 。
+
+-    3D 绘图工具 包括 3D 图形， 相机， 灯光，子场景， 材质 拾取， 抗锯齿等。
+
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Shape3D (Box, Cylinder, MeshView, and Sphere subclasses), SubScene, Material, PickResult, LightBase (AmbientLight and PointLight subclasses) , and SceneAntialiasing API classes ， 已经增加到JavaFX 3D 图形库中。</span><br></pre></td></tr></table></figure>
+</code></pre></li>
+</ul>
+<ul>
+<li><p>改进了 <code>WebView</code> class， 并且提供了新特性。  支持HTML5， 和Web Sockets, Web Workers 和Web Fonts。</p>
+</li>
+<li><p>增强的文本包括双向文本和复杂的文本脚本 ， 如控件的泰语和印地语言。 </p>
+</li>
+<li><p>此版本增加了 HI-DPI 显示。</p>
+</li>
+<li><p>CSS Styleable* 成为了 公共的 API， 详情请看文档 <a href="http://docs.oracle.com/javase/8/javafx/api/javafx/css/package-frame.html" target="_blank" rel="noopener"><code>javafx.css</code></a> </p>
+</li>
+<li><p><a href="http://docs.oracle.com/javase/8/javafx/api/javafx/concurrent/ScheduledService.html" target="_blank" rel="noopener"><code>ScheduledService</code></a>  支持自动重启服务。</p>
+</li>
+<li><p>JavaFX 现在可用于 ARM 平台， 包括 JavaFX 的基础库， 图形，控制组件。</p>
+</li>
+</ul>
+<ul>
+<li><p>Tools</p>
+<ul>
+<li><code>jjs</code>  命令提供了 Nashorn 引擎。</li>
+</ul>
+</li>
+<li><code>java</code> 命令 启动JavaFX 应用。<ul>
+<li><code>java</code> man 手册已经被重新设计 。</li>
+</ul>
+</li>
+<li><code>jdeps</code> 命令行提供了 class 文件分析工具.<ul>
+<li>Java Management Extensions (JMX)  提供了 对诊断命令的远程访问。 </li>
+</ul>
+</li>
+<li><p><code>jarsigner</code> 拱了 提供了对单个时间戳请求钱敏的 认证。-</p>
+<ul>
+<li><p><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/javac/index.html" target="_blank" rel="noopener">Javac tool</a></p>
+<ul>
+<li>该命令的 -parameters 选项可用于存储形式参数名称 ， 并且能够使用  <code>Reflection API</code> 来检索形式参数名称。</li>
+<li>现在， <code>javac</code> 命令 可以正确实施 Java 语言规范 第 15.21 节中的相等运算符规则。</li>
+<li><code>javac</code> 命令支持 检查 javac 注释中的内容， 改查找可能导致javadoc运行时生成的文件中的各种问题。</li>
+<li>现在， <code>javac tool</code> 提供了可以更具需要生成本地头。这样就无需将javah 工具作为构建管道中的单独步骤运行。 javac 通过使用<code>new -h</code> 选项启动改功能。</li>
+</ul>
+</li>
+<li>javadoc tool<ul>
+<li><code>javadoc</code> tool 支持 DocTrcc API 能够是你的javadoc 注释 作为抽象语法遍历。</li>
+<li><code>javadoc</code> tool 支持 新的Javadoc 访问api， 能够是你直接从 Java 引用程序调用Javadoc 工具， 而无需执行新的进程。   详情请看 文档  <a href="http://docs.oracle.com/javase/8/docs/technotes/guides/javadoc/whatsnew-8.html" target="_blank" rel="noopener">javadoc</a> </li>
+<li>该<code>javadoc</code>工具现在支持检查<code>javadoc</code>注释的内容，以查找可能导致<code>javadoc</code>运行时生成的文件中的各种问题（例如无效的HTML或可访问性问题）的问题。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html" target="_blank" rel="noopener"> 国际化 Internationalization</a></p>
+<ul>
+<li>Unicode 加强 ， 支持 Unicode 6.2.0</li>
+<li>采用 Unicode CLDR 数据和  <code>java.locale.providers</code> 系统属性。</li>
+<li>新的日历 和Locale API</li>
+<li>能够自定义资源包安装为拓展</li>
+</ul>
+</li>
+<li><p><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/jweb/enhancements-8.html" target="_blank" rel="noopener">部署 Deployment</a></p>
+<ul>
+<li>沙箱小程序和 Java Web Start 应用程序，  URlPermission 现在允许链接返回到启动他们的服务器。 SocketPermission 却不在被允许。</li>
+<li>所有安全级别的 JAR 包 清单中都需要 Permission 属性。</li>
+</ul>
+</li>
+<li><p>Date-Time Package 一组新的包， 提供了 全面的日期时间模型。</p>
+</li>
+<li><p>脚本 (Scripting)</p>
+<ul>
+<li>Rhino javascript引擎已被<a href="http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/" target="_blank" rel="noopener">Nashorn</a> Javascript引擎取代。</li>
+</ul>
+</li>
+<li><p>Pack200</p>
+<ul>
+<li>Pack200 支持常量此 和新的字节码 ， 由JSR 292 引入。</li>
+<li>JDK8 支持JSR-292，JSR-308 和 JSR-225 指定的类文件更改。</li>
+</ul>
+</li>
+<li><p>IO and NIO</p>
+<ul>
+<li>新的 SelectorProvider 基于 Solaries 时间端口机制。 要使用，请在系统属性<code>java.nio.channels.spi.Selector</code>设置为值的情况下运行<code>sun.nio.ch.EventPortSelectorProvider</code>。</li>
+<li>减少了 &lt;JDK_HOME&gt;、jre、Lib/charset.jar 的文件大小。</li>
+<li>String(byte[] ,*) 构造器 和 <code>java.lang.String.getBytes()</code> 方法的性能提升。</li>
+</ul>
+</li>
+<li><p>java.lang and java.util 包</p>
+<ul>
+<li>并行数组排序</li>
+<li>标准编码和解码 Base64</li>
+<li>无符号算术支持。</li>
+</ul>
+</li>
+<li><p>JDBC</p>
+<ul>
+<li>JDBC-ODBC  桥接已经被一处。</li>
+<li>JDBC 4.2 引入了新特性。</li>
+</ul>
+</li>
+<li><p>JAVA DB</p>
+<ul>
+<li>JDK8 支持 JAVA DB 10.10</li>
+</ul>
+<ul>
+<li><p>NetWorking</p>
+</li>
+<li><p>新增 <code></code>java.net.URLPermission类</p>
+</li>
+<li>如果安装了安全管理器， 调用 <code></code>java.net.HttpURLConnection<code>,</code> 打开一个连接， 需要权限。</li>
+</ul>
+</li>
+<li><p>并发相关 (Concurrency)</p>
+<ul>
+<li>类和接口 增加到了 <code>java.util.concurrent</code></li>
+<li>已经将 <code>java.util.concurrent.ConcurrentHashMap</code> class 增加到了 支持新增加的Lambda 表达式的聚合操作中。</li>
+<li><code>java.util.concurrent.atomic</code> 包中支持可伸缩可更新的变量。</li>
+<li><code>java.util.concurrent.ForkJoinPool</code> 支持 公共水池。</li>
+<li><code>java.util.concurrent.locks.StampedLock</code>  已经提供了基于能力的锁，提供了3中模式控制 读写访问。</li>
+</ul>
+</li>
+<li><p><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/xml/enhancements.html" target="_blank" rel="noopener">Java XML</a> - <a href="http://docs.oracle.com/javase/8/docs/technotes/guides/xml/jaxp/enhancements-8.html" target="_blank" rel="noopener">JAXP</a></p>
+</li>
+<li><p>HotSpot</p>
+<ul>
+<li>硬件支持 AES 加密算法， 在<code>UseAES</code>和<code>UseAESIntrinsics</code>标志是可用的启用Intel硬件的基于硬件的AES内部函数。硬件必须是2010或更新的Westmere硬件。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><strong>注意：</strong> AES内在函数仅受服务器VM支持。</p>
+<p>例如，要启用硬件AES，请使用以下标志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX：+ UseAES -XX：+ UseAESIntrinsics</span><br></pre></td></tr></table></figure>
+<p>要禁用硬件AES，请使用以下标志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX：-UseAES -XX：-UseAESIntrinsics</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>去除 PermGen (永久带)</p>
+</li>
+<li><p>方法调用支持Java 编程语言中的缺省方法。</p>
+</li>
+</ul>
+<ul>
+<li><p><a href="http://www.oracle.com/technetwork/java/javase/jmc53-release-notes-2157171.html" target="_blank" rel="noopener">Java Mission Control 5.3发行说明</a></p>
+<ul>
+<li>JDK 8包括Java Mission Control 5.3。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ol>
+<li><p><a href="https://www.oracle.com/technetwork/java/javase/8-whats-new-2157071.html" target="_blank" rel="noopener">原文文档地址</a></p>
+</li>
+<li><p>部分参考谷歌翻译</p>
+</li>
+</ol>
 
 
                 <hr>
@@ -284,13 +430,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/posts/What's-New-in-JDK-8.html" data-toggle="tooltip" data-placement="top" title="JDK 8 新特性 （What's New in JDK 8）">&larr; 上一篇文章</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/posts/Git-Introductory-work-scenarios-3.html" data-toggle="tooltip" data-placement="top" title="Git入门之工作场景三">下一篇文章 &rarr;</a>
+                            <a href="/posts/mysql-trsation.html" data-toggle="tooltip" data-placement="top" title="Mysql4种事务隔离级别案例详解">下一篇文章 &rarr;</a>
                         </li>
                     
                 </ul>
@@ -318,7 +460,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#-Mysql" title="-Mysql">-Mysql</a>
+                          <a class="tag" href="/tags/#-JAVA-DOC" title="-JAVA-DOC">-JAVA-DOC</a>
                         
                     </div>
                 </section>
