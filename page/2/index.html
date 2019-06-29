@@ -18,6 +18,9 @@
     </title>
 
     <link rel="canonical" href="https://shanjiancaofu.com/page/2/">
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -50,6 +53,8 @@
 
     <!-- ga & ba script hoook -->
     <script></script>
+
+   
 </head>
 
 
@@ -90,14 +95,14 @@
 
                         
                         <li>
-                            <a href="/about/">关于我</a>
+                            <a href="/archives/">文章归档</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archives/">文章归档</a>
+                            <a href="/about/">关于我</a>
                         </li>
                         
                     
@@ -420,19 +425,24 @@ Stream 的定义 :1支持数据处理操作的源生成的元素序......
 
 <div class="post-preview">
 
-    <a href="/posts/Javase-Enhance-Reflect-detailed-explanation.html">
+    <a href="/posts/Junit-test-and-use-annotation-tomake-JunitMock.html">
         <h2 class="post-title">
-            javaSe基础加强之反射
+            java软件测试JUnit
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview" style="text-indent: 10px;">
-            类加载机制(强迫症请跳过)
-什么是类加载机制当一个class文件被加载进内存时，在JVM中将形成一份描述该class文件结构的元信息对象Class，通过该对象可以获知class文件的结构信息：如构造器，字段，方法等。
+            使用Junit进行单元测试
+Java的单元测试:Junit,存在两个版本.
 
 
-虚拟机把描述类的数据从class文件加载到内存，并对数据进行校验，转换解......
+junit3.x   针对于Java5之前的版本,没有注解,得按照规范来写测试.,Android中使用junit3.x (不研究).
+junit4.x   针对于Java5以及之后的版本,使用注解,推荐.
+
+
+
+T......
         </div>
     </a>
     <p class="post-meta">
@@ -644,12 +654,12 @@ Stream 的定义 :1支持数据处理操作的源生成的元素序......
 
 <!--载入js，在</body>之前插入即可-->
     <!--Leancloud 操作库:-->
-    <script src="/js/av-min.js"></script>
+    <!-- <script src="/js/av-min.js"></script> -->
     <!--Valine 的核心代码库-->
-    <script src="/js/Valine.min.js"></script>
+    <!-- <script src="/js/Valine.min.js"></script> -->
 
 
-<script>
+<!-- <script>
     new Valine({
         av: AV,
         el: '#vcomments',
@@ -662,7 +672,7 @@ Stream 的定义 :1支持数据处理操作的源生成的元素序......
         notify: false,
         verify: false
     })
-</script>
+</script> -->
 
 
 <!-- async load function -->

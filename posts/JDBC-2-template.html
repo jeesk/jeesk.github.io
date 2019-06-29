@@ -18,6 +18,9 @@
     </title>
 
     <link rel="canonical" href="https://shanjiancaofu.com/posts/JDBC-2-template.html">
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -50,6 +53,8 @@
 
     <!-- ga & ba script hoook -->
     <script></script>
+
+   
 </head>
 
 
@@ -90,14 +95,14 @@
 
                         
                         <li>
-                            <a href="/about/">关于我</a>
+                            <a href="/archives/">文章归档</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archives/">文章归档</a>
+                            <a href="/about/">关于我</a>
                         </li>
                         
                     
@@ -324,8 +329,22 @@
                 </ul>
                 
 
-                <div class="comment" id="vcomments"></div>
+                 <!-- <div class="comment" id="vcomments"></div>  -->
+                 <div id="gitalk-container"></div>
+                <script>
+                 var gitalk = new Gitalk({
+                    clientID: '2772f800a8ba45e246f0',
+                    clientSecret: '8b29bf5c7513474647f1f3f5c1bf093d876340eb',
+                    repo: 'https://github.com/jeesk/jeesk.github.io',
+                    owner: 'jeesk',
+                    admin: ['jeesk'],
+                    id: location.pathname,      // Ensure uniqueness and length less than 50
+                    distractionFreeMode: false  // Facebook-like distraction free mode
+                  })
+                  
+                  gitalk.render('gitalk-container')
 
+                </script>
                
 
             </div>
@@ -473,12 +492,12 @@
 
 <!--载入js，在</body>之前插入即可-->
     <!--Leancloud 操作库:-->
-    <script src="/js/av-min.js"></script>
+    <!-- <script src="/js/av-min.js"></script> -->
     <!--Valine 的核心代码库-->
-    <script src="/js/Valine.min.js"></script>
+    <!-- <script src="/js/Valine.min.js"></script> -->
 
 
-<script>
+<!-- <script>
     new Valine({
         av: AV,
         el: '#vcomments',
@@ -491,7 +510,7 @@
         notify: false,
         verify: false
     })
-</script>
+</script> -->
 
 
 <!-- async load function -->
