@@ -13,7 +13,7 @@
 
     <title>
         
-          抽取JDBC的模版 - 山间草夫
+          山间草夫
         
     </title>
 
@@ -93,14 +93,14 @@
 
                         
                         <li>
-                            <a href="/archives/">文章归档</a>
+                            <a href="/about/">关于我</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">关于我</a>
+                            <a href="/archives/">文章归档</a>
                         </li>
                         
                     
@@ -169,11 +169,11 @@
                     <div class="tags">
                         
                     </div>
-                    <h1>抽取JDBC的模版</h1>
+                    <h1></h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Jeesk on
-                        2018-05-25
+                        2019-06-25
                     </span>
                 </div>
             </div>
@@ -192,7 +192,10 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2 id="使用PrepareedStatement代替使用Statement"><a href="#使用PrepareedStatement代替使用Statement" class="headerlink" title="使用PrepareedStatement代替使用Statement"></a>使用PrepareedStatement代替使用Statement</h2><h3 id="PreparedStatement相对于Statement的优势"><a href="#PreparedStatement相对于Statement的优势" class="headerlink" title="PreparedStatement相对于Statement的优势:"></a>PreparedStatement相对于Statement的优势:</h3><ol>
+                <hr>
+<p>title: 抽取JDBC的模版<br>copyright: true<br>date: 2018-05-25 01:00:28<br>tags:</p>
+<p>​    -    database</p>
+<h2 id="使用PrepareedStatement代替使用Statement"><a href="#使用PrepareedStatement代替使用Statement" class="headerlink" title="使用PrepareedStatement代替使用Statement"></a>使用PrepareedStatement代替使用Statement</h2><h3 id="PreparedStatement相对于Statement的优势"><a href="#PreparedStatement相对于Statement的优势" class="headerlink" title="PreparedStatement相对于Statement的优势:"></a>PreparedStatement相对于Statement的优势:</h3><ol>
 <li>拼接SQL上,操作更简单(更好的可读性,可维护性). –能理解即可,以后使用PreparedStatement不会进行sql语句的字符串拼接</li>
 <li>预编译的性能会更加高效(但是需要取决于数据库服务器是否支持预编译)从测试的结果来看:MySQL不支持预编译(不做实验)<br>（其实MySQL5.x开始是支持的,但默认是关闭的,然而开启后效果也不明显(useServerPrepStmts=true). 所以一般我们就认为它不支持，但Oracle中效果非常明显）<a id="more"></a></li>
 <li>安全性更高,可以防止SQL的注入–先讲解登录操作   </li>
@@ -202,11 +205,11 @@
 <li>PreparedStatement:Statement的子接口,表示预编译SQL语句对象. 通过占位符(?)来拼SQL.–执行前需要设置?占位符的具体的值</li>
 </ul>
 <h4 id="如何创建PreparedStatement对象"><a href="#如何创建PreparedStatement对象" class="headerlink" title="如何创建PreparedStatement对象:"></a>如何创建PreparedStatement对象:</h4><ul>
-<li>Connection接口中:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PreparedStatement prepareStatement(String sql):创建预编译语句对象,SQL是带有占位符的SQL模板.</span><br></pre></td></tr></table></figure>
+<li><p>Connection接口中:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PreparedStatement prepareStatement(String sql):创建预编译语句对象,SQL是带有占位符的SQL模板.</span><br></pre></td></tr></table></figure>
 </li>
-</ul>
-<ul>
-<li>常用API:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int executeUpdate():该方法可以执行DML和DDL语句.</span><br><span class="line">若执行的是DML,则返回受影响的行数.若执行DDL将0.</span><br><span class="line">ResultSet executeQuery():该方法执行DQL语句. 并返回一个结果集对象.</span><br><span class="line"> </span><br><span class="line">void  setXxx(int parameterIndex,Xxx value):用于设置占位符参数, </span><br><span class="line">parameterIndex:第几个问号. 注意序号:从1开始.</span><br><span class="line">value:设置的真实值.</span><br><span class="line">Xxx:表示数据类型.String/int/long/Double</span><br></pre></td></tr></table></figure>
+<li><p>常用API:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int executeUpdate():该方法可以执行DML和DDL语句.</span><br><span class="line">若执行的是DML,则返回受影响的行数.若执行DDL将0.</span><br><span class="line">ResultSet executeQuery():该方法执行DQL语句. 并返回一个结果集对象.</span><br><span class="line"> </span><br><span class="line">void  setXxx(int parameterIndex,Xxx value):用于设置占位符参数, </span><br><span class="line">parameterIndex:第几个问号. 注意序号:从1开始.</span><br><span class="line">value:设置的真实值.</span><br><span class="line">Xxx:表示数据类型.String/int/long/Double</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <blockquote>
@@ -267,8 +270,6 @@
 </li>
 <li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> package  域名倒写.模块名称.组件名称;    smis --student manager information</span><br><span class="line">system   学生信息管理系统</span><br><span class="line"></span><br><span class="line"> package com.shanjiancaofu.smis.domain;      //存储所有的domain类</span><br><span class="line"> </span><br><span class="line"> package com.shanjiancaofu.smis.dao;             //存储所有的DAO接口</span><br><span class="line"> </span><br><span class="line"> package com.shanjiancaofu.smis.dao.impl;    //存储所有的DAO接口的实现类</span><br><span class="line"> </span><br><span class="line"> package com.shanjiancaofu.smis.test;            //暂时存储DAO的测试类,以后的测试类不应该放这里.</span><br></pre></td></tr></table></figure>
 </li>
-</ul>
-<ul>
 <li><p>类名和接口规范:<br>domain类:</p>
 <p> 放在domain包中,是个描述一类事物的JavaBean,包含字段和getter/setter方法.使用名词,如Student,Employee.<br>DAO接口:</p>
 <p> 放在dao包中,表示某一个对象的CRUD操作声明.起名规范:IXxxDAO/IXxxDao(Xxx表示domain对象),如IStudentDAO/IEmployeeDao  </p>
@@ -316,12 +317,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/posts/JDBC-3-transaction.html" data-toggle="tooltip" data-placement="top" title="JDBC的事务介绍">&larr; 上一篇文章</a>
+                            <a href="/posts/What's-New-in-JDK-8.html" data-toggle="tooltip" data-placement="top" title="JDK 8 新特性 （What's New in JDK 8）">&larr; 上一篇文章</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/posts/how-to-use-jdbc-Connection-pool.html" data-toggle="tooltip" data-placement="top" title="如何使用JDBC的线程池">下一篇文章 &rarr;</a>
+                            <a href="/posts/Javase-Enhance-Reflect-detailed-explanation.html" data-toggle="tooltip" data-placement="top" title="">下一篇文章 &rarr;</a>
                         </li>
                     
                 </ul>

@@ -13,7 +13,7 @@
 
     <title>
         
-          javaSe基础加强之反射 - 山间草夫
+          山间草夫
         
     </title>
 
@@ -93,14 +93,14 @@
 
                         
                         <li>
-                            <a href="/archives/">文章归档</a>
+                            <a href="/about/">关于我</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">关于我</a>
+                            <a href="/archives/">文章归档</a>
                         </li>
                         
                     
@@ -169,11 +169,11 @@
                     <div class="tags">
                         
                     </div>
-                    <h1>javaSe基础加强之反射</h1>
+                    <h1></h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by Jeesk on
-                        2018-05-22
+                        2019-06-25
                     </span>
                 </div>
             </div>
@@ -192,7 +192,10 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h4 id="类加载机制-强迫症请跳过"><a href="#类加载机制-强迫症请跳过" class="headerlink" title="类加载机制(强迫症请跳过)"></a>类加载机制(强迫症请跳过)</h4><ol>
+                <hr>
+<p>title: javaSe基础加强之反射<br>copyright: true<br>date: 2018-05-22 06:03:54<br>tags:</p>
+<p>​    - Java</p>
+<h4 id="类加载机制-强迫症请跳过"><a href="#类加载机制-强迫症请跳过" class="headerlink" title="类加载机制(强迫症请跳过)"></a>类加载机制(强迫症请跳过)</h4><ol>
 <li><h5 id="什么是类加载机制"><a href="#什么是类加载机制" class="headerlink" title="什么是类加载机制"></a>什么是类加载机制</h5>当一个class文件被加载进内存时，在JVM中将形成一份描述该class文件结构的元信息对象Class，通过该对象可以获知class文件的结构信息：如构造器，字段，方法等。<a id="more"></a>
 </li>
 </ol>
@@ -208,7 +211,7 @@
 </ol>
 <p>==(需要说明的是：这时候进行内存分配的仅包括类变量(被static修饰的变量)，而不包括实例变量，实例变量将会在对象实例化时随着对象一起分配在Java堆中;并且这里所说的初始值“通常情况”是数据类型的零值，例如:public static int value = 123;value在准备阶段过后的初始值为0而不是123，而给value赋值的指令将在初始化阶段才会被执行)==</p>
 <ol start="3">
-<li>初始化:将符号引用转成直接引用(就是我们以前讲过的初始化步骤)<br>在此阶段，JVM负责对类进行初始化，主要就是对static变量进行初始化.<br>类的初始化一个类包含以下几个步骤:<br>1&gt;:如果该类还未被加载和连接，则程序先加载并连接该类.<br>2&gt;:如果该类的直接父类还未被初始化，则先初始化其父类.<br>3&gt;:如果类中有初始化语句(静态代码块)，则系统依次执行这些初始化语句.</li>
+<li>初始化:将符号引用转成直接引用(就是我们以前讲过的初始化步骤)<br>在此阶段，JVM负责对类进行初始化，主要就是对static变量进行初始化.<br> 类的初始化一个类包含以下几个步骤:<br> 1&gt;:如果该类还未被加载和连接，则程序先加载并连接该类.<br> 2&gt;:如果该类的直接父类还未被初始化，则先初始化其父类.<br> 3&gt;:如果类中有初始化语句(静态代码块)，则系统依次执行这些初始化语句.</li>
 </ol>
 <p>(扩展:符号引用:符号引用是一个字符串，它给出了被引用的内容的名字并且可能会包含一些其他关于这个被引用项的信息——这些信息必须足以唯一的识别一个类、字段、方法。这样，对于其他类的符号引用必须给出类的全名。)</p>
 <h5 id="3-类初始化的时机"><a href="#3-类初始化的时机" class="headerlink" title="3.  类初始化的时机"></a>3.  类初始化的时机</h5><p>下列几种情况能够触发类的初始化<br>使用new关键字实例化对象的时候<br>操作类的静态字段的时候（被final修饰、已在编译期把结果放入常量池的静态字段除外）<br>调用类的静态方法的时候。<br>初始化子类的时候，先初始化其父类。<br>用户指定运行一个主类（包含main()方法的那个类），虚拟机会先初始化这个主类。<br>直接使用java.exe命令来运行某个主类<br>使用java.lang.reflect包的方法对类进行反射调用的时候，如果类没有进行过初始化，则需要先触发其初始化。</p>
@@ -238,9 +241,8 @@
 <p>Class类可以表示任意类的字节码对象,那么到底怎么区分Class类此时表示的那一个类的字节码对象呢?查看API我们发现为了解决该问题,Class类的设计提供了泛型:Class<t><br>比如:</t></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">java.lang.String类的字节码类型:  Class&lt;java.lang.String&gt;;</span><br><span class="line">java.util.Date类的字节码类型:  Class&lt;java.util.Date&gt;;</span><br><span class="line">java.util.ArrayList类的字节码类型:  Class&lt;java.util.ArrayList&gt;;</span><br></pre></td></tr></table></figure>
 </li>
-</ol>
-<ol start="2">
-<li>三种方式获取Class对象</li>
+<li><p>三种方式获取Class对象</p>
+</li>
 </ol>
 <p>通过阅读Class的API类得知，Class 没有公共构造方法。无法直接new，但是接续往下看我们发现了其他的几种方式可以获取Class对象<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">①对象.getClass()</span><br><span class="line">②数据类型.class</span><br><span class="line">③Class.forName(“类的全限定名”)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">准备工作:先创建一个Person类,我们等一下就使用反射来获取这个Person类的信息</span><br><span class="line">public class Person &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>代码实现</p>
@@ -408,21 +410,7 @@ properties.load(inputStream);
 </ul>
 </li>
 </ul>
-<p><code>`</code><br>总结: </p>
-<ul>
-<li>小结:</li>
-<li>加载 Properties的四种方式 </li>
-<li>1):  使用绝对路径加载资源文件(路径写死了,不灵活)</li>
-<li>InputStream in =     new FileINputStream(“C:\Users\s3296\Documents\stscode\junitDemo\resource\config.properties”);</li>
-<li>p.load(in);</li>
-<li>2):使用Class对象 的getResourcesAsStream()方法从当前字节码文件中加载 </li>
-<li>BeanFactory.class.getResourceAsStream(“config.properties”);</li>
-<li>3): 使用类加载 器从当前项目中的编译路径Classpat去加载     </li>
-<li>BeanFactory.class.getClassLoader().getResourceASStream(“”config.properties);</li>
-<li>4): 使用线程的方式获得加载路径(推荐第四种方式去加载 )</li>
-<li>Thread.currentThread().getContextClassLoader().getResourceAsStream();</li>
-</ul>
-
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">总结: </span><br><span class="line"> * 	小结:</span><br><span class="line"> *  加载 Properties的四种方式 </span><br><span class="line"> *  1):  使用绝对路径加载资源文件(路径写死了,不灵活)</span><br><span class="line"> *  	InputStream in = 	new FileINputStream(&quot;C:\Users\s3296\Documents\stscode\junitDemo\resource\config.properties&quot;);</span><br><span class="line"> *  	p.load(in);</span><br><span class="line"> *  2):使用Class对象 的getResourcesAsStream()方法从当前字节码文件中加载 </span><br><span class="line"> *  	BeanFactory.class.getResourceAsStream(&quot;config.properties&quot;);</span><br><span class="line"> *  3): 使用类加载 器从当前项目中的编译路径Classpat去加载 	</span><br><span class="line"> *  	BeanFactory.class.getClassLoader().getResourceASStream(&quot;&quot;config.properties);</span><br><span class="line"> *  4): 使用线程的方式获得加载路径(推荐第四种方式去加载 )</span><br><span class="line"> *  	Thread.currentThread().getContextClassLoader().getResourceAsStream();</span><br></pre></td></tr></table></figure>
 
                 <hr>
 
@@ -431,12 +419,12 @@ properties.load(inputStream);
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/posts/Junit-test-and-use-annotation-tomake-JunitMock.html" data-toggle="tooltip" data-placement="top" title="java软件测试JUnit">&larr; 上一篇文章</a>
+                            <a href="/posts/JDBC-2-template.html" data-toggle="tooltip" data-placement="top" title="">&larr; 上一篇文章</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/posts/mysql-database-studentone.html" data-toggle="tooltip" data-placement="top" title="Mysql 数据库入门第一章">下一篇文章 &rarr;</a>
+                            <a href="/posts/Mybaties-Introduction.html" data-toggle="tooltip" data-placement="top" title="">下一篇文章 &rarr;</a>
                         </li>
                     
                 </ul>

@@ -93,14 +93,14 @@
 
                         
                         <li>
-                            <a href="/archives/">文章归档</a>
+                            <a href="/about/">关于我</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">关于我</a>
+                            <a href="/archives/">文章归档</a>
                         </li>
                         
                     
@@ -187,6 +187,81 @@
 
 <div class="post-preview">
 
+    <a href="/posts/Tcc-distributed-trsation.html">
+        <h2 class="post-title">
+            分布式事务Tcc原理介绍
+        </h2>
+        <h3 class="post-subtitle">
+            不适合人类阅读，非常水的自我笔记
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            Tcc事务的简单介绍
+TCC 将事务提交分为 Try - Confirm - Cancel 3个操作。
+
+
+Try  : (预留业务资源/数据效验)
+Confirm  :(确认执行业务操作)
+Cancel  :   (取消执行业务操作)
+
+这里我要说一点的,Tcc三阶段操作,  第一步执行Tr......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by jeesk on
+        2019-03-08
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/posts/ThreadLocal-deepin.html">
+        <h2 class="post-title">
+            ThreadLocal部分源码解析与理解
+        </h2>
+        <h3 class="post-subtitle">
+            不适合人类阅读，非常水的自我笔记
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            
+​    提到ThreadLocal , 大家想到的就是ThreadLocal是一个本地线程副本变量的工具类, 比如方法无参数传值. 主要用于将线程和线程存放的副本对象做一个映射, 并且互不干扰.  等等.ThreadLocal是一个特别的类, 申明一个ThreadLocal成员变量,能够被......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by jeesk on
+        2019-03-06
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/posts/make-tomcat-by-myself.html">
+        <h2 class="post-title">
+            30分钟手写一个Tomcat服务器
+        </h2>
+        <h3 class="post-subtitle">
+            不适合人类阅读，非常水的自我笔记
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            
+阅读本教程需要了解Http协议, Java Socket,Java反射的等相关内容. 并且本篇文章只是实现简单的web服务器, 让大家了解其原理, 大拿请无视.下面是浏览器和web服务器的一段简单的请求和相应的内容, 通过请求和相应, 同时我们也可以简单了解http协议的规范.
+
+1:  了......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by jeesk on
+        2019-02-25
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/posts/redis-shell.html">
         <h2 class="post-title">
             使用shell 操作Redis数据库
@@ -209,39 +284,6 @@
 
 <div class="post-preview">
 
-    <a href="/posts/Mybaties-Introduction.html">
-        <h2 class="post-title">
-            Mybaties入门详解
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            JDBC编程存在的问题原始JDBC编程存在的问题
-代码繁琐，重复
-资源频繁创建和销毁(虽然可以使用连接池解决)
-sql语句写死在代码中，不方便维护
-?占位符参数设置当参数较多时比较麻烦
-封装处理结果集很麻烦(封装结果集)
-分析问题
-问题分析与解决
-
-
-
-
-资源的创建和销毁  同样使用连接池来管......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Jeesk on
-        2018-05-29
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
     <a href="/posts/JDBC-3-transaction.html">
         <h2 class="post-title">
             JDBC的事务介绍
@@ -257,29 +299,6 @@ sql语句写死在代码中，不方便维护
     <p class="post-meta">
         Posted by Jeesk on
         2018-05-26
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/posts/JDBC-2-template.html">
-        <h2 class="post-title">
-            抽取JDBC的模版
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            使用PrepareedStatement代替使用StatementPreparedStatement相对于Statement的优势:
-拼接SQL上,操作更简单(更好的可读性,可维护性). –能理解即可,以后使用PreparedStatement不会进行sql语句的字符串拼接
-预编译的性能会更加......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Jeesk on
-        2018-05-25
     </p>
 
 </div>
@@ -421,36 +440,6 @@ Stream 的定义 :1支持数据处理操作的源生成的元素序......
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/posts/Junit-test-and-use-annotation-tomake-JunitMock.html">
-        <h2 class="post-title">
-            java软件测试JUnit
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            使用Junit进行单元测试
-Java的单元测试:Junit,存在两个版本.
-
-
-junit3.x   针对于Java5之前的版本,没有注解,得按照规范来写测试.,Android中使用junit3.x (不研究).
-junit4.x   针对于Java5以及之后的版本,使用注解,推荐.
-
-
-
-T......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Jeesk on
-        2018-05-22
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -490,13 +479,15 @@ T......
                     <div class="tags">
                         
                             
-                            <a href="/tags/#-Git使用" title="-Git使用" rel="3">-Git使用</a>
+                            <a href="/tags/#-Git" title="-Git" rel="3">-Git</a>
                             
                         
                             
-                        
+                            <a href="/tags/#database" title="database" rel="10">database</a>
                             
                         
+                            
+                            <a href="/tags/#-分布式事务" title="-分布式事务" rel="2">-分布式事务</a>
                             
                         
                             
@@ -515,6 +506,14 @@ T......
                             <a href="/tags/#JavaScript" title="JavaScript" rel="3">JavaScript</a>
                             
                         
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Linux" title="Linux" rel="2">Linux</a>
                             
                         
                             
