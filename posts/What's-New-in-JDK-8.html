@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="我家有两颗树,一棵树是枣树,另外一棵也是枣树.">
+    <meta name="keyword" content="xxxxxxxx">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          JDK 8 新特性 （What&#39;s New in JDK 8） - 山间草夫
+        
+    </title>
+
+    <link rel="canonical" href="https://shanjiancaofu.com/posts/What&#39;s-New-in-JDK-8.html">
+
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+   
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">山间草夫</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">首页</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">文章归档</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">标签</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#-JAVA-DOC" title="-JAVA-DOC">-JAVA-DOC</a>
+                        
+                    </div>
+                    <h1>JDK 8 新特性 （What&#39;s New in JDK 8）</h1>
+                    <h2 class="subheading">翻译</h2>
+                    <span class="meta">
+                        Posted by jeesk on
+                        2019-06-28
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-10 
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="JDK-8-新特性-（What’s-New-in-JDK-8）"><a href="#JDK-8-新特性-（What’s-New-in-JDK-8）" class="headerlink" title="JDK 8 新特性 （What’s New in JDK 8）"></a>JDK 8 新特性 （What’s New in JDK 8）</h1><ul>
+<li><p>Java 程序语言</p>
+<ul>
+<li>Lambda 表达式， Java 的新语言特性。 它们能够使你轻松的将 <code>功能</code> 参数化，或者是代码作为数据。 Lambda 表示大 允许你更加 紧凑的标识单个方法的接口（也叫函数式接口）。</li>
+<li>为已经有了名字的方法提供了 Lambda方法引用，更加易于阅读。</li>
+<li>接口可以拥有默认方法， 并且可以和老版本编写的代码能够二进制兼容。</li>
+<li>注解提供重复标记的功能。（ Ex： @Repeatable）。</li>
+<li>类型注解提供了 在使用注解的审核地方，而不仅仅是申明。与可插拔类型系统一起使用的时候， ， 此功能可以改进代码的类型检查。 </li>
+<li>改进类型推断。</li>
+<li>方法参数反射功能。</li>
+</ul>
+</li>
+<li><p>集合 （ Collections）</p>
+<ul>
+<li><p>新增 <code>java.util.stream</code> 包，提供了 Stream Api 支持函数式编程。 Stream Api 可以集成到Collections Api， 可以对集合批量操作， 比如  顺序 或者是并行 map-reduce 转换。</p>
+</li>
+<li><p>关键冲突的 HashMaps 的性能提升</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>Compact Profiles 包含的Java SE 预定义的子集， 小型设备上 不需要运行整个库，就能运行这些应用程序。</p>
+</li>
+<li><p>安全 （ Security ）</p>
+<ul>
+<li><p>默认启动客户端 TLS 1.2 (安全传输层协议)。</p>
+</li>
+<li><p>新的变体 AccessController.doPrivileged 是代码能够断言其特权的子集 ， 而不会阻止短暂的完整遍历 来检查其他权限。</p>
+</li>
+<li><p>更加强大的加密算法支持。</p>
+</li>
+<li><p>SSL/TLS 服务管理拓展支持 JSSE Sever。</p>
+</li>
+<li><p>支持 AEAD 算法。   SUNJCE 提供程序支持 AES/GCM/ NOPadding 密码 实现 GCM 算法参数。</p>
+<p>SunJSSE 提供了基于密码套件的增强模式AEAD 。 详情请看 Oracel 提供文档  JEP 115;。</p>
+</li>
+</ul>
+<ul>
+<li><p>秘钥库增加 包括新的 <code>java.security.DomainLoadStoreParameter</code> ， 新的命令选项 <code>importpassword</code></p>
+</li>
+<li><p>SHA-224 信息摘要</p>
+</li>
+<li><p>增强 NSA 套件 B 的密码支持</p>
+</li>
+<li><p>增强 高随机数生成</p>
+</li>
+<li><p>新的 <code>java.security.cert.PKIXRevocationChecker</code>  配置 X.509 吊销检查新类</p>
+</li>
+<li><p>适用于Window 64 位的 PLCS11 </p>
+</li>
+<li><p>New rcache Types in Kerberos 5 Replay Caching</p>
+</li>
+<li><p>Support for Kerberos 5 Protocol Transition and Constrained Delegation</p>
+</li>
+<li><p>Kerberos 5 weak encryption types disabled by default</p>
+</li>
+<li><p>Unbound SASL for the GSS-API/Kerberos 5 mechanism</p>
+</li>
+<li><p>多个主机名的 SASL 服务</p>
+</li>
+<li><p>JNI 桥接到Mac Osx 的本地JGSS上</p>
+</li>
+<li><p>Support for stronger strength ephemeral DH keys in the SunJSSE provider</p>
+</li>
+<li><p>Support for server-side cipher suites preference customization in JSSE</p>
+</li>
+</ul>
+</li>
+<li><p>JavaFX</p>
+<pre><code>- 新的 Mondena 主题 已经在正式版本中实现了。
+
+-    SwingNode class 可以帮助开发者将Swing 的带入到JavaFx 应用中 .
+
+-    新的UI 控制  [`DatePicker`](http://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/DatePicker.html) and the [`TreeTableView`](http://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/TreeTableView.html) 。
+
+-    `javafx.print` 包提供了 JavaFX 打印API。 详情 [javadoc](http://docs.oracle.com/javase/8/javafx/api/javafx/print/package-summary.html) 。
+
+-    3D 绘图工具 包括 3D 图形， 相机， 灯光，子场景， 材质 拾取， 抗锯齿等。
+
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Shape3D (Box, Cylinder, MeshView, and Sphere subclasses), SubScene, Material, PickResult, LightBase (AmbientLight and PointLight subclasses) , and SceneAntialiasing API classes ， 已经增加到JavaFX 3D 图形库中。</span><br></pre></td></tr></table></figure>
+</code></pre></li>
+</ul>
+<ul>
+<li><p>改进了 <code>WebView</code> class， 并且提供了新特性。  支持HTML5， 和Web Sockets, Web Workers 和Web Fonts。</p>
+</li>
+<li><p>增强的文本包括双向文本和复杂的文本脚本 ， 如控件的泰语和印地语言。 </p>
+</li>
+<li><p>此版本增加了 HI-DPI 显示。</p>
+</li>
+<li><p>CSS Styleable* 成为了 公共的 API， 详情请看文档 <a href="http://docs.oracle.com/javase/8/javafx/api/javafx/css/package-frame.html" target="_blank" rel="noopener"><code>javafx.css</code></a> </p>
+</li>
+<li><p><a href="http://docs.oracle.com/javase/8/javafx/api/javafx/concurrent/ScheduledService.html" target="_blank" rel="noopener"><code>ScheduledService</code></a>  支持自动重启服务。</p>
+</li>
+<li><p>JavaFX 现在可用于 ARM 平台， 包括 JavaFX 的基础库， 图形，控制组件。</p>
+</li>
+</ul>
+<ul>
+<li><p>Tools</p>
+<ul>
+<li><code>jjs</code>  命令提供了 Nashorn 引擎。</li>
+</ul>
+</li>
+<li><code>java</code> 命令 启动JavaFX 应用。<ul>
+<li><code>java</code> man 手册已经被重新设计 。</li>
+</ul>
+</li>
+<li><code>jdeps</code> 命令行提供了 class 文件分析工具.<ul>
+<li>Java Management Extensions (JMX)  提供了 对诊断命令的远程访问。 </li>
+</ul>
+</li>
+<li><p><code>jarsigner</code> 拱了 提供了对单个时间戳请求钱敏的 认证。-</p>
+<ul>
+<li><p><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/javac/index.html" target="_blank" rel="noopener">Javac tool</a></p>
+<ul>
+<li>该命令的 -parameters 选项可用于存储形式参数名称 ， 并且能够使用  <code>Reflection API</code> 来检索形式参数名称。</li>
+<li>现在， <code>javac</code> 命令 可以正确实施 Java 语言规范 第 15.21 节中的相等运算符规则。</li>
+<li><code>javac</code> 命令支持 检查 javac 注释中的内容， 改查找可能导致javadoc运行时生成的文件中的各种问题。</li>
+<li>现在， <code>javac tool</code> 提供了可以更具需要生成本地头。这样就无需将javah 工具作为构建管道中的单独步骤运行。 javac 通过使用<code>new -h</code> 选项启动改功能。</li>
+</ul>
+</li>
+<li>javadoc tool<ul>
+<li><code>javadoc</code> tool 支持 DocTrcc API 能够是你的javadoc 注释 作为抽象语法遍历。</li>
+<li><code>javadoc</code> tool 支持 新的Javadoc 访问api， 能够是你直接从 Java 引用程序调用Javadoc 工具， 而无需执行新的进程。   详情请看 文档  <a href="http://docs.oracle.com/javase/8/docs/technotes/guides/javadoc/whatsnew-8.html" target="_blank" rel="noopener">javadoc</a> </li>
+<li>该<code>javadoc</code>工具现在支持检查<code>javadoc</code>注释的内容，以查找可能导致<code>javadoc</code>运行时生成的文件中的各种问题（例如无效的HTML或可访问性问题）的问题。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html" target="_blank" rel="noopener"> 国际化 Internationalization</a></p>
+<ul>
+<li>Unicode 加强 ， 支持 Unicode 6.2.0</li>
+<li>采用 Unicode CLDR 数据和  <code>java.locale.providers</code> 系统属性。</li>
+<li>新的日历 和Locale API</li>
+<li>能够自定义资源包安装为拓展</li>
+</ul>
+</li>
+<li><p><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/jweb/enhancements-8.html" target="_blank" rel="noopener">部署 Deployment</a></p>
+<ul>
+<li>沙箱小程序和 Java Web Start 应用程序，  URlPermission 现在允许链接返回到启动他们的服务器。 SocketPermission 却不在被允许。</li>
+<li>所有安全级别的 JAR 包 清单中都需要 Permission 属性。</li>
+</ul>
+</li>
+<li><p>Date-Time Package 一组新的包， 提供了 全面的日期时间模型。</p>
+</li>
+<li><p>脚本 (Scripting)</p>
+<ul>
+<li>Rhino javascript引擎已被<a href="http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/" target="_blank" rel="noopener">Nashorn</a> Javascript引擎取代。</li>
+</ul>
+</li>
+<li><p>Pack200</p>
+<ul>
+<li>Pack200 支持常量此 和新的字节码 ， 由JSR 292 引入。</li>
+<li>JDK8 支持JSR-292，JSR-308 和 JSR-225 指定的类文件更改。</li>
+</ul>
+</li>
+<li><p>IO and NIO</p>
+<ul>
+<li>新的 SelectorProvider 基于 Solaries 时间端口机制。 要使用，请在系统属性<code>java.nio.channels.spi.Selector</code>设置为值的情况下运行<code>sun.nio.ch.EventPortSelectorProvider</code>。</li>
+<li>减少了 &lt;JDK_HOME&gt;、jre、Lib/charset.jar 的文件大小。</li>
+<li>String(byte[] ,*) 构造器 和 <code>java.lang.String.getBytes()</code> 方法的性能提升。</li>
+</ul>
+</li>
+<li><p>java.lang and java.util 包</p>
+<ul>
+<li>并行数组排序</li>
+<li>标准编码和解码 Base64</li>
+<li>无符号算术支持。</li>
+</ul>
+</li>
+<li><p>JDBC</p>
+<ul>
+<li>JDBC-ODBC  桥接已经被一处。</li>
+<li>JDBC 4.2 引入了新特性。</li>
+</ul>
+</li>
+<li><p>JAVA DB</p>
+<ul>
+<li>JDK8 支持 JAVA DB 10.10</li>
+</ul>
+<ul>
+<li><p>NetWorking</p>
+</li>
+<li><p>新增 <code></code>java.net.URLPermission类</p>
+</li>
+<li>如果安装了安全管理器， 调用 <code></code>java.net.HttpURLConnection<code>,</code> 打开一个连接， 需要权限。</li>
+</ul>
+</li>
+<li><p>并发相关 (Concurrency)</p>
+<ul>
+<li>类和接口 增加到了 <code>java.util.concurrent</code></li>
+<li>已经将 <code>java.util.concurrent.ConcurrentHashMap</code> class 增加到了 支持新增加的Lambda 表达式的聚合操作中。</li>
+<li><code>java.util.concurrent.atomic</code> 包中支持可伸缩可更新的变量。</li>
+<li><code>java.util.concurrent.ForkJoinPool</code> 支持 公共水池。</li>
+<li><code>java.util.concurrent.locks.StampedLock</code>  已经提供了基于能力的锁，提供了3中模式控制 读写访问。</li>
+</ul>
+</li>
+<li><p><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/xml/enhancements.html" target="_blank" rel="noopener">Java XML</a> - <a href="http://docs.oracle.com/javase/8/docs/technotes/guides/xml/jaxp/enhancements-8.html" target="_blank" rel="noopener">JAXP</a></p>
+</li>
+<li><p>HotSpot</p>
+<ul>
+<li>硬件支持 AES 加密算法， 在<code>UseAES</code>和<code>UseAESIntrinsics</code>标志是可用的启用Intel硬件的基于硬件的AES内部函数。硬件必须是2010或更新的Westmere硬件。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><strong>注意：</strong> AES内在函数仅受服务器VM支持。</p>
+<p>例如，要启用硬件AES，请使用以下标志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX：+ UseAES -XX：+ UseAESIntrinsics</span><br></pre></td></tr></table></figure>
+<p>要禁用硬件AES，请使用以下标志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX：-UseAES -XX：-UseAESIntrinsics</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>去除 PermGen (永久带)</p>
+</li>
+<li><p>方法调用支持Java 编程语言中的缺省方法。</p>
+</li>
+</ul>
+<ul>
+<li><p><a href="http://www.oracle.com/technetwork/java/javase/jmc53-release-notes-2157171.html" target="_blank" rel="noopener">Java Mission Control 5.3发行说明</a></p>
+<ul>
+<li>JDK 8包括Java Mission Control 5.3。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ol>
+<li><p><a href="https://www.oracle.com/technetwork/java/javase/8-whats-new-2157071.html" target="_blank" rel="noopener">原文文档地址</a></p>
+</li>
+<li><p>部分参考谷歌翻译</p>
+</li>
+</ol>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/posts/mysql-trsation.html" data-toggle="tooltip" data-placement="top" title="Mysql4种事务隔离级别案例详解">下一篇文章 &rarr;</a>
+                        </li>
+                    
+                </ul>
+                
+
+                 <!-- <div class="comment" id="vcomments"></div>  -->
+                
+
+                 <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <div id="gitalk-container"></div>
+                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                        clientID: 'f6c70371be725eefc9ee',
+                        clientSecret: '207610699384c4b12403200b20785daf446f3e3c',
+                        id: window.location.pathname,
+                        repo: 'jeesk.github.io',
+                        owner: 'jeesk',
+                        admin: 'jeesk'
+                    })
+                    gitalk.render('gitalk-container')
+                </script>
+
+
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#-JAVA-DOC" title="-JAVA-DOC">-JAVA-DOC</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks" target="_blank">Kaijun&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me" target="_blank">Hux Blog</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8  col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 山间草夫 2019 
+                    <br>
+
+                    <span style="margin-top: 6px;display:inline-block;">
+                    Powered by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>  |
+                    
+                    Theme —  <a href="https://github.com/Huxpro/huxpro.github.io">Huxpro</a>   |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=jeesk&repo=jsp_servlet_mysql_basicProject&type=star&count=true">
+                    </iframe>
+<span>
+                </span></span></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!--载入js，在</body>之前插入即可-->
+    <!--Leancloud 操作库:-->
+    <!-- <script src="/js/av-min.js"></script> -->
+    <!--Valine 的核心代码库-->
+    <!-- <script src="/js/Valine.min.js"></script> -->
+
+
+<!-- <script>
+    new Valine({
+        av: AV,
+        el: '#vcomments',
+        placeholder: '欢迎留下您的评论，支持部分Markdown语法，如 *斜体*、**加粗**、`行内代码`、[超链接](链接地址)、![图片](图片地址) 等',
+        appId: 'WvcpILV0ImhrHowrLek0rAn9-gzGzoHsz',
+        appKey: 'N84KdKuNF8feKKf0bV3dM2Yc',
+        pageSize: 100,
+        avatar:'',
+        visitor: true,
+        notify: false,
+        verify: false
+    })
+</script> -->
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://shanjiancaofu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
