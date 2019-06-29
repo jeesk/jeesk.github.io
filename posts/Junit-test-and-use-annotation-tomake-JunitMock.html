@@ -261,20 +261,22 @@
                  <!-- <div class="comment" id="vcomments"></div>  -->
                 
 
-                 <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-                <div id="gitalk-container"></div>
-                <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-                <script type="text/javascript">
-                    var gitalk = new Gitalk({
-                        clientID: 'f6c70371be725eefc9ee',
-                        clientSecret: '207610699384c4b12403200b20785daf446f3e3c',
-                        id: window.location.pathname,
-                        repo: 'jeesk.github.io',
-                        owner: 'jeesk',
-                        admin: 'jeesk'
-                    })
-                    gitalk.render('gitalk-container')
-                </script>
+                 {% elseif theme.gitalk.enable %}
+                    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<div id="gitalk-container"></div>
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: 'f6c70371be725eefc9ee',
+        clientSecret: '207610699384c4b12403200b20785daf446f3e3c',
+        id: window.location.pathname,
+        repo: 'jeesk.github.io',
+        owner: 'jeesk',
+        admin: 'jeesk'
+    })
+    gitalk.render('gitalk-container')
+</script>
+                {% endif %}
 
 
 
