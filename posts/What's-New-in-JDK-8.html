@@ -197,11 +197,11 @@
                 <h1 id="JDK-8-新特性-（What’s-New-in-JDK-8）"><a href="#JDK-8-新特性-（What’s-New-in-JDK-8）" class="headerlink" title="JDK 8 新特性 （What’s New in JDK 8）"></a>JDK 8 新特性 （What’s New in JDK 8）</h1><ul>
 <li><p>Java 程序语言</p>
 <ul>
-<li>Lambda 表达式， Java 的新语言特性。 它们能够使你轻松的将 <code>功能</code> 参数化，或者是代码作为数据。 Lambda 表示大 允许你更加 紧凑的标识单个方法的接口（也叫函数式接口）。</li>
+<li>Lambda 表达式， Java8的新语言特性。 它们能够使你轻松的将 <code>功能</code> 参数化，或者是代码作为数据传递。 Lambda 表达式允许你更加 紧凑的标识单个方法的接口（也叫函数式接口）。</li>
 <li>为已经有了名字的方法提供了 Lambda方法引用，更加易于阅读。</li>
 <li>接口可以拥有默认方法， 并且可以和老版本编写的代码能够二进制兼容。</li>
 <li>注解提供重复标记的功能。（ Ex： @Repeatable）。</li>
-<li>类型注解提供了 在使用注解的审核地方，而不仅仅是申明。与可插拔类型系统一起使用的时候， ， 此功能可以改进代码的类型检查。 </li>
+<li>类型注解提供了在使用注解的地方，而不仅仅是申明。与可插拔类型系统一起使用的时候， ， 此功能可以改进代码的类型检查。 </li>
 <li>改进类型推断。</li>
 <li>方法参数反射功能。</li>
 </ul>
@@ -216,19 +216,19 @@
 </li>
 </ul>
 <ul>
-<li><p>Compact Profiles 包含的Java SE 预定义的子集， 小型设备上 不需要运行整个库，就能运行这些应用程序。</p>
+<li><p>Compact Profiles 包含的Java SE 预定义的子集， 小型设备上不需要按扎安装整个库，就能运行这些应用程序。</p>
 </li>
 <li><p>安全 （ Security ）</p>
 <ul>
 <li><p>默认启动客户端 TLS 1.2 (安全传输层协议)。</p>
 </li>
-<li><p>新的变体 AccessController.doPrivileged 是代码能够断言其特权的子集 ， 而不会阻止短暂的完整遍历 来检查其他权限。</p>
+<li><p>新的变体 AccessController.doPrivileged 代码能够断言其特权的子集 ， 而不会阻止短暂的完整遍历来检查其他权限。</p>
 </li>
 <li><p>更加强大的加密算法支持。</p>
 </li>
 <li><p>SSL/TLS 服务管理拓展支持 JSSE Sever。</p>
 </li>
-<li><p>支持 AEAD 算法。   SUNJCE 提供程序支持 AES/GCM/ NOPadding 密码 实现 GCM 算法参数。</p>
+<li><p>支持 AEAD 算法。   SUNJCE 提供程序支持 AES/GCM/ NOPadding 密码，实现 GCM 算法参数。</p>
 <p>SunJSSE 提供了基于密码套件的增强模式AEAD 。 详情请看 Oracel 提供文档  JEP 115;。</p>
 </li>
 </ul>
@@ -264,7 +264,7 @@
 </ul>
 </li>
 <li><p>JavaFX</p>
-<pre><code>- 新的 Mondena 主题 已经在正式版本中实现了。
+<pre><code>- 新的 Mondena 主题 已经在正式版本中发布了。
 
 -    SwingNode class 可以帮助开发者将Swing 的带入到JavaFx 应用中 .
 
@@ -278,7 +278,7 @@
 </code></pre></li>
 </ul>
 <ul>
-<li><p>改进了 <code>WebView</code> class， 并且提供了新特性。  支持HTML5， 和Web Sockets, Web Workers 和Web Fonts。</p>
+<li><p>改进了 <code>WebView</code> class， 并且提供了新特性支持HTML5， 和Web Sockets, Web Workers 和Web Fonts。</p>
 </li>
 <li><p>增强的文本包括双向文本和复杂的文本脚本 ， 如控件的泰语和印地语言。 </p>
 </li>
@@ -357,7 +357,7 @@
 <li><p>IO and NIO</p>
 <ul>
 <li>新的 SelectorProvider 基于 Solaries 时间端口机制。 要使用，请在系统属性<code>java.nio.channels.spi.Selector</code>设置为值的情况下运行<code>sun.nio.ch.EventPortSelectorProvider</code>。</li>
-<li>减少了 &lt;JDK_HOME&gt;、jre、Lib/charset.jar 的文件大小。</li>
+<li>减少了 &lt;JDK_HOME&gt;/jre/Lib/charset.jar 的文件大小。</li>
 <li>String(byte[] ,*) 构造器 和 <code>java.lang.String.getBytes()</code> 方法的性能提升。</li>
 </ul>
 </li>
@@ -374,7 +374,7 @@
 </li>
 <li><p>JDBC</p>
 <ul>
-<li>JDBC-ODBC  桥接已经被一处。<ul>
+<li>JDBC-ODBC  桥接已经被移除。<ul>
 <li>JDBC 4.2 引入了新特性。</li>
 </ul>
 </li>
@@ -389,13 +389,13 @@
 </li>
 <li><p>新增 <code></code>java.net.URLPermission类</p>
 </li>
-<li>如果安装了安全管理器， 调用 <code></code>java.net.HttpURLConnection<code>,</code> 打开一个连接， 需要权限。</li>
+<li>如果安装了安全管理器， 调用 <code>java.net.HttpURLConnection</code> 打开一个连接， 需要权限。</li>
 </ul>
 </li>
 <li><p>并发相关 (Concurrency)</p>
 <ul>
 <li>类和接口 增加到了 <code>java.util.concurrent</code></li>
-<li>已经将 <code>java.util.concurrent.ConcurrentHashMap</code> class 增加到了 支持新增加的Lambda 表达式的聚合操作中。</li>
+<li>已经将 <code>java.util.concurrent.ConcurrentHashMap</code> class 增加到了支持新增加的Lambda 表达式的聚合操作中。</li>
 <li><code>java.util.concurrent.atomic</code> 包中支持可伸缩可更新的变量。</li>
 <li><code>java.util.concurrent.ForkJoinPool</code> 支持 公共水池。</li>
 <li><code>java.util.concurrent.locks.StampedLock</code>  已经提供了基于能力的锁，提供了3中模式控制 读写访问。</li>
@@ -416,7 +416,7 @@
 <p>要禁用硬件AES，请使用以下标志：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX：-UseAES -XX：-UseAESIntrinsics</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>去除 PermGen (永久带)</p>
+<li><p>去除 PermGen (永久代)</p>
 </li>
 <li><p>方法调用支持Java 编程语言中的缺省方法。</p>
 </li>
