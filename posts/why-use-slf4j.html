@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="我家有两颗树,一棵树是枣树,另外一棵也是枣树.">
+    <meta name="keyword" content="xxxxxxxx">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          为什么使用Sfl4j， Slf4j能帮我们做些什么？ - 山间草夫
+        
+    </title>
+
+    <link rel="canonical" href="https://shanjiancaofu.com/posts/why-use-slf4j.html">
+
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+   
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">山间草夫</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">首页</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">文章归档</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">标签</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                    </div>
+                    <h1>为什么使用Sfl4j， Slf4j能帮我们做些什么？</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Jeesk on
+                        2019-07-05
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-10 
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>在 <code>阿里Java 开发强制规范</code> 中的第二章中的日志规约中的第一条讲到</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1.【强制】应用中不可直接使用日志系统（Log4j、Logback）中的API，而应依赖使用日志框架SLF4J中的API，使用门面模式的日志框架，有利于维护和各个类的日志处理方式统一。</span><br></pre></td></tr></table></figure>
+<p>这里提到了日志门面,那么就有日志实现, 列举一下常见的日志系统</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>日志门面</td>
+<td>日志实现</td>
+</tr>
+<tr>
+<td>JCL (Jakarta common Logging)</td>
+<td>JUL (Java Util Logging)</td>
+</tr>
+<tr>
+<td>Slf4j</td>
+<td>Logback</td>
+</tr>
+<tr>
+<td>Jboss Logging</td>
+<td>Log4j2</td>
+</tr>
+<tr>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>既然 Slf4j  备受推荐, 如何使用  Slf4j 呢 ?</p>
+<h3 id="1-如何使用Slf4j"><a href="#1-如何使用Slf4j" class="headerlink" title="1.    如何使用Slf4j"></a>1.    如何使用Slf4j</h3><blockquote>
+<p>​    通过 slf4j 官方文档的一张图, 我们简单认识一下 如何将 Slf4j 和相关的日志具体实现进行绑定.</p>
+<p>​    (继承抽象层, 但是具体实现由各个日志框架实现.)</p>
+</blockquote>
+<p><img src="../img/java/concrete-bindings.png" alt=""></p>
+<ol>
+<li><p>没有任何绑定, 那么 输出为null.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">只要 slf4j-api.jar</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="2">
+<li><p>logback-classic. jar 作为 Slf4j 的具体实现   依赖于logback-classic.jar , logback-core.jar, 并且  logback 实现了slf4j, 所以不需要桥接器.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">slf4j-api.jar  API抽象层</span><br><span class="line">logback-classic.jar  logback 实现了slf4j-api</span><br><span class="line">logback-core.jar     logback的核心包</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="3">
+<li><p>将 Slf4j 绑定到 log4j,  需要桥接器  slf4j-log412.jar , 然后再引入 log4j.jar.  首先说明一下, log4j 并没有实现 slf4j 的API, 那么要将 log4j 和slf4j 绑定在一起, 必须使用桥接器, 才能使用 log4j 看作 Slf4j 的具体的实现 .</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">slf4j-api.jar  API抽象层</span><br><span class="line">slf4j-log412.jar    slf4j到log4j的桥梁, 将 jul 封装成 slf4j, 然后绑定到Slf4j.</span><br><span class="line">log4j.jar     日志具体实现</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="4">
+<li><p>SLF4J 绑定到 jul, 需要 slf4j-api.jar , slf4j-jdk14.jar , 依赖于 jVM环境的jul 包.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">slf4j-api.jar  API抽象层</span><br><span class="line">slf4j-jdk14.jar	  将 Jul 封装车成 Slf4j, 然后绑定到 Slf4j.</span><br><span class="line">JVM环境</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将 Slf4j 绑定到 slf4j-simple , 因为 slf4j-simple 实现了 SLf4j的APi , 那么需要的包就是.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">slf4j-api.jar  API抽象层</span><br><span class="line">slf4j-simple.jar 具体实现</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>SLF4j 绑定到 没有任何操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">slf4j-api.jar  API抽象层</span><br><span class="line">slf4j-nop.jar  具体实现</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>总结:  日志实现分为两种 </p>
+<ol>
+<li>​    实现了  Slf4j-api的日志框架, 这种框架在项目中需要对应的桥接器, 和具体日志实现的jar即可.</li>
+<li>​    没有实现 Slf4j 的日志框架, 如果要使用Slf4j-APi ,需要桥接器将两者绑定,才能使用.</li>
+</ol>
+<p>日志包相关分类:</p>
+<ul>
+<li><p>log4j1:</p>
+<ul>
+<li>log4j：log4j1的全部内容</li>
+</ul>
+</li>
+<li><p>log4j2:</p>
+<ul>
+<li>log4j-api:log4j2定义的API</li>
+<li>log4j-core:log4j2上述API的实现</li>
+</ul>
+</li>
+<li><p>logback:</p>
+<ul>
+<li>logback-core:logback的核心包</li>
+<li>logback-classic：logback实现了slf4j的API</li>
+</ul>
+</li>
+<li><p>commons-logging:</p>
+<ul>
+<li>commons-logging:commons-logging的原生全部内容</li>
+<li>log4j-jcl:commons-logging到log4j2的桥梁</li>
+<li>jcl-over-slf4j：commons-logging到slf4j的桥梁</li>
+</ul>
+</li>
+<li><p>slf4j转向某个实际的日志框架: </p>
+<p>场景介绍：如 使用slf4j的API进行编程，底层想使用log4j1来进行实际的日志输出，这就是slf4j-log4j12干的事。同理来说, 将自己委托给绑定到 Slf4j, 由自己来打印日志. </p>
+<ul>
+<li>slf4j-jdk14：slf4j到jdk-logging的桥梁</li>
+<li>slf4j-log4j12：slf4j到log4j1的桥梁</li>
+<li>log4j-slf4j-impl：slf4j到log4j2的桥梁</li>
+<li>logback-classic：slf4j到logback的桥梁</li>
+<li>slf4j-jcl：slf4j到commons-logging的桥梁</li>
+</ul>
+<p>某个实际的日志框架转向slf4j：</p>
+<p>场景介绍：如 使用log4j1的API进行编程，但是想最终通过logback来进行输出，所以就需要先将log4j1的日志输出转交给slf4j来输出，slf4j再交给logback来输出。将log4j1的输出转给slf4j，这就是log4j-over-slf4j做的事</p>
+<p>这一部分主要用来进行实际的日志框架之间的切换（下文会详细讲解）</p>
+<ul>
+<li><p>jul-to-slf4j：jdk-logging到slf4j的桥梁</p>
+</li>
+<li><p>log4j-over-slf4j：log4j1到slf4j的桥梁</p>
+</li>
+<li><p>jcl-over-slf4j：commons-logging到slf4j的桥梁. </p>
+<p>上面的是因为没有实现 Slf4j,  所以要想将 上面的日志打印权利交给 Slf4j.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-如何统一日志门面"><a href="#2-如何统一日志门面" class="headerlink" title="2.    如何统一日志门面"></a>2.    如何统一日志门面</h3><p>​    日志门面可以简单的理解为抽象的日志API.   那么看看我们常用的一些框架使用的日志, 比如Spring 框架使用的日志门面就是 JCL , 随着时间的变迁, JCL 也是过时了, 新起之秀 Spring boot 使用的日志门面则是  Slf4j.</p>
+<p>spring boot 和 spring framework的日志门面不同, 如何处理</p>
+<p><img src="../img/java/spring-jcl.png" alt=""></p>
+<blockquote>
+<p>spring boot 官方文档介绍</p>
+<p>Spring Boot uses <a href="https://commons.apache.org/logging" target="_blank" rel="noopener">Commons Logging</a> for all internal logging but leaves the underlying log implementation open. Default configurations are provided for <a href="https://docs.oracle.com/javase/8/docs/api//java/util/logging/package-summary.html" target="_blank" rel="noopener">Java Util Logging</a>, <a href="https://logging.apache.org/log4j/2.x/" target="_blank" rel="noopener">Log4J2</a>, and <a href="https://logback.qos.ch/" target="_blank" rel="noopener">Logback</a>. In each case, loggers are pre-configured to use console output with optional file output also available.</p>
+<p>By default, if you use the “Starters”, Logback is used for logging. Appropriate Logback routing is also included to ensure that dependent libraries that use Java Util Logging, Commons Logging, Log4J, or SLF4J all work correctly.</p>
+<p>引用于: <a href="https://docs.spring.io/spring-boot/docs/2.2.0.BUILD-SNAPSHOT/reference/html/#boot-features-logging" target="_blank" rel="noopener">https://docs.spring.io/spring-boot/docs/2.2.0.BUILD-SNAPSHOT/reference/html/#boot-features-logging</a></p>
+</blockquote>
+<p>我们找到 spring boot 的pom 文件依赖,会发现 spring boot 使用的 日志的starter</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-logging<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>点击  <code>spring-boot-starter-logging</code>, 会发现这些依赖.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;logback-classic&lt;/artifactId&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;jcl-over-slf4j&lt;/artifactId&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;jul-to-slf4j&lt;/artifactId&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;log4j-over-slf4j&lt;/artifactId&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line">	&lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>​    这个时候你还是发现, 只要是使用了  spring boot 的starters , 那么默认使用的就是  slf4j + logback.</p>
+</blockquote>
+<h4 id="问题-1-spring-boot-依赖于-spring-framework-两者使用的日志框架并不统一-怎么解决这个问题呢"><a href="#问题-1-spring-boot-依赖于-spring-framework-两者使用的日志框架并不统一-怎么解决这个问题呢" class="headerlink" title="问题 1:   spring boot 依赖于 spring framework , 两者使用的日志框架并不统一? 怎么解决这个问题呢?"></a>问题 1:   spring boot 依赖于 spring framework , 两者使用的日志框架并不统一? 怎么解决这个问题呢?</h4><p>我们看看spring boot 是如何做的</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starters<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.4.2.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>Spring Boot Starter<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">description</span>&gt;</span>Core starter, including auto-configuration support, logging and YAML<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">url</span>&gt;</span>http://projects.spring.io/spring-boot/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">organization</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>Pivotal Software, Inc.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">url</span>&gt;</span>http://www.spring.io<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">organization</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">main.basedir</span>&gt;</span>$&#123;basedir&#125;/../..<span class="tag">&lt;/<span class="name">main.basedir</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-autoconfigure<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-logging<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-logging<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-logging<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.yaml<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>snakeyaml<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>既然官方的的 jcl 包,被排除了,那么引入的第三方包 就是用来代替的 官方的jcl.</p>
+<p>并且包名还必须和官方包是一样, 不然找不到class文件, 会无法启动.</p>
+<p>img<img src="../img/java/jcl-over-slf4j.png" alt=""></p>
+</li>
+</ol>
+<p>如图所示,  将 apache 的common-logging 狸猫换太子.  我们来看看 Log的具体实现. SLF4JLog, 代码有缩减</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.logging.Log;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SLF4JLog</span> <span class="keyword">implements</span> <span class="title">Log</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> Logger logger;</span><br><span class="line"></span><br><span class="line">    SLF4JLog(Logger logger) &#123;</span><br><span class="line">        <span class="keyword">this</span>.logger = logger;</span><br><span class="line">        <span class="keyword">this</span>.name = logger.getName();</span><br><span class="line">    &#125;</span><br><span class="line">       <span class="function"><span class="keyword">protected</span> Object <span class="title">readResolve</span><span class="params">()</span> <span class="keyword">throws</span> ObjectStreamException </span>&#123;</span><br><span class="line">        Logger logger = LoggerFactory.getLogger(<span class="keyword">this</span>.name);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SLF4JLog(logger);</span><br><span class="line">&#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>当spring 框架调用  Log.info() 的时候,  实际是使用桥接的方式调用的  Slf4j的具体的实现类经过包装后再调用日志打印.   使用上面的方法完美解决了框架建日志系统不一致的问题. 这就是使用门面系统API 的好处, 门面系统是顶级API, 并且封装了很多日志框架的桥接器, 使用排除包和换包的方式,将原来使用的日志调用, 替换到了 Slf4j的实现类.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;logback-classic&lt;/artifactId&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;jcl-over-slf4j&lt;/artifactId&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;jul-to-slf4j&lt;/artifactId&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;log4j-over-slf4j&lt;/artifactId&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line">		// 上面3 个依赖都是维持 jcl, jul, log4j 的编程方式, 但是都将日志的输出交给Slf4j 的实现. </span><br><span class="line">	&lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+<p>log4j-over-slf4j 这个库定义了与log4j一致的接口（包名、类名、方法签名均一致），但是接口的实现却是对slf4j日志接口的包装，即间接调用了slf4j日志接口，实现了对日志的转发。同理,   jcl-over-slf4j 也是一样的道理.  </p>
+<p>下面看看 jcl -over-slf4j 的原理, 在包里找到 Logger</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"rawtypes"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Logger</span> <span class="keyword">extends</span> <span class="title">Category</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">trace</span><span class="params">(Object message, Throwable t)</span> </span>&#123;</span><br><span class="line">        differentiatedLog(<span class="keyword">null</span>, LOGGER_FQCN, LocationAwareLogger.TRACE_INT, message, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">在 调用trace 方法的时候, 使用differentiatedLog 方法进行了转发. 下面是方法的具体实现.</span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> org.apache.log4j;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.log4j.helpers.NullEnumeration;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Marker;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.MarkerFactory;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.spi.LocationAwareLogger;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Enumeration;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"rawtypes"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Category</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String CATEGORY_FQCN = Category.class.getName();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> org.slf4j.Logger slf4jLogger;</span><br><span class="line">    <span class="keyword">private</span> org.slf4j.spi.LocationAwareLogger locationAwareLogger;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Marker FATAL_MARKER = MarkerFactory.getMarker(<span class="string">"FATAL"</span>);</span><br><span class="line"></span><br><span class="line">    Category(String name) &#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        slf4jLogger = LoggerFactory.getLogger(name);</span><br><span class="line">        <span class="keyword">if</span> (slf4jLogger <span class="keyword">instanceof</span> LocationAwareLogger) &#123;</span><br><span class="line">            locationAwareLogger = (LocationAwareLogger) slf4jLogger;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Category <span class="title">getInstance</span><span class="params">(Class clazz)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Log4jLoggerFactory.getLogger(clazz.getName());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Category <span class="title">getInstance</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Log4jLoggerFactory.getLogger(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Category <span class="title">getParent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">   <span class="comment">// 调用日志打印的方法的时候,  首先是用Slf4j 的LoggerFactroy 获得logger, 然后调用debug 方法, 自然而然将日志的输出权利交给了 Slf4j.</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">differentiatedLog</span><span class="params">(Marker marker, String fqcn, <span class="keyword">int</span> level, Object message, Throwable t)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        String m = convertToString(message);</span><br><span class="line">        <span class="keyword">if</span> (locationAwareLogger != <span class="keyword">null</span>) &#123;</span><br><span class="line">            locationAwareLogger.log(marker, fqcn, level, m, <span class="keyword">null</span>, t);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">switch</span> (level) &#123;</span><br><span class="line">            <span class="keyword">case</span> LocationAwareLogger.TRACE_INT:</span><br><span class="line">                slf4jLogger.trace(marker, m);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> LocationAwareLogger.DEBUG_INT:</span><br><span class="line">                slf4jLogger.debug(marker, m);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> LocationAwareLogger.INFO_INT:</span><br><span class="line">                slf4jLogger.info(marker, m);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> LocationAwareLogger.WARN_INT:</span><br><span class="line">                slf4jLogger.warn(marker, m);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> LocationAwareLogger.ERROR_INT:</span><br><span class="line">                slf4jLogger.error(marker, m);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">debug</span><span class="params">(Object message)</span> </span>&#123;</span><br><span class="line">        differentiatedLog(<span class="keyword">null</span>, CATEGORY_FQCN, LocationAwareLogger.DEBUG_INT, message, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">info</span><span class="params">(Object message)</span> </span>&#123;</span><br><span class="line">        differentiatedLog(<span class="keyword">null</span>, CATEGORY_FQCN, LocationAwareLogger.INFO_INT, message, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">warn</span><span class="params">(Object message)</span> </span>&#123;</span><br><span class="line">        differentiatedLog(<span class="keyword">null</span>, CATEGORY_FQCN, LocationAwareLogger.WARN_INT, message, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">error</span><span class="params">(Object message)</span> </span>&#123;</span><br><span class="line">        differentiatedLog(<span class="keyword">null</span>, CATEGORY_FQCN, LocationAwareLogger.ERROR_INT, message, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Priority p, Object message, Throwable t)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> levelInt = priorityToLevelInt(p);</span><br><span class="line">        differentiatedLog(<span class="keyword">null</span>, CATEGORY_FQCN, levelInt, message, t);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是 jul-to-slf4j 确实一个奇葩, 因为 是 jdk自带的的包, 所以不可能排除掉. 那么只能通过handler机制, root logger上install一个handler，将所有日志<strong>劫持</strong>到slf4j上。要使得jul-to-slf4j生效，需要执行下面的代码.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SLF4JBridgeHandler.removeHandlersForRootLogger();</span><br><span class="line">SLF4JBridgeHandler.install();</span><br></pre></td></tr></table></figure>
+<p>spring boot 和spring framework 统一抽象层就是一个很好的例子, 也是解决项目中日志门面不同的号方法. 不仅如此.</p>
+<blockquote>
+<p>​    统一日志门面总结如下: </p>
+</blockquote>
+<ol>
+<li>排除日志门面的jar.</li>
+<li>替换原日志门面. 使用桥接器</li>
+<li>导入 日志系统的具体实现, 如果实现了 Slf4j-Api, 不需要桥接器.   相反, 对应的日志系统和Slf4j 一起工作, 需要对应的桥接器(to 相关的jar).</li>
+</ol>
+<h3 id="3-混合日志框架-如何统一输出"><a href="#3-混合日志框架-如何统一输出" class="headerlink" title="3. 混合日志框架,如何统一输出."></a>3. 混合日志框架,如何统一输出.</h3><p>如果你使用的框架 A 使用了 log4j ,B 使用 log4j2 , C 使用了 jul , 在不改变原有代码之前那么如何统一给 一个日志系统的实现呢? </p>
+<p><img src="../img/java/same-logimple.png" alt=""></p>
+<ol>
+<li><p>使用 Slf4j + Logback的输出代替项目中的  Commons Logging Api, log4j, 以及 jul.</p>
+<p>首先 使用 jcl-over-slf4j 替换 common logging api. </p>
+<p> 然后使用 log4j-over-slf4j 替换 log4j.jar (将 log4j 适配成 Slf4j 的实现)</p>
+<p> 使用 jul-to-slf4j.  桥接器 桥接 slf4j. </p>
+<p> 加入 logback.jar</p>
+</li>
+<li><p>使用 Slf4j + log4j 代替项目中 的 common logging + jul</p>
+<p>首先使用 jcl-over-slf4j.jar 替换 commons-loggins.jar</p>
+<p>然后使用  jul-to-slf4j.jar 桥接 jul 和Slf4j,</p>
+<p>引入 slf4j-log4j12, 将slf4j的具体实现交给 log4j,</p>
+<p>最后加入 log4j.jar </p>
+</li>
+</ol>
+<ol start="3">
+<li><p>slf4j + jul .</p>
+<p>使用 jcl-over-slf4j.jar  将日志抽象层更换成 Slf4j.</p>
+<p>使用  log4j  -over-slf4j替换掉 log4j.jar ,  将log4j 适配到 slf4j.</p>
+<p>加入 slf4j-jdk14.jar  将 slf4j 的日志输出交给 jdk-logging 来输出.</p>
+</li>
+</ol>
+<blockquote>
+<p><strong>上面的原理都是, 将日志抽象层更换成统一的 Slf4j, 然后将 Slf4j 的具体实现移交移交给某一个日志框架.</strong> </p>
+</blockquote>
+<p>常见的一些冲突:</p>
+<p> jcl-over-slf4j 与 slf4j-jcl 冲突</p>
+<ul>
+<li>jcl-over-slf4j： commons-logging切换到slf4j</li>
+<li>slf4j-jcl : slf4j切换到commons-logging</li>
+</ul>
+<p>如果这两者共存的话，必然造成相互委托，造成内存溢出</p>
+<p> log4j-over-slf4j 与 slf4j-log4j12 冲突</p>
+<ul>
+<li>log4j-over-slf4j ： log4j1切换到slf4j</li>
+<li>slf4j-log4j12 : slf4j切换到log4j1</li>
+</ul>
+<p>如果这两者共存的话，必然造成相互委托，造成内存溢出。</p>
+<p>即判断slf4j-log4j12 jar包中的org.slf4j.impl.Log4jLoggerFactory是否存在，如果存在则表示冲突了，抛出异常提示用户要去掉对应的jar包，代码如下，在slf4j-log4j12 jar包的org.apache.log4j.Log4jLoggerFactory中：</p>
+<p> jul-to-slf4j 与 slf4j-jdk14 冲突</p>
+<ul>
+<li>jul-to-slf4j ： jdk-logging切换到slf4j</li>
+<li>slf4j-jdk14 : slf4j切换到jdk-logging</li>
+</ul>
+<blockquote>
+<ol>
+<li><a href="https://www.slf4j.org/docs.html" target="_blank" rel="noopener">Slf4j 官方文档</a></li>
+</ol>
+</blockquote>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/posts/Java-Technology-Phenomenon-about.html" data-toggle="tooltip" data-placement="top" title="关于Java技术">下一篇文章 &rarr;</a>
+                        </li>
+                    
+                </ul>
+                
+
+                 <!-- <div class="comment" id="vcomments"></div>  -->
+                
+
+                 
+                 
+                    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<div id="gitalk-container"></div>
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: 'f6c70371be725eefc9ee',
+        clientSecret: '207610699384c4b12403200b20785daf446f3e3c',
+        id: window.location.pathname,
+        repo: 'jeesk.github.io',
+        owner: 'jeesk',
+        admin: 'jeesk'
+    })
+    gitalk.render('gitalk-container')
+</script>
+                    
+
+
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks" target="_blank">Kaijun&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me" target="_blank">Hux Blog</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8  col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 山间草夫 2019 
+                    <br>
+
+                    <span style="margin-top: 6px;display:inline-block;">
+                    Powered by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>  |
+                    
+                    Theme —  <a href="https://github.com/Huxpro/huxpro.github.io">Huxpro</a>   |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=jeesk&repo=jsp_servlet_mysql_basicProject&type=star&count=true">
+                    </iframe>
+<span>
+                </span></span></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!--载入js，在</body>之前插入即可-->
+    <!--Leancloud 操作库:-->
+    <!-- <script src="/js/av-min.js"></script> -->
+    <!--Valine 的核心代码库-->
+    <!-- <script src="/js/Valine.min.js"></script> -->
+
+
+<!-- <script>
+    new Valine({
+        av: AV,
+        el: '#vcomments',
+        placeholder: '欢迎留下您的评论，支持部分Markdown语法，如 *斜体*、**加粗**、`行内代码`、[超链接](链接地址)、![图片](图片地址) 等',
+        appId: 'WvcpILV0ImhrHowrLek0rAn9-gzGzoHsz',
+        appKey: 'N84KdKuNF8feKKf0bV3dM2Yc',
+        pageSize: 100,
+        avatar:'',
+        visitor: true,
+        notify: false,
+        verify: false
+    })
+</script> -->
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://shanjiancaofu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
