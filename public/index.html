@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="我家有两颗树,一棵树是枣树,另外一棵也是枣树.">
+    <meta name="keyword" content="xxxxxxxx">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          山间草夫
+        
+    </title>
+
+    <link rel="canonical" href="https://shanjiancaofu.com/">
+
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+   
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">山间草夫</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">首页</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">文章归档</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">标签</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>山间草夫</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">我家有两颗树,一棵树是枣树,另外一棵也是枣树.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+            
+                <!-- Main Content -->
+
+
+<div class="post-preview">
+
+    <a href="/posts/create-spring-boot-starter-by-yourself.md.html">
+        <h2 class="post-title">
+            2分钟创建属于你自己的 spring boot starter
+        </h2>
+        <h3 class="post-subtitle">
+            原创
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            Spring boot 的核心特性就是自动装配。 有时候在项目中需要重复集成某个框架， 但是spring boot 官方并没有帮我们集成stater，为了减少代码的重复编写。 今天我们就来编写一个自定义的 spring boot stater。
+简单的说一下 spring boot state......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Jeesk on
+        2019-07-07
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/posts/why-use-slf4j.html">
+        <h2 class="post-title">
+            为什么使用Sfl4j， Slf4j能帮我们做些什么？
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            在 阿里Java 开发强制规范 中的第二章中的日志规约中的第一条讲到
+11.【强制】应用中不可直接使用日志系统（Log4j、Logback）中的API，而应依赖使用日志框架SLF4J中的API，使用门面模式的日志框架，有利于维护和各个类的日志处理方式统一。
+这里提到了日志门面,那么就有日志实现......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Jeesk on
+        2019-07-05
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/posts/Java-Technology-Phenomenon-about.html">
+        <h2 class="post-title">
+            关于Java技术
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            关于Java技术​     java 技术是一种语言， 也是一种平台。
+Java 编程语言​    Java 编程语言是一种高级语言， 可以用下面的流行语词
+​    
+
+
+
+简单
+架构中立
+
+
+
+
+面向对象
+便携性
+
+
+分布式
+高性能
+
+
+多线程
+强大的
+
+
+动态
+安全
+
+
+
+ 上面提到的每......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Jeesk on
+        2019-06-29
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/posts/What's-New-in-JDK-8.html">
+        <h2 class="post-title">
+            JDK 8 新特性 （What's New in JDK 8）
+        </h2>
+        <h3 class="post-subtitle">
+            翻译
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            JDK 8 新特性 （What’s New in JDK 8）
+Java 程序语言
+
+Lambda 表达式， Java8的新语言特性。 它们能够使你轻松的将 功能 参数化，或者是代码作为数据传递。 Lambda 表达式允许你更加 紧凑的标识单个方法的接口（也叫函数式接口）。
+为已经有了名字的方......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by jeesk on
+        2019-06-28
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/posts/mysql-trsation.html">
+        <h2 class="post-title">
+            Mysql4种事务隔离级别案例详解
+        </h2>
+        <h3 class="post-subtitle">
+            不适合人类阅读，非常水的自我笔记
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            隔离级别
+
+​     ✔   可能出现         ✘    不会出现
+
+
+
+
+
+脏读
+不可重复读
+幻读
+
+
+
+
+READ UNCOMMITED
+✔
+✔
+✔
+
+
+READ COMMITTED
+✔
+✘
+✘
+
+
+REPETABLE READ
+✘
+✘
+✔
+
+
+SERIALIZABLE
+✘
+✘
+......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by jeesk on
+        2019-04-09
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/posts/Git-Introductory-work-scenarios-3.html">
+        <h2 class="post-title">
+            Git入门之工作场景三
+        </h2>
+        <h3 class="post-subtitle">
+            不适合人类阅读，非常水的自我笔记
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            
+仓库的操作
+
+1234列出每个远程库的简短名字，Git 默认使用这个名字来标识你所克隆的原始仓库。加上 -v 选项，显示对应的克隆地址。git remotegit remote -vgit remote show [remote-name]
+由于我们一个项目有多个版本, 这个时候我们要更新本......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by jeesk on
+        2019-03-17
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/posts/Git-Simple-operation-of-introduction-2.html">
+        <h2 class="post-title">
+            Git入门之简单操作二
+        </h2>
+        <h3 class="post-subtitle">
+            不适合人类阅读，非常水的自我笔记
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            Git 常用操作
+查看操作历史
+
+实际工作中，我们脑子里怎么可能记得一个几千行的文件每次都改了什么内容，不然要版本控制系统干什么。版本控制系统肯定有某个命令可以告诉我们历史记录，在 Git 中，我们用 git log 命令查看：
+
+12git loggit log 2
+git log 命令显示......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by jeesk on
+        2019-03-17
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/posts/Git-Introductory-concepts-1.html">
+        <h2 class="post-title">
+            Git入门之概念介绍一
+        </h2>
+        <h3 class="post-subtitle">
+            不适合人类阅读，非常水的自我笔记
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            Git的诞生Git 是目前世界上最先进的分布式版本控制系统。
+很多人都知道，Linus （利纳斯）在1991年创建了开源的 Linux（利纳克斯），从此，Linux 系统不断发展，已经成为最大的服务器系统软件了。
+Linus 虽然创建了Linux，但 Linux 的壮大是靠全世界热心的志愿者参......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by jeesk on
+        2019-03-17
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/posts/Hmily-Tcc-distributed-source-code-analysis-01.html">
+        <h2 class="post-title">
+            Hmily-Tcc 分布式事务框架源码解析-01
+        </h2>
+        <h3 class="post-subtitle">
+            不适合人类阅读，非常水的自我笔记
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            
+温馨提示: 
+
+源码阅读不可能debug一次 , 就弄懂了.  调试源码需要反复调试(debug 10次甚至是20次),并且有一定的耐心.
+源码阅读非常枯燥, 需要带着问题去读, 然后找答案.
+比如本章:   项目启动到底干了什么事?   为什么要干这些事儿?     初始化用了Spring......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by jeesk on
+        2019-03-10
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/posts/Ubuntu-install-mysql5.7-password.html">
+        <h2 class="post-title">
+            Ubuntu 安装mysql5.7无密码解决方案
+        </h2>
+        <h3 class="post-subtitle">
+            不适合人类阅读，非常水的自我笔记
+        </h3>
+        <div class="post-content-preview" style="text-indent: 10px;">
+            
+今年在Deepin上面安装Mysql5.7 ,安装后没有密码.下面提出了一解决的办法
+
+没有 密码123456mysql默认密码为空但是使用mysql -uroot -p 命令连接mysql时，报错ERROR 1045 (28000): Access denied for user &apo......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by jeesk on
+        2019-03-10
+    </p>
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+    
+        <li class="next">
+            <a href="/page/2/">下一页 &rarr;</a>
+        </li>
+    
+</ul>
+
+
+
+                <!-- 如果开启评论功能 -->
+                
+
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">文章标签</a></h5>
+                    <div class="tags">
+                        
+                            
+                            <a href="/tags/#-Git" title="-Git" rel="3">-Git</a>
+                            
+                        
+                            
+                            <a href="/tags/#-分布式事务" title="-分布式事务" rel="2">-分布式事务</a>
+                            
+                        
+                            
+                            <a href="/tags/#database" title="database" rel="11">database</a>
+                            
+                        
+                            
+                            <a href="/tags/#Java" title="Java" rel="4">Java</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#JAVA-DOC" title="JAVA-DOC" rel="2">JAVA-DOC</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#前端开发" title="前端开发" rel="3">前端开发</a>
+                            
+                        
+                            
+                            <a href="/tags/#JavaScript" title="JavaScript" rel="3">JavaScript</a>
+                            
+                        
+                            
+                            <a href="/tags/#Linux" title="Linux" rel="2">Linux</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">关于我</a></h5>
+                    <div class="short-about">
+
+                        
+                            <img src="/img/avatar.jpeg">
+                        
+
+                        
+                            <p>我要成为魔法师!</p>
+                        
+
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            
+
+                            
+
+                            
+
+                            
+                                <li>
+                                    <a target="_blank" href="https://github.com/jeesk">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+                            
+                            
+                            
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>友链</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks" target="_blank">Kaijun&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me" target="_blank">Hux Blog</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+        
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8  col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 山间草夫 2019 
+                    <br>
+
+                    <span style="margin-top: 6px;display:inline-block;">
+                    Powered by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>  |
+                    
+                    Theme —  <a href="https://github.com/Huxpro/huxpro.github.io">Huxpro</a>   |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=jeesk&repo=jsp_servlet_mysql_basicProject&type=star&count=true">
+                    </iframe>
+<span>
+                </span></span></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!--载入js，在</body>之前插入即可-->
+    <!--Leancloud 操作库:-->
+    <!-- <script src="/js/av-min.js"></script> -->
+    <!--Valine 的核心代码库-->
+    <!-- <script src="/js/Valine.min.js"></script> -->
+
+
+<!-- <script>
+    new Valine({
+        av: AV,
+        el: '#vcomments',
+        placeholder: '欢迎留下您的评论，支持部分Markdown语法，如 *斜体*、**加粗**、`行内代码`、[超链接](链接地址)、![图片](图片地址) 等',
+        appId: 'WvcpILV0ImhrHowrLek0rAn9-gzGzoHsz',
+        appKey: 'N84KdKuNF8feKKf0bV3dM2Yc',
+        pageSize: 100,
+        avatar:'',
+        visitor: true,
+        notify: false,
+        verify: false
+    })
+</script> -->
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://shanjiancaofu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

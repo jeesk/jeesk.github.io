@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="我家有两颗树,一棵树是枣树,另外一棵也是枣树.">
+    <meta name="keyword" content="xxxxxxxx">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Hmily-Tcc 分布式事务框架源码解析-01 - 山间草夫
+        
+    </title>
+
+    <link rel="canonical" href="https://shanjiancaofu.com/posts/Hmily-Tcc-distributed-source-code-analysis-01.html">
+
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+   
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">山间草夫</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">首页</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">文章归档</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">标签</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#-分布式事务" title="-分布式事务">-分布式事务</a>
+                        
+                    </div>
+                    <h1>Hmily-Tcc 分布式事务框架源码解析-01</h1>
+                    <h2 class="subheading">不适合人类阅读，非常水的自我笔记</h2>
+                    <span class="meta">
+                        Posted by jeesk on
+                        2019-03-10
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-10 
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>温馨提示: </p>
+<ol>
+<li>源码阅读不可能debug一次 , 就弄懂了.  调试源码需要反复调试(debug 10次甚至是20次),并且有一定的耐心.</li>
+<li>源码阅读非常枯燥, 需要带着问题去读, 然后找答案.</li>
+<li>比如本章:   项目启动到底干了什么事?   为什么要干这些事儿?     初始化用了Spring 那些特性. 或者是用了那些设置模式的.</li>
+<li>切记,    耐心是学习的最好的方式. </li>
+</ol>
+</blockquote>
+<h2 id="1-搭建源码调试环境"><a href="#1-搭建源码调试环境" class="headerlink" title="1.搭建源码调试环境"></a>1.搭建源码调试环境</h2><blockquote>
+<p>这是使用的idea开发工具.</p>
+</blockquote>
+<ol>
+<li><p>打开idea ,点击Check out from  Version Control, 然后点击git , 输入项目地址 :</p>
+<p><a href="https://github.com/yu199195/hmily.git" target="_blank" rel="noopener">https://github.com/yu199195/hmily.git</a></p>
+<p>然后导入项目后,Maven自动编译.</p>
+<p>2.下载zookeeper <a href="https://mirrors.tuna.tsinghua.edu.cn/apache/zookeeper/" target="_blank" rel="noopener">点击下载</a>, 下载后修改zk配置.</p>
+</li>
+<li><p>修改项目中的hmily-demo下面的hmily-demo-dubbo 中的三个子模块, 主要是修改application.yml中mysql的数据库账号相关配置. 和spring-dubbo.xml 中 zookeeper中的服务地址, 一般情况下填写localhost即可.</p>
+</li>
+</ol>
+<p>   项目目录解释:</p>
+   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">hmily-admin                     分布式事务后台管理系统</span><br><span class="line">hmily-annotation				事务框架核心注解</span><br><span class="line">hmily-common					公共类</span><br><span class="line">hmily-core						框架核心代码,以及</span><br><span class="line">hmily-dashboard					vue编译项目</span><br><span class="line">hmily-demo						Hmily内置事务场景(支持Dubbo,Sring_cloud,Motan)</span><br><span class="line">hmily-dubbo                     Dubbo的核心代码</span><br><span class="line">hmily.iml</span><br><span class="line">hmily-motan						motan核心代码</span><br><span class="line">hmily-spring-boot-starter		</span><br><span class="line">hmily-springcloud				springcloud核心代码</span><br><span class="line">logs</span><br><span class="line">pom.xml</span><br><span class="line">README.md</span><br><span class="line">script</span><br><span class="line">.travis.yml</span><br></pre></td></tr></table></figure>
+<h2 id="2-项目启动调试"><a href="#2-项目启动调试" class="headerlink" title="2.项目启动调试"></a>2.项目启动调试</h2><ul>
+<li><p>启动zookeeper</p>
+</li>
+<li><p>执行sql文件(hmily-demo&gt;sql&gt;hmily-demo.sql)   可以生成account, inventory,order的三个库和表</p>
+</li>
+<li><p>点击hmily 中hmily-demo &gt; hmily-demo-dubbo &gt;  启动account,inventory, order 三个项目项目.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1:8888/hmily-admin/#/manage        分布式事务后台管理系统</span><br><span class="line"></span><br><span class="line">http://127.0.0.1:8087/swagger-ui.html#/order-controller     订单调试下单</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在浏览器中 打开 <a href="http://127.0.0.1:8087/swagger-ui.html#/order-controller" target="_blank" rel="noopener">http://127.0.0.1:8087/swagger-ui.html#/order-controller</a> </p>
+</li>
+<li><p>可以看到<strong>Swagger API</strong>  的页面, 然后</p>
+<p>点击   /order/mockInventoryWithTryException  这一个接口 ,   Try it out, 体验一下. 分布式事务的魅力.</p>
+</li>
+</ul>
+<h2 id="Demo项目启动做了什么"><a href="#Demo项目启动做了什么" class="headerlink" title="Demo项目启动做了什么"></a>Demo项目启动做了什么</h2><p>在hmily-core 模块中找到下面的核心引导类</p>
+<p><code>org.dromara.hmily.core.bootstrap.HmilyTransactionBootstrap</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HmilyTransactionBootstrap</span> <span class="keyword">extends</span> <span class="title">HmilyConfig</span> <span class="keyword">implements</span> <span class="title">ApplicationContextAware</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> HmilyInitService hmilyInitService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HmilyTransactionBootstrap</span><span class="params">(<span class="keyword">final</span> HmilyInitService hmilyInitService)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.hmilyInitService = hmilyInitService;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setApplicationContext</span><span class="params">(<span class="keyword">final</span> ApplicationContext applicationContext)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        <span class="comment">// 启动Spring的时候, 会将容器上下文作为参数传入.</span></span><br><span class="line">        <span class="comment">// 将上下文对象设置到Spring Bean工具类中</span></span><br><span class="line">        SpringBeanUtils.getInstance().setCfgContext((ConfigurableApplicationContext) applicationContext);</span><br><span class="line">        <span class="comment">// 执行事务相关初始化</span></span><br><span class="line">        start(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(<span class="keyword">final</span> HmilyConfig hmilyConfig)</span> </span>&#123;</span><br><span class="line">        hmilyInitService.initialization(hmilyConfig);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>HmilyTransactionBootstrap 核心引导类:</p>
+<ol>
+<li>执行HmilyTransactionBootstrap的构造方法的时候, 会执行 <strong>HmilyAutoConfiguration.java</strong>类中的<strong>自动装配</strong>, 自动装配主要是将配置文件中的值设置到 HmilyTransactionBootstrap类的一些属性中.  这些属性值,用于后面的spi和一些初始化相关需要的. </li>
+</ol>
+<ol start="2">
+<li>首先继承了HmilyConfig, 实现了ApplicaitonContextAware,那么实现ApplicationContextAware, 有什么意义.</li>
+</ol>
+<blockquote>
+<p>在Web应用中，Spring容器通常采用声明式方式配置产生：开发者只要在web.xml中配置一个Listener，该Listener将会负责初始化Spring容器，MVC框架可以直接调用Spring容器中的Bean，无需访问Spring容器本身。在这种情况下，容器中的Bean处于容器管理下，无需主动访问容器，只需接受容器的依赖注入即可。</p>
+<h2 id="但在某些特殊的情况下，Bean需要实现某个功能，但该功能必须借助于Spring容器才能实现，此时就必须让该Bean先获取Spring容器，然后借助于Spring容器实现该功能。为了让Bean获取它所在的Spring容器，可以让该Bean实现ApplicationContextAware接口。"><a href="#但在某些特殊的情况下，Bean需要实现某个功能，但该功能必须借助于Spring容器才能实现，此时就必须让该Bean先获取Spring容器，然后借助于Spring容器实现该功能。为了让Bean获取它所在的Spring容器，可以让该Bean实现ApplicationContextAware接口。" class="headerlink" title="但在某些特殊的情况下，Bean需要实现某个功能，但该功能必须借助于Spring容器才能实现，此时就必须让该Bean先获取Spring容器，然后借助于Spring容器实现该功能。为了让Bean获取它所在的Spring容器，可以让该Bean实现ApplicationContextAware接口。"></a>但在某些特殊的情况下，Bean需要实现某个功能，但该功能必须借助于Spring容器才能实现，此时就必须让该Bean先获取Spring容器，然后借助于Spring容器实现该功能。为了让Bean获取它所在的Spring容器，可以让该Bean实现ApplicationContextAware接口。</h2></blockquote>
+<p>简单的说: HmilyTransactionBootstrap 这个类需要获得Spring 容器.     Spring 在启动的时候会扫描容器的bean的时候, 如果发现了某一个类实现了ApplicationContextAware接口, 会将容器作为本身作为参数传入.</p>
+<p>调用初始化: hmilyConfig 作为参数传入,进行初始化.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hmilyInitService.initialization(hmilyConfig);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialization</span><span class="params">(<span class="keyword">final</span> HmilyConfig hmilyConfig)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 增加钩子进程, 当进程被kill的时候 , 打印 "hmily shutdown now "</span></span><br><span class="line">       Runtime.getRuntime().addShutdownHook(<span class="keyword">new</span> Thread(() -&gt; LOGGER.info(<span class="string">"hmily shutdown now"</span>)));</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           loadSpiSupport(hmilyConfig);</span><br><span class="line">           hmilyCoordinatorService.start(hmilyConfig);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">           LogUtil.error(LOGGER, <span class="string">" hmily init exception:&#123;&#125;"</span>, ex::getMessage);</span><br><span class="line">           System.exit(<span class="number">1</span>);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">new</span> HmilyLogo().logo();</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p><strong>loadSpiSupport(hmilyConfig);  初始化 持久层和序列化方式</strong> </p>
+<blockquote>
+<p>  加载Spi原理  <a href="https://www.jianshu.com/p/46b42f7f593c" target="_blank" rel="noopener">https://www.jianshu.com/p/46b42f7f593c</a></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">loadSpiSupport</span><span class="params">(<span class="keyword">final</span> HmilyConfig hmilyConfig)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//spi serialize</span></span><br><span class="line">        <span class="comment">// 从获得数据的序列化编码,hmilyConfig 默认的序列化是kyro</span></span><br><span class="line">        <span class="keyword">final</span> SerializeEnum serializeEnum = SerializeEnum.acquire(hmilyConfig.getSerializer());</span><br><span class="line">        <span class="comment">// 通过 spi 加载所有的序列化类.</span></span><br><span class="line">        <span class="keyword">final</span> ServiceLoader&lt;ObjectSerializer&gt; objectSerializers = ServiceBootstrap.loadAll(ObjectSerializer.class);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 通过序列化serializeEnum   从objectSerializers 中获得对应的序列化方式实现. </span></span><br><span class="line">        <span class="keyword">final</span> ObjectSerializer serializer = StreamSupport.stream(objectSerializers.spliterator(), <span class="keyword">false</span>)</span><br><span class="line">                .filter(objectSerializer -&gt; Objects.equals(objectSerializer.getScheme(), serializeEnum.getSerialize()))</span><br><span class="line">                .findFirst().orElse(<span class="keyword">new</span> KryoSerializer());</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//spi repository</span></span><br><span class="line">        <span class="comment">// 拿到的持久层编码</span></span><br><span class="line">        <span class="keyword">final</span> RepositorySupportEnum repositorySupportEnum = RepositorySupportEnum.acquire(hmilyConfig.getRepositorySupport());</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 通过spi 加载 所有的持久层方式</span></span><br><span class="line">        <span class="keyword">final</span> ServiceLoader&lt;HmilyCoordinatorRepository&gt; recoverRepositories = ServiceBootstrap.loadAll(HmilyCoordinatorRepository.class);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 通过 repositorySupportEnum  拿到具体的实现</span></span><br><span class="line">        <span class="keyword">final</span> HmilyCoordinatorRepository repository = StreamSupport.stream(recoverRepositories.spliterator(), <span class="keyword">false</span>)</span><br><span class="line">                .filter(recoverRepository -&gt; Objects.equals(recoverRepository.getScheme(), repositorySupportEnum.getSupport()))</span><br><span class="line">                .findFirst().orElse(<span class="keyword">new</span> JdbcCoordinatorRepository());</span><br><span class="line">        <span class="comment">// 持久层设置序列化方式</span></span><br><span class="line">        repository.setSerializer(serializer);</span><br><span class="line">        <span class="comment">// 将 Hmily持久层注册到 到 Spring容器中</span></span><br><span class="line">        SpringBeanUtils.getInstance().registerBean(HmilyCoordinatorRepository.class.getName(), repository);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>初始化持久层</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 拿到持久层前缀, 如果没有hmilyConfig.getRepositorySuffix()) 为空, 那么返回Dubbo的应用名</span></span><br><span class="line">      <span class="keyword">final</span> String repositorySuffix = buildRepositorySuffix(hmilyConfig.getRepositorySuffix());</span><br><span class="line">      coordinatorRepository = SpringBeanUtils.getInstance().getBean(HmilyCoordinatorRepository.class);</span><br><span class="line">      <span class="comment">// 初始化持久层</span></span><br><span class="line">      coordinatorRepository.init(repositorySuffix, hmilyConfig);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>   点击init()会根据coordinatorRepository 的具体实现类跳转到不同的init方法 , 这里我们以JdbcCoordinatorRepository的init() 为例子,</p>
+   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="keyword">final</span> String modelName, <span class="keyword">final</span> HmilyConfig txConfig)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 获取 应用 的数据前缀. 这里可以在applicaiton.yml 中配置数据库相关的</span></span><br><span class="line">            <span class="keyword">final</span> HmilyDbConfig hmilyDbConfig = txConfig.getHmilyDbConfig();</span><br><span class="line">            <span class="keyword">if</span> (hmilyDbConfig.getDataSource() != <span class="keyword">null</span> &amp;&amp; StringUtils.isBlank(hmilyDbConfig.getUrl())) &#123;</span><br><span class="line">                dataSource = hmilyDbConfig.getDataSource();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 初始化HikariDataSource</span></span><br><span class="line">                HikariDataSource hikariDataSource = <span class="keyword">new</span> HikariDataSource();</span><br><span class="line">                hikariDataSource.setJdbcUrl(hmilyDbConfig.getUrl());</span><br><span class="line">                hikariDataSource.setDriverClassName(hmilyDbConfig.getDriverClassName());</span><br><span class="line">                hikariDataSource.setUsername(hmilyDbConfig.getUsername());</span><br><span class="line">                hikariDataSource.setPassword(hmilyDbConfig.getPassword());</span><br><span class="line">                hikariDataSource.setMaximumPoolSize(hmilyDbConfig.getMaxActive());</span><br><span class="line">                hikariDataSource.setMinimumIdle(hmilyDbConfig.getMinIdle());</span><br><span class="line">             hikariDataSource.setConnectionTimeout(hmilyDbConfig.getConnectionTimeout());</span><br><span class="line">                hikariDataSource.setIdleTimeout(hmilyDbConfig.getIdleTimeout());</span><br><span class="line">                hikariDataSource.setMaxLifetime(hmilyDbConfig.getMaxLifetime());</span><br><span class="line">            hikariDataSource.setConnectionTestQuery(hmilyDbConfig.getConnectionTestQuery());</span><br><span class="line">                <span class="keyword">if</span> (hmilyDbConfig.getDataSourcePropertyMap() != <span class="keyword">null</span> &amp;&amp; !hmilyDbConfig.getDataSourcePropertyMap().isEmpty()) &#123;</span><br><span class="line">                    hmilyDbConfig.getDataSourcePropertyMap().forEach(hikariDataSource::addDataSourceProperty);</span><br><span class="line">                &#125;</span><br><span class="line">                dataSource = hikariDataSource;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 根据  模块名 拼接事务表名, </span></span><br><span class="line">            <span class="keyword">this</span>.tableName = RepositoryPathUtils.buildDbTableName(modelName);</span><br><span class="line">            <span class="comment">//save current database type</span></span><br><span class="line">            <span class="keyword">this</span>.currentDBType = DbTypeUtils.buildByDriverClassName(hmilyDbConfig.getDriverClassName());</span><br><span class="line">            <span class="comment">// 创建表  当前应用服务的表名</span></span><br><span class="line">            executeUpdate(SqlHelper.buildCreateTableSql(hmilyDbConfig.getDriverClassName(), tableName));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LogUtil.error(LOGGER, <span class="string">"hmily jdbc log init exception please check config:&#123;&#125;"</span>, e::getMessage);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> HmilyRuntimeException(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>​    总结: Hmily 的account 初始化做了那些事:</p>
+</blockquote>
+<ul>
+<li>初始化当前应用的持久层</li>
+<li>创建当前应用服务的表.(表的用途后面再说)</li>
+</ul>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/posts/Git-Introductory-concepts-1.html" data-toggle="tooltip" data-placement="top" title="Git入门之概念介绍一">&larr; 上一篇文章</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/posts/Ubuntu-install-mysql5.7-password.html" data-toggle="tooltip" data-placement="top" title="Ubuntu 安装mysql5.7无密码解决方案">下一篇文章 &rarr;</a>
+                        </li>
+                    
+                </ul>
+                
+
+                 <!-- <div class="comment" id="vcomments"></div>  -->
+                
+
+                 
+                 
+                    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<div id="gitalk-container"></div>
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: 'f6c70371be725eefc9ee',
+        clientSecret: '207610699384c4b12403200b20785daf446f3e3c',
+        id: window.location.pathname,
+        repo: 'jeesk.github.io',
+        owner: 'jeesk',
+        admin: 'jeesk'
+    })
+    gitalk.render('gitalk-container')
+</script>
+                    
+
+
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#-分布式事务" title="-分布式事务">-分布式事务</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks" target="_blank">Kaijun&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me" target="_blank">Hux Blog</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8  col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 山间草夫 2019 
+                    <br>
+
+                    <span style="margin-top: 6px;display:inline-block;">
+                    Powered by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>  |
+                    
+                    Theme —  <a href="https://github.com/Huxpro/huxpro.github.io">Huxpro</a>   |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=jeesk&repo=jsp_servlet_mysql_basicProject&type=star&count=true">
+                    </iframe>
+<span>
+                </span></span></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!--载入js，在</body>之前插入即可-->
+    <!--Leancloud 操作库:-->
+    <!-- <script src="/js/av-min.js"></script> -->
+    <!--Valine 的核心代码库-->
+    <!-- <script src="/js/Valine.min.js"></script> -->
+
+
+<!-- <script>
+    new Valine({
+        av: AV,
+        el: '#vcomments',
+        placeholder: '欢迎留下您的评论，支持部分Markdown语法，如 *斜体*、**加粗**、`行内代码`、[超链接](链接地址)、![图片](图片地址) 等',
+        appId: 'WvcpILV0ImhrHowrLek0rAn9-gzGzoHsz',
+        appKey: 'N84KdKuNF8feKKf0bV3dM2Yc',
+        pageSize: 100,
+        avatar:'',
+        visitor: true,
+        notify: false,
+        verify: false
+    })
+</script> -->
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://shanjiancaofu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

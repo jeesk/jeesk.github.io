@@ -1,0 +1,17 @@
+
+# Code Highlight theme
+# Available value:
+#    normal | night | night yilia | night eighties | night blue | night bright
+# https://github.com/chriskempson/tomorrow-theme
+# night yilia - https://github.com/litten/hexo-theme-yilia
+highlight_theme: normal
+
+
+#gitalk settings
+gitalk:
+  enable: true ,
+  owner: 'jeesk'
+  repo: 'jeesk.github.io'
+  admin: 'jeesk'
+  clientID: 'f6c70371be725eefc9ee'
+  clientSecret: '207610699384c4b12403200b20785daf446f3e3c'

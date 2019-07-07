@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="我家有两颗树,一棵树是枣树,另外一棵也是枣树.">
+    <meta name="keyword" content="xxxxxxxx">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          30分钟手写一个Tomcat服务器 - 山间草夫
+        
+    </title>
+
+    <link rel="canonical" href="https://shanjiancaofu.com/posts/make-tomcat-by-myself.html">
+
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+   
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">山间草夫</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">首页</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">文章归档</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">标签</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#-Tomcat -Java" title="-Tomcat -Java">-Tomcat -Java</a>
+                        
+                    </div>
+                    <h1>30分钟手写一个Tomcat服务器</h1>
+                    <h2 class="subheading">不适合人类阅读，非常水的自我笔记</h2>
+                    <span class="meta">
+                        Posted by jeesk on
+                        2019-02-25
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-10 
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<pre><code>阅读本教程需要了解Http协议, Java Socket,Java反射的等相关内容. 并且本篇文章只是实现简单的web服务器, 让大家了解其原理, 大拿请无视.下面是浏览器和web服务器的一段简单的请求和相应的内容, 通过请求和相应, 同时我们也可以简单了解http协议的规范.
+</code></pre></blockquote>
+<h2 id="1-了解Http请求和响应"><a href="#1-了解Http请求和响应" class="headerlink" title="1:  了解Http请求和响应"></a>1:  了解Http请求和响应</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">浏览器的请求</span><br><span class="line">GET /login?username=username&amp;passwd=passwd&amp;books=1&amp;books=2 HTTP/1.1</span><br><span class="line">// 访问的主机名</span><br><span class="line">Host: localhost:8080</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Cookie: menu=ad_menu_2_1; submenu=bidsInvitation</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line"></span><br><span class="line">浏览器的响应</span><br><span class="line">// http响应码 , 200 表示正常返回</span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">//响应内容长度</span><br><span class="line">Content-Length: 92</span><br><span class="line">// 响应内容类型, text/json响应的就是json</span><br><span class="line">Content-Type: text/html;charset=utf-8;</span><br><span class="line">// 时间</span><br><span class="line">DATE: Sat 23 Feb 2019 08:36:29 GMT</span><br><span class="line">// 服务器名称</span><br><span class="line">Server: Simple_Tomcat Server/0.0.1</span><br><span class="line">// 响应的内容, 也就是我们在网页上面显示的东西</span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span><span class="tag">&lt;<span class="name">head</span>&gt;</span><span class="tag">&lt;<span class="name">title</span>&gt;</span>Http响应<span class="tag">&lt;/<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span><span class="tag">&lt;<span class="name">body</span>&gt;</span>Hello tomcat 你好Tomcat<span class="tag">&lt;/<span class="name">body</span>&gt;</span><span class="tag">&lt;/<span class="name">html</span>&gt;</span>;</span><br></pre></td></tr></table></figure>
+<p>所谓的浏览器的交互,就是说浏览器解析响应, 服务器解析请求的一个过程. </p>
+<p>实现一个Tomcat服务器: 也就是说要解析浏览器的请求, 并且将要显示的内容返回给浏览器即可.</p>
+<h2 id="2-实现简单的响应和请求"><a href="#2-实现简单的响应和请求" class="headerlink" title="2:  实现简单的响应和请求"></a>2:  实现简单的响应和请求</h2><p>创建一个简单的maven项目, 然后复制下面的代码, 并在idea中启动main方法. </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io.github.jeesk;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.ServerSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Server</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">      ServerSocket server = <span class="keyword">new</span> ServerSocket(<span class="number">8080</span>);</span><br><span class="line">      <span class="comment">// 获得从浏览器中请求,</span></span><br><span class="line">      Socket client = server.accept();</span><br><span class="line">      <span class="comment">// 获得请求中的信息</span></span><br><span class="line">      InputStream inputStream = client.getInputStream();</span><br><span class="line">      <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];</span><br><span class="line">      <span class="keyword">int</span> len = inputStream.read(bytes);</span><br><span class="line">      String requestInfo = <span class="keyword">new</span> String(bytes, <span class="number">0</span>, len);</span><br><span class="line">      System.out.println(requestInfo);</span><br><span class="line">      server.close();</span><br><span class="line">      client.close();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>浏览器中访问:  <a href="http://localhost:8080/login?username=username&amp;passwd=passwd&amp;books=1&amp;books=2" target="_blank" rel="noopener">http://localhost:8080/login?username=username&amp;passwd=passwd&amp;books=1&amp;books=2</a></p>
+<p>那么在 idea 的控制台将会打印下列出现的内容:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET /login?username=username&amp;passwd=passwd&amp;books=1&amp;books=2 HTTP/1.1</span><br><span class="line">Host: localhost:8080</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br></pre></td></tr></table></figure>
+<p>好的, 小伙伴们, 我们是不是已经得到了到了浏览器的请求信息呢? 那么接下来,我们给浏览器一个响应, 祟拜你写一段html内容 响应给浏览器</p>
+<blockquote>
+<p>构造浏览器响应体</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建系统常用常量, 用于构建响应体</span></span><br><span class="line"><span class="keyword">package</span> io.github.jeesk;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SysCon</span> </span>&#123;</span><br><span class="line"><span class="comment">// 表示换行</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String CRLF = (<span class="string">"\r\n"</span>);</span><br><span class="line">  <span class="comment">// 空格</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String BLANK = (<span class="string">" "</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">package</span> io.github.jeesk;</span><br><span class="line"><span class="keyword">import</span> java.io.BufferedWriter;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.OutputStreamWriter;</span><br><span class="line"><span class="keyword">import</span> java.net.ServerSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Server2</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">      ServerSocket server = <span class="keyword">new</span> ServerSocket(<span class="number">8080</span>);</span><br><span class="line">      <span class="comment">// 获得从浏览器中请求,</span></span><br><span class="line">      Socket client = server.accept();</span><br><span class="line">      <span class="comment">// 获得请求中的信息</span></span><br><span class="line">      InputStream inputStream = client.getInputStream();</span><br><span class="line">      <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];</span><br><span class="line">      <span class="keyword">int</span> len = inputStream.read(bytes);</span><br><span class="line">      String requestInfo = <span class="keyword">new</span> String(bytes, <span class="number">0</span>, len);</span><br><span class="line">      System.out.println(requestInfo);</span><br><span class="line"></span><br><span class="line">      StringBuilder content = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">      content.append(<span class="string">"&lt;html&gt;&lt;head&gt;&lt;title&gt;Http响应&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Hello tomcat Http响应&lt;/body&gt;&lt;/html&gt;;"</span> + <span class="string">""</span>);</span><br><span class="line">      <span class="comment">// 如果使用下面的json形式, 那么僵Content-type: 里面的html变成json即可.</span></span><br><span class="line">      <span class="comment">// content.append(" &#123;\"name\":\"小强\",\"age\":16,\"msg\":[\"a\",\"b\"],\"regex\": \"^http://.*\"&#125;");</span></span><br><span class="line">      StringBuilder resp = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">      <span class="comment">// HTTP协议版本   状态码,描述</span></span><br><span class="line">      resp.append(<span class="string">"HTTP/1.1"</span>).append(SysCon.BLANK).append(<span class="string">"200"</span>).append(SysCon.BLANK).append(<span class="string">"OK"</span>).append(SysCon.CRLF);</span><br><span class="line">      <span class="comment">// 响应头</span></span><br><span class="line">      resp.append(<span class="string">"Server: Simple_Tomcat Server/0.0.1"</span>).append(SysCon.CRLF);</span><br><span class="line">      resp.append(<span class="string">"DATE:"</span>).append(<span class="keyword">new</span> Date()).append(SysCon.CRLF);</span><br><span class="line">      <span class="comment">// text/json text/html</span></span><br><span class="line">      resp.append(<span class="string">"Content-type: text/html;charset=utf-8;"</span>).append(SysCon.CRLF);</span><br><span class="line">      <span class="comment">// 响应内容长度</span></span><br><span class="line">      resp.append(<span class="string">"Content-Length:"</span>).append(content.toString().getBytes().length).append(SysCon.CRLF);</span><br><span class="line">      resp.append(SysCon.CRLF);</span><br><span class="line">      resp.append(content);</span><br><span class="line">      <span class="comment">// 输出到网页上面</span></span><br><span class="line">      BufferedWriter bufferedReader = <span class="keyword">new</span> BufferedWriter(<span class="keyword">new</span> OutputStreamWriter(client.getOutputStream()));</span><br><span class="line">      bufferedReader.write(resp.toString());</span><br><span class="line">      bufferedReader.flush();</span><br><span class="line"></span><br><span class="line">      server.close();</span><br><span class="line">      client.close();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>访问: <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a></p>
+<h2 id="3-提取Response"><a href="#3-提取Response" class="headerlink" title="3:  提取Response"></a>3:  提取Response</h2><p>分析浏览器获得的响应:</p>
+<ol>
+<li><p>第一行为Http服务器的版本和状态码, 由于访问资源的不同状态码是不同的, 可以提取状态码为变量. 以设置不同的状态码提示信息</p>
+</li>
+<li><p>SERVER: 服务器版本号码, 不需要提取</p>
+</li>
+<li><p>DATE: 日期可以通过new Date()设置即可.</p>
+</li>
+<li><p>Content-type: 响应内容类型, 这里可以设置json, html,text等,本项目只展示html. 故不提取.</p>
+</li>
+<li><p>Content-length:  响应内容直接长度需要提取. </p>
+</li>
+</ol>
+<p>Response代码如下: </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io.github.jeesk;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedWriter;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.OutputStreamWriter;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Response</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> contengLength; <span class="comment">// 响应内容字节长度</span></span><br><span class="line">  <span class="keyword">private</span> StringBuilder content;</span><br><span class="line">  <span class="keyword">private</span> StringBuilder headInfo;</span><br><span class="line">  <span class="keyword">private</span> BufferedWriter bw;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Response</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      contengLength = <span class="number">0</span>;</span><br><span class="line">      content = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">      headInfo = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Response</span><span class="params">(Socket client)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>();</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">          bw = <span class="keyword">new</span> BufferedWriter(<span class="keyword">new</span> OutputStreamWriter(client.getOutputStream()));</span><br><span class="line">      &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">          e.printStackTrace();</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">private</span> Response <span class="title">createInfo</span><span class="params">(<span class="keyword">int</span> code)</span> </span>&#123;</span><br><span class="line">      headInfo.append(<span class="string">"HTTP/1.1"</span>).append(SysCon.BLANK).append(code).append(SysCon.BLANK);</span><br><span class="line">      <span class="keyword">switch</span> (code) &#123;</span><br><span class="line">          <span class="keyword">case</span> <span class="number">200</span>:</span><br><span class="line">              headInfo.append(<span class="string">"OK"</span>);</span><br><span class="line">              <span class="keyword">break</span>;</span><br><span class="line">          <span class="keyword">case</span> <span class="number">500</span>:</span><br><span class="line">              headInfo.append(<span class="string">"SERVER IS ERROR"</span>);</span><br><span class="line">              <span class="keyword">break</span>;</span><br><span class="line">          <span class="keyword">case</span> <span class="number">404</span>:</span><br><span class="line">              headInfo.append(<span class="string">" NOT FOUND!"</span>);</span><br><span class="line">              <span class="keyword">break</span>;</span><br><span class="line">          <span class="keyword">default</span>:</span><br><span class="line">              <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      headInfo.append(SysCon.CRLF);</span><br><span class="line">      <span class="comment">// 响应头</span></span><br><span class="line">      headInfo.append(<span class="string">"Server: Simple_Tomcat Server/0.0.1"</span>).append(SysCon.CRLF);</span><br><span class="line">      headInfo.append(<span class="string">"DATE:"</span>).append(<span class="keyword">new</span> Date()).append(SysCon.CRLF);</span><br><span class="line">      <span class="comment">// text/json text/html</span></span><br><span class="line">      headInfo.append(<span class="string">"Content-type: text/html;charset=utf-8;"</span>).append(SysCon.CRLF);</span><br><span class="line">      <span class="comment">// 响应内容长度, 作为变量可以随时改变</span></span><br><span class="line">      headInfo.append(<span class="string">"Content-Length:"</span>).append(content.toString().getBytes().length).append(SysCon.CRLF).append(SysCon.CRLF);</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> Response <span class="title">println</span><span class="params">(String appendContent)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (appendContent == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"appendContent is null "</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      content.append(appendContent).append(SysCon.CRLF);</span><br><span class="line">      contengLength += (appendContent + SysCon.CRLF).getBytes().length;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> Response <span class="title">print</span><span class="params">(String appendContent)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (appendContent == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"appendContent is null "</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      content.append(appendContent);</span><br><span class="line">      contengLength += appendContent.getBytes().length;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 推送出去</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> code)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.createInfo(code);</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">          bw.append(headInfo);</span><br><span class="line">          bw.append(content);</span><br><span class="line">          bw.flush();</span><br><span class="line">      &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">          e.printStackTrace();</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Server代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io.github.jeesk;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedWriter;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.OutputStreamWriter;</span><br><span class="line"><span class="keyword">import</span> java.net.ServerSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Server3</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">      ServerSocket server = <span class="keyword">new</span> ServerSocket(<span class="number">8080</span>);</span><br><span class="line">      <span class="comment">// 获得从浏览器中请求,</span></span><br><span class="line">      Socket client = server.accept();</span><br><span class="line">      <span class="comment">// 获得请求中的信息</span></span><br><span class="line">      InputStream inputStream = client.getInputStream();</span><br><span class="line">      <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2048</span>];</span><br><span class="line">      <span class="keyword">int</span> len = inputStream.read(bytes);</span><br><span class="line">      String requestInfo = <span class="keyword">new</span> String(bytes, <span class="number">0</span>, len);</span><br><span class="line">      System.out.println(requestInfo);</span><br><span class="line">      StringBuilder content = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">      content.append(<span class="string">"&lt;html&gt;&lt;head&gt;&lt;title&gt;Http响应&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Hello tomcat , 你好 Tomcat&lt;/body&gt;&lt;/html&gt;"</span> );</span><br><span class="line">      <span class="comment">// 如果使用下面的json形式, 那么僵Content-type: 里面的html变成json即可.</span></span><br><span class="line">      <span class="comment">// content.append(" &#123;\"name\":\"小强\",\"age\":16,\"msg\":[\"a\",\"b\"],\"regex\": \"^http://.*\"&#125;");</span></span><br><span class="line">      Response response = <span class="keyword">new</span> Response(client);</span><br><span class="line">      <span class="comment">// 在网页上面要显示的内容</span></span><br><span class="line">      response.print(<span class="string">"&lt;html&gt;&lt;head&gt;&lt;title&gt;Http响应&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Hello tomcat Http响应&lt;/body&gt;&lt;/html&gt;"</span>);</span><br><span class="line">      response.push(<span class="number">200</span>);</span><br><span class="line">      server.close();</span><br><span class="line">      client.close();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-提取Request"><a href="#4-提取Request" class="headerlink" title="4:  提取Request"></a>4:  提取Request</h2><p>分析浏览器的请求:</p>
+<ol>
+<li>第一行请求头的请求, 我们可以获得请求的方式比如get还是post, 还可以拿到,包括请求的url. 甚至是参数. </li>
+</ol>
+<ol>
+<li>今天暂时不讨论post方式的请求体的参数解析. 那么Request对象具有的字段:  method(请求方式),url(请求路劲), 请求头(第一行)</li>
+<li>请求的参数, 由于我们讨论的是get方式的请求方法, 那么参数只是在请求头里获取即可.  参数是以key:value的形式,也有可能是多选框, 也就是说一个key对应多个value.   那么参数可以抽象成功一个Map&lt;String,List<string>&gt;, 一个key,可以只有一个参数, 或者是多个参数. 当然我们自己写的页面当然知道什么key对应一个参数,还是key对应多个. 我们可以提供2个方法, 用于获得 字符串数组,和单个字符串的方法/</string></li>
+</ol>
+<p>Request 代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io.github.jeesk;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> lombok.Getter;</span><br><span class="line"><span class="keyword">import</span> lombok.Setter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.swing.plaf.FontUIResource;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@Setter</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> String url;</span><br><span class="line">  <span class="keyword">private</span> String method;</span><br><span class="line">  <span class="keyword">private</span> String requestInfo; <span class="comment">// 请求头</span></span><br><span class="line">  <span class="keyword">private</span> Map&lt;String, List&lt;String&gt;&gt; paramValueMap;</span><br><span class="line">  <span class="keyword">private</span> InputStream is;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Request</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      url = <span class="string">""</span>;</span><br><span class="line">      method = <span class="string">""</span>;</span><br><span class="line">      requestInfo = <span class="string">""</span>;</span><br><span class="line">      paramValueMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Request</span><span class="params">(Socket client)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>();</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">          is = client.getInputStream();</span><br><span class="line">          <span class="keyword">byte</span>[] data = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">20480</span>];</span><br><span class="line">          <span class="keyword">int</span> len = is.read(data);</span><br><span class="line">          requestInfo = <span class="keyword">new</span> String(data, <span class="number">0</span>, len);</span><br><span class="line">          <span class="keyword">this</span>.parseRequestInfo();</span><br><span class="line">      &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">          e.printStackTrace();</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建请求后, 解析头信息</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">parseRequestInfo</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line"><span class="comment">//     GET /login?username=username&amp;passwd=passwd&amp;books=1&amp;books=2 HTTP/1.1</span></span><br><span class="line"><span class="comment">//       Host: localhost:8080</span></span><br><span class="line"><span class="comment">//       Connection: keep-alive</span></span><br><span class="line"><span class="comment">//       Cache-Control: max-age=0</span></span><br><span class="line"><span class="comment">//       Upgrade-Insecure-Requests: 1</span></span><br><span class="line"><span class="comment">//       User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36</span></span><br><span class="line"><span class="comment">//       DNT: 1</span></span><br><span class="line"><span class="comment">//       Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8</span></span><br><span class="line"><span class="comment">//       Accept-Encoding: gzip, deflate, br</span></span><br><span class="line"><span class="comment">//       Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en-GB;q=0.7,en;q=0.6</span></span><br><span class="line">      <span class="comment">// 获得请求信息的第一行</span></span><br><span class="line">      <span class="keyword">int</span> inx = requestInfo.indexOf(SysCon.CRLF);</span><br><span class="line">      String firstLine = requestInfo.substring(<span class="number">0</span>, inx);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">int</span> index = firstLine.indexOf(<span class="string">"/"</span>);<span class="comment">// 获得第一个/的索引</span></span><br><span class="line">      method = firstLine.substring(<span class="number">0</span>, index).trim(); <span class="comment">// 截取字符串获得method</span></span><br><span class="line">      <span class="keyword">int</span> index2 = firstLine.indexOf(<span class="string">"HTTP/"</span>);<span class="comment">// 获得HTTP/所在的索引.</span></span><br><span class="line">      String pathAndParam = firstLine.substring(index, index2); <span class="comment">// 访问路径   +   参数</span></span><br><span class="line">      String[] split = pathAndParam.split(<span class="string">"\\?"</span>); <span class="comment">// 通过问号分隔</span></span><br><span class="line">      <span class="comment">// 为了处理方便,这里暂时考虑路径和参数为空的情况</span></span><br><span class="line">      url = split[<span class="number">0</span>];</span><br><span class="line">      String paramStr = split[<span class="number">1</span>];</span><br><span class="line">      <span class="comment">// 解析请求参数成Map</span></span><br><span class="line">      parseParamValue(paramStr);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">parseParamValue</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">      StringTokenizer stringTokenizer = <span class="keyword">new</span> StringTokenizer(str, <span class="string">"&amp;"</span>);</span><br><span class="line">      <span class="keyword">while</span> (stringTokenizer.hasMoreTokens()) &#123;</span><br><span class="line">          String keyAndValue = stringTokenizer.nextToken();</span><br><span class="line">          String[] values = keyAndValue.split(<span class="string">"="</span>);</span><br><span class="line">          <span class="keyword">if</span> (values.length == <span class="number">1</span>) &#123; <span class="comment">// 只有key, 没有value</span></span><br><span class="line">              Arrays.copyOf(values, <span class="number">2</span>);</span><br><span class="line">              values[<span class="number">1</span>] = <span class="string">""</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">if</span> (paramValueMap.get(values[<span class="number">0</span>]) == <span class="keyword">null</span>) &#123; <span class="comment">// 判断key是否存在</span></span><br><span class="line">              paramValueMap.put(values[<span class="number">0</span>], <span class="keyword">new</span> ArrayList&lt;String&gt;());</span><br><span class="line">          &#125;</span><br><span class="line">          paramValueMap.get(values[<span class="number">0</span>]).add(values[<span class="number">1</span>]); <span class="comment">// 将解析的valule放到对应集合中</span></span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 获得指定key的数组</span></span><br><span class="line"><span class="comment">  *</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="keyword">public</span> String[] getParameterValues(String key) &#123;</span><br><span class="line">      <span class="keyword">if</span> (key == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"PARAM IS NULL!"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      List&lt;String&gt; values = paramValueMap.get(key);</span><br><span class="line">      <span class="keyword">if</span> (values == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> values.toArray(<span class="keyword">new</span> String[values.size()]);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 获得单个key的value值</span></span><br><span class="line"><span class="comment">  *</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">getParameter</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (key == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"PARAM IS NULL!"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      String[] parameterValues = getParameterValues(key);</span><br><span class="line">      <span class="keyword">if</span> (parameterValues == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> parameterValues[<span class="number">0</span>];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Server代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> io.github.jeesk;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.ServerSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Server4</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">      ServerSocket server = <span class="keyword">new</span> ServerSocket(<span class="number">8080</span>);</span><br><span class="line">      <span class="comment">// 获得从浏览器中请求,</span></span><br><span class="line">      Socket client = server.accept();</span><br><span class="line">      Request request = <span class="keyword">new</span> Request(client);</span><br><span class="line">      System.out.println(request.getMethod());</span><br><span class="line">      System.out.println(request.getUrl());</span><br><span class="line">      <span class="keyword">if</span> (request.getParamValueMap().size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">          Map&lt;String, List&lt;String&gt;&gt; paramValueMap = request.getParamValueMap();</span><br><span class="line">          paramValueMap.forEach((x, y) -&gt; &#123;</span><br><span class="line">              System.out.println(x + <span class="string">":"</span> + y);</span><br><span class="line">          &#125;);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 如果使用下面的json形式, 那么僵Content-type: 里面的html变成json即可.</span></span><br><span class="line">      <span class="comment">// content.append(" &#123;\"name\":\"小强\",\"age\":16,\"msg\":[\"a\",\"b\"],\"regex\": \"^http://.*\"&#125;");</span></span><br><span class="line">      Response response = <span class="keyword">new</span> Response(client);</span><br><span class="line">      <span class="comment">// 在网页上面要显示的内容</span></span><br><span class="line">      response.print(<span class="string">"&lt;html&gt;&lt;head&gt;&lt;title&gt;Http响应&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Hello tomcat Http响应&lt;/body&gt;&lt;/html&gt;"</span>);</span><br><span class="line">      response.push(<span class="number">200</span>);</span><br><span class="line">      server.close();</span><br><span class="line">      client.close();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>访问:  <a href="http://localhost:8080/login?username=username&amp;passwd=passwd&amp;books=1&amp;books=2" target="_blank" rel="noopener">http://localhost:8080/login?username=username&amp;passwd=passwd&amp;books=1&amp;books=2</a></p>
+<p>在idea控制台打印出请求方式, 路径,还有参数. </p>
+<h2 id="5-封装Dispatcher和Servlet-并且增加多线程处理Request"><a href="#5-封装Dispatcher和Servlet-并且增加多线程处理Request" class="headerlink" title="5:  封装Dispatcher和Servlet, 并且增加多线程处理Request"></a>5:  封装Dispatcher和Servlet, 并且增加多线程处理Request</h2><ol>
+<li>封装DefaultServlet, 处理Response和Request</li>
+<li>由于现在请求一次服务器就关闭了,增加多线程处理, 避免阻塞.</li>
+</ol>
+<h2 id="6-封装ServletContext-和使用xml文件配置Servlet包名和映射路径"><a href="#6-封装ServletContext-和使用xml文件配置Servlet包名和映射路径" class="headerlink" title="6:  封装ServletContext,和使用xml文件配置Servlet包名和映射路径"></a>6:  封装ServletContext,和使用xml文件配置Servlet包名和映射路径</h2><p>5,6 的代码太多了, 暂时不贴了.  代码放在了github上面:  <a href="https://github.com/jeesk/simpletomcat" target="_blank" rel="noopener">https://github.com/jeesk/simpletomcat</a></p>
+<blockquote>
+<p>​     后面实现了默认登录不添加路劲跳转到首页登录框.  这就是实现了一个极其简单的tomcat服务器了. 并且可以放html文件到simple_4项目的webapp下面目录. 然后响应到浏览器.</p>
+<p>​    项目实现了非常简单的请求解析, 但是功能太单一 . 如果有新兴趣可以慢慢完善.比如增加Filter, 增加Session, 增加网页的功能(集成freemarker), 使用注解简单的模拟Spring mvc等. </p>
+</blockquote>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/posts/ThreadLocal-deepin.html" data-toggle="tooltip" data-placement="top" title="ThreadLocal部分源码解析与理解">&larr; 上一篇文章</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/posts/redis-shell.html" data-toggle="tooltip" data-placement="top" title="使用shell 操作Redis数据库">下一篇文章 &rarr;</a>
+                        </li>
+                    
+                </ul>
+                
+
+                 <!-- <div class="comment" id="vcomments"></div>  -->
+                
+
+                 
+                 
+                    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<div id="gitalk-container"></div>
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: 'f6c70371be725eefc9ee',
+        clientSecret: '207610699384c4b12403200b20785daf446f3e3c',
+        id: window.location.pathname,
+        repo: 'jeesk.github.io',
+        owner: 'jeesk',
+        admin: 'jeesk'
+    })
+    gitalk.render('gitalk-container')
+</script>
+                    
+
+
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#-Tomcat -Java" title="-Tomcat -Java">-Tomcat -Java</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks" target="_blank">Kaijun&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me" target="_blank">Hux Blog</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8  col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 山间草夫 2019 
+                    <br>
+
+                    <span style="margin-top: 6px;display:inline-block;">
+                    Powered by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>  |
+                    
+                    Theme —  <a href="https://github.com/Huxpro/huxpro.github.io">Huxpro</a>   |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=jeesk&repo=jsp_servlet_mysql_basicProject&type=star&count=true">
+                    </iframe>
+<span>
+                </span></span></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!--载入js，在</body>之前插入即可-->
+    <!--Leancloud 操作库:-->
+    <!-- <script src="/js/av-min.js"></script> -->
+    <!--Valine 的核心代码库-->
+    <!-- <script src="/js/Valine.min.js"></script> -->
+
+
+<!-- <script>
+    new Valine({
+        av: AV,
+        el: '#vcomments',
+        placeholder: '欢迎留下您的评论，支持部分Markdown语法，如 *斜体*、**加粗**、`行内代码`、[超链接](链接地址)、![图片](图片地址) 等',
+        appId: 'WvcpILV0ImhrHowrLek0rAn9-gzGzoHsz',
+        appKey: 'N84KdKuNF8feKKf0bV3dM2Yc',
+        pageSize: 100,
+        avatar:'',
+        visitor: true,
+        notify: false,
+        verify: false
+    })
+</script> -->
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://shanjiancaofu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

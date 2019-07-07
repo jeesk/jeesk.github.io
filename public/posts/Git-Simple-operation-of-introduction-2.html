@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="我家有两颗树,一棵树是枣树,另外一棵也是枣树.">
+    <meta name="keyword" content="xxxxxxxx">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Git入门之简单操作二 - 山间草夫
+        
+    </title>
+
+    <link rel="canonical" href="https://shanjiancaofu.com/posts/Git-Simple-operation-of-introduction-2.html">
+
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+   
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">山间草夫</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">首页</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">文章归档</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">标签</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#-Git" title="-Git">-Git</a>
+                        
+                    </div>
+                    <h1>Git入门之简单操作二</h1>
+                    <h2 class="subheading">不适合人类阅读，非常水的自我笔记</h2>
+                    <span class="meta">
+                        Posted by jeesk on
+                        2019-03-17
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-10 
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="Git-常用操作"><a href="#Git-常用操作" class="headerlink" title="Git 常用操作"></a>Git 常用操作</h2><ol>
+<li><p><strong>查看操作历史</strong></p>
+<blockquote>
+<p>实际工作中，我们脑子里怎么可能记得一个几千行的文件每次都改了什么内容，不然要版本控制系统干什么。版本控制系统肯定有某个命令可以告诉我们历史记录，在 Git 中，我们用 git log 命令查看：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">log</span></span><br><span class="line">git <span class="built_in">log</span> 2</span><br></pre></td></tr></table></figure>
+<p>git log 命令显示从最近到最远的提交日志，如果嫌输出信息太多，看得眼花缭乱的，可以试试加上 –pretty=oneline 参数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">log</span> --pretty=oneline</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>git的每次commit 都有一个唯一的版本号码</strong></p>
+<blockquote>
+<p>当两个人同时在一个代码上工作时候，分别往各自的本地的版本库提交时，相同的提交号对应着不同的修改，如果使用 1，2，3 这样的数字不能保证唯一性，所以 Git 使用 SHA-1 算法产生唯一标识符，保证全球唯一。<br>比如程序员甲和乙负责共同开发一个聊天软件，使用 Git 来版本控制。 Git 是分布式版本控制，每个人都有一个版本库。如果 Git 版本控制用 1，2，3 这样的数字来生成版本号，那么程序员甲和乙代码合并的时候就会出现问题。版本 1 到底是谁的？<br>SVN 是集中式的版本控制，只有一个版本库，所以版本号可以从 1，2，3 开始。Git 是分布式版本控制，每个人都有一个版本库，所以不能从 1，2，3 开始。<br>看不懂可以跳过去，以后用多了，就明白了</p>
+</blockquote>
+</li>
+<li><p><strong>查看文件差异</strong></p>
+<blockquote>
+<p>如果一个文件知道他修改了,但如果能看看具体修改了什么内容，自然是很好的。<br>比如你休假两周从国外回来，第一天上班时，已经记不清上次怎么修改的 readme.txt，所以，需要用 git diff 这个命令看看：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git diff [file]</span><br><span class="line">git diff HEAD 工作区和仓库</span><br><span class="line">git diff --staged  缓存区和仓库</span><br><span class="line">git diff –cached	比较的是暂存区和版本库的差别</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>回退版本</strong></p>
+<blockquote>
+<p>我们不断修改文件，不断的往版本库中提交文件。就好比玩 RPG 游戏时，每通过一关就会自动把游戏状态存盘，如果某一关没过去，你还可以选择读取前一关的状态。有些时候，在打Boss 之前，你会手动存盘，以便万一打 Boss 失败了，可以从最近的地方重新开始。Git 也是一样，每当你觉得文件修改到一定程度的时候，就可以“保存一个快照”，这个快照在 Git 中被称为 commit。一旦你把文件改乱了，或者误删了文件，还可以从最近的一个 commit 恢复，然后继续工作，而不是把几个月的工作成果全部丢失。</p>
+</blockquote>
+<p>​     Tips:   Git的版本指向类似于指针, 如果要改变当前版本的内容, 只需要改变当前HEAD的指向即可, 这也就是Git速度比SVN,CVS快的原因.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">如果想回到上一个版本，应该怎么做呢?</span><br><span class="line">首先，Git 必须知道当前版本是哪个版本，在 Git 中，用 HEAD 表示当前版本，上一个版本就是 HEAD^，上上一个版本就是 HEAD^^。</span><br><span class="line">当然往上 100 个版本写 100 个 ^ 比较容易数不过来，所以写成 HEAD~100。</span><br><span class="line"></span><br><span class="line">现在，我们要把当前版本回退到上一个版本，就可以使用 git reset 命令：</span><br><span class="line">git reset --hard HEAD^</span><br><span class="line"></span><br><span class="line">回到指定版本（只要写前几位就可以了）：</span><br><span class="line">git reset --hard &lt;commit id&gt;</span><br><span class="line"></span><br><span class="line">用 git reflog 查看命令历史</span><br><span class="line"></span><br><span class="line">可以查看所有分支的所有操作记录（包括（包括 commit 和 reset 的操作），包括已经被删除的 commit 记录。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>撤销修改</strong></p>
+<blockquote>
+<p>当 我们修改了一个文件的时候, 发现我们已经不需要修改这个文件了. 那么这个时候怎么撤销呢?</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">1、取消对文件的修改（还没存到暂存区域）</span><br><span class="line"></span><br><span class="line">git checkout -- file 可以丢弃工作区的修改：</span><br><span class="line"></span><br><span class="line">命令 git checkout -- readme.txt 意思就是，把 readme.txt 文件在工作区的修改全部撤销，撤销修改就回到和版本库一模一样的状态，让这个文件回到最近一次 git commit 状态。</span><br><span class="line"></span><br><span class="line">2、取消已经暂存的文件（已暂存，但还未提交）</span><br><span class="line"></span><br><span class="line">git reset HEAD file 的方式取消暂存，再通过上面的命令取消文件修改；抑或直接回退到指定 commit（git reset --hard &lt;最近一次commitID&gt;）。</span><br><span class="line"></span><br><span class="line">注意：git checkout -- file命令中的 -- 很重要，没有 --，就变成了“切换到另一个分支”的命令，我们在后面的分支管理中会再次遇到 git checkout 命令。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>删除文件</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">一般情况下，你通常直接在文件管理器中把没用的文件删了，或者用 rm 命令删了：rm test.txt 这个时候，Git 知道你删除了文件，因此，工作区和版本库就不一致了，git status 命令会立刻告诉你哪些文件被删除了。</span><br><span class="line"></span><br><span class="line">rm test.txt</span><br><span class="line">git add test.txt;</span><br><span class="line"></span><br><span class="line">上面两条命令等价于  git rm test.txt, 删除完成后需要 commit。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>集成Github</strong></p>
+<blockquote>
+<p>到目前为止，我们已经掌握了如何在 Git 仓库里对一个文件进行时光穿梭，你再也不用担心文件备份或者丢失的问题了。协同修改怎么办？</p>
+<p>Git 的功能之一：远程仓库。</p>
+<p>Git 是分布式版本控制系统，同一个 Git 仓库，可以分布到不同的机器上。怎么分布呢？最早，肯定只有一台机器有一个原始版本库，此后，别的机器可以“克隆”这个原始版本库，而且每台机器的版本库其实都是一样的，并没有主次之分。</p>
+<p>找一台电脑充当服务器的角色，每天 24 小时开机，其他每个人都从这个“服务器”仓库克隆一份到自己的电脑上，并且各自把各自的提交推送到服务器仓库里，也从服务器仓库中拉取别人的提交。</p>
+<p>可以自己搭建一台运行 Git 的服务器，不过现阶段，为了学 Git 先搭个服务器绝对是小题大作。好在这个世界上有个叫 GitHub 的神奇的网站，从名字就可以看出，这个网站就是提供 Git 仓库托管服务的，所以，只要注册一个 GitHub 账号，就可以免费获得 Git 远程仓库。</p>
+</blockquote>
+<ol>
+<li><p>配置 SSHKEY, 下面的邮箱要填写你自己的.(<strong>无论是github, 还是公司自己搭建的gitlab, 都是差不多的, 如果不配自SSHKEY ,那么你讲不能使用git协议, 只能使用http协议下载项目</strong>)</p>
+<p>在git bash Here中 执行 <code>ssh-keygen -t rsa -C &quot;youremail@example.com&quot;</code>, 执行命令后一直Enter即可.</p>
+<p>在你的Window用户目录下面有一个文件夹, 会生成三个文件.其中id_rsa.pub是你的公钥.id_rsa是你的私钥, 一定不要把你的私钥泄露楼, 因为公钥也是私钥产生的.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\jeesk\.ssh</span><br><span class="line">	    id_rsa</span><br><span class="line">    id_rsa.pub</span><br><span class="line">    known_hosts</span><br></pre></td></tr></table></figure>
+<p>前提是你已经注册了 <code>github</code>的账号了, 那么打开 <a href="https://github.com/settings/keys" target="_blank" rel="noopener"><a href="https://github.com/settings/keys" target="_blank" rel="noopener">https://github.com/settings/keys</a></a> , 将你的id_rsa.pub使用文本编辑器打开, 然后复制里面的内容. 然后点击页面上的  <code>NEW SSH key</code>, title可以填写你对key的标识, key的输入框中 将你的复制的id_rsa.pub 粘贴即可.</p>
+</li>
+<li><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name <span class="string">" 你的名字"</span> </span><br><span class="line"></span><br><span class="line">git congif --global user.mail <span class="string">"你的邮箱"</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="3">
+<li><p>Github 创建一个仓库</p>
+<p>打开 <a href="https://github.com/" target="_blank" rel="noopener"><a href="https://github.com/" target="_blank" rel="noopener">https://github.com/</a></a>  ,来到你的首页,前提是你已经登录了github, 然后点击按钮<code>NEW</code>, 这个时候会来到创建仓库的页面.</p>
+<p>需要填写的内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. Repository name:  这个是你的仓库名, 根据实际情况填写即可.</span><br><span class="line">2. Description : 仓库描述, 可以简单的描述一下, 这个仓库是什么情况,是做什么的.</span><br><span class="line">3. 选择Puclic, 还是Private. 如果你不想你的项目被公开,那么选择Private是一个不错的选择.否则Public也挺好.</span><br><span class="line">4. Initialize this repository with a README    是否初始化README, 这里我不建议初始化. 这个README文件, 建议由本地创建后, 提交到github即可.</span><br><span class="line">5.  Add .gitignore  , 这里默认选择`none`即可.  这个文件后面我们会解释的.</span><br><span class="line">6.  Add a license: , 这里选择none, license, 表示你的项目的许可证. 这个暂时不选, 以后你用多了就知道这个license 的意思了.</span><br></pre></td></tr></table></figure>
+<p>点击 create repository, 仓库创建完毕. 这个时候页面会提示我摩恩如何操作</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Quick setup — <span class="keyword">if</span> you’ve <span class="keyword">done</span> this kind of thing before  or	HTTPS</span><br><span class="line">SSH</span><br><span class="line">https://github.com/jeesk/Hello.git</span><br><span class="line">Get started by creating a new file or uploading an existing file. We recommend every repository include a README, LICENSE, and .gitignore.</span><br><span class="line"></span><br><span class="line"><span class="comment">##  在命令行中创建一个仓库.</span></span><br><span class="line">…or create a new repository on the <span class="built_in">command</span> line</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"# Hello"</span> &gt;&gt; README.md</span><br><span class="line">git init</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m <span class="string">"first commit"</span></span><br><span class="line">git remote add origin https://github.com/jeesk/Hello.git</span><br><span class="line">git push -u origin master</span><br><span class="line"></span><br><span class="line"><span class="comment">## 在命令行中将本地仓库,推送到当前创建的仓库.</span></span><br><span class="line">…or push an existing repository from the <span class="built_in">command</span> line</span><br><span class="line">git remote add origin https://github.com/jeesk/Hello.git</span><br><span class="line">git push -u origin master</span><br><span class="line"></span><br><span class="line"><span class="comment">## 直接上传文件</span></span><br><span class="line">…or import code from another repository</span><br><span class="line">You can initialize this repository with code from a Subversion, Mercurial, or TFS project.</span><br></pre></td></tr></table></figure>
+<p>那么现在我们在本地创建一个仓库, 并且将本地仓库和Github的仓库关联起来.</p>
+<p>随便找到一个空的目录, 执行下面的操作:</p>
+<p>右键常创建一个 hello.txt 文件, 内容是 hello world.</p>
+<p>初始化当前目录为git 的工作空间</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+<p>将当前目录的所有的文件添加到缓存区</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br></pre></td></tr></table></figure>
+<p>将缓存区的文件提交到本地仓库, -m 后面的内容是你每次提交的备注,在实际工作中, 一般会写上你这次提交做了那些工作, 修改了或者修复操作的解释.方便团队审查.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m <span class="string">"firstcommit"</span></span><br></pre></td></tr></table></figure>
+<p>将本地仓库和github的远程仓库关联, 下面的地址要填写你自己的地址, 不然关联不上.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin https://github.com/jeesk/Hello.git</span><br></pre></td></tr></table></figure>
+<p>推送本地仓库内容到远程仓库的主分支.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+<p>这个时候可以打开你的仓库看见, hello.txt 已经出现在你的github仓库上面了.</p>
+</li>
+</ol>
+</li>
+</ol>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/posts/Git-Introductory-work-scenarios-3.html" data-toggle="tooltip" data-placement="top" title="Git入门之工作场景三">&larr; 上一篇文章</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/posts/Git-Introductory-concepts-1.html" data-toggle="tooltip" data-placement="top" title="Git入门之概念介绍一">下一篇文章 &rarr;</a>
+                        </li>
+                    
+                </ul>
+                
+
+                 <!-- <div class="comment" id="vcomments"></div>  -->
+                
+
+                 
+                 
+                    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<div id="gitalk-container"></div>
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: 'f6c70371be725eefc9ee',
+        clientSecret: '207610699384c4b12403200b20785daf446f3e3c',
+        id: window.location.pathname,
+        repo: 'jeesk.github.io',
+        owner: 'jeesk',
+        admin: 'jeesk'
+    })
+    gitalk.render('gitalk-container')
+</script>
+                    
+
+
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#-Git" title="-Git">-Git</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks" target="_blank">Kaijun&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me" target="_blank">Hux Blog</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8  col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 山间草夫 2019 
+                    <br>
+
+                    <span style="margin-top: 6px;display:inline-block;">
+                    Powered by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>  |
+                    
+                    Theme —  <a href="https://github.com/Huxpro/huxpro.github.io">Huxpro</a>   |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=jeesk&repo=jsp_servlet_mysql_basicProject&type=star&count=true">
+                    </iframe>
+<span>
+                </span></span></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!--载入js，在</body>之前插入即可-->
+    <!--Leancloud 操作库:-->
+    <!-- <script src="/js/av-min.js"></script> -->
+    <!--Valine 的核心代码库-->
+    <!-- <script src="/js/Valine.min.js"></script> -->
+
+
+<!-- <script>
+    new Valine({
+        av: AV,
+        el: '#vcomments',
+        placeholder: '欢迎留下您的评论，支持部分Markdown语法，如 *斜体*、**加粗**、`行内代码`、[超链接](链接地址)、![图片](图片地址) 等',
+        appId: 'WvcpILV0ImhrHowrLek0rAn9-gzGzoHsz',
+        appKey: 'N84KdKuNF8feKKf0bV3dM2Yc',
+        pageSize: 100,
+        avatar:'',
+        visitor: true,
+        notify: false,
+        verify: false
+    })
+</script> -->
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://shanjiancaofu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="我家有两颗树,一棵树是枣树,另外一棵也是枣树.">
+    <meta name="keyword" content="xxxxxxxx">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Mybaties入门详解 - 山间草夫
+        
+    </title>
+
+    <link rel="canonical" href="https://shanjiancaofu.com/posts/Mybaties-Introduction.html">
+
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+   
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">山间草夫</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">首页</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">文章归档</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">标签</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#Mybatis" title="Mybatis">Mybatis</a>
+                        
+                    </div>
+                    <h1>Mybaties入门详解</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Jeesk on
+                        2018-05-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-10 
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="JDBC编程存在的问题"><a href="#JDBC编程存在的问题" class="headerlink" title="JDBC编程存在的问题"></a>JDBC编程存在的问题</h2><h4 id="原始JDBC编程存在的问题"><a href="#原始JDBC编程存在的问题" class="headerlink" title="原始JDBC编程存在的问题"></a>原始JDBC编程存在的问题</h4><ol>
+<li>代码繁琐，重复</li>
+<li>资源频繁创建和销毁(虽然可以使用连接池解决)</li>
+<li>sql语句写死在代码中，不方便维护</li>
+<li>?占位符参数设置当参数较多时比较麻烦</li>
+<li>封装处理结果集很麻烦(封装结果集)<a id="more"></a>
+<h4 id="分析问题"><a href="#分析问题" class="headerlink" title="分析问题"></a>分析问题</h4><blockquote>
+<p>问题分析与解决</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>资源的创建和销毁<br>  同样使用连接池来管理,并且也使用配置文件来配置数据库相关的连接信息,比如配置在config.xml中(使用xml作为配置文件能够表达层级关系,比properties强大)</li>
+<li>sql语句硬编码<br>  将sql语句也配置在配置文件中,与Java代码相分离,提高可维护性,比如配置在xxxMapper.xml文件中</li>
+<li>?占位符参数设置参数数量过多<br>  将参数统一封装、传递、设置–&gt;需要编写参数解析器</li>
+<li>对结果集封装处理的限制条件<br>  对结果集统一处理,需要编写结果集处理器(对于名称和类型不一致的字段/属性使用ORM思想解决)</li>
+</ul>
+<p>(这些问题早已有人帮我们解决了,并把解决方案封装成了一个叫作MyBatis的框架供我们拿过来直接使用！)</p>
+<h4 id="前奏"><a href="#前奏" class="headerlink" title="前奏"></a>前奏</h4><p>学习Mybaties框架之前先来学习一下ORM思想</p>
+<p>●对象关系映射（Object Relational Mapping，简称ORM）：<br>是一种为了解决面向对象与关系数据库存在的互不匹配的问题的技术。<br>简单的说，ORM是通过使用描述对象和数据库之间映射的元数据，将Java程序中的对象自动持久化到关系数据库中。</p>
+<p>ORM 主要解决对象到关系的映射：</p>
+<h2 id="面向对象概念-面向关系概念"><a href="#面向对象概念-面向关系概念" class="headerlink" title="面向对象概念        面向关系概念"></a>面向对象概念        面向关系概念</h2><p>类                          表<br>属性                     表的列（字段）<br>对象                     表的行（记录）</p>
+<table>
+<thead>
+<tr>
+<th>类</th>
+<th>表</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>属性</td>
+<td>表的列(字段)</td>
+</tr>
+<tr>
+<td>对象</td>
+<td>表的行(记录)</td>
+</tr>
+</tbody>
+</table>
+<p>●常见ORM框架</p>
+<ol>
+<li>JPA：本身是一种ORM规范,不是ORM框架。由各大ORM框架提供实现。</li>
+<li>Hibernate：目前最流行的ORM框架。设计灵巧,性能优秀,文档丰富。</li>
+<li>MyBatis目前最受欢迎的持久层解决方案。</li>
+</ol>
+<h5 id="框架本质："><a href="#框架本质：" class="headerlink" title="框架本质："></a>框架本质：</h5><ol>
+<li>框架是一系列jar包，其本质是对JDK功能的拓展。</li>
+<li>框架是一组程序的集合，包含了一系列的最佳实践，作用是解决某一个领域的问题。</li>
+</ol>
+<h5 id="最佳实践（Best-Practice）："><a href="#最佳实践（Best-Practice）：" class="headerlink" title="最佳实践（Best Practice）："></a>最佳实践（Best Practice）：</h5><p>实际上是无数程序员经历过无数次尝试之后，总结出来的处理特定问题的特定方法。<br>如果把程序员的自由发挥看作是一条通往成功的途径，最佳实践就是其中的最短路径，能极大的解放生产力。</p>
+<blockquote>
+<p>Web开发中的最佳实践：根据职责的纵向划分：控制层、业务层、持久层：</p>
+</blockquote>
+<ul>
+<li>控制层 ：web/mvc:   负责处理与界面交互的相关操作       (Spring MVC/Struts2)</li>
+<li>业务层 ：service:   负责复杂的业务逻辑计算和判断       (Spring)</li>
+<li>持久层 ：dao:       负责将业务逻辑数据进行持久化存储    (MyBatis/Hibernate)</li>
+</ul>
+<h4 id="简单认识Mybaties"><a href="#简单认识Mybaties" class="headerlink" title="简单认识Mybaties"></a>简单认识Mybaties</h4><p>认识MyBatis</p>
+<blockquote>
+<p>介绍 :</p>
+</blockquote>
+<p>MyBatis   是支持普通SQL查询，存储过程和高级映射的持久层框架，严格上说应该是一个SQL 映射框架。其前身是iBatis，也就是淘宝使用的持久层框架。<br>几乎所有的 JDBC代码和参数的手工设置以及结果集的处理都可以交给MyBatis完成，而这只需要简单的使用XML或注解配置就可以完成。和Hibernate相比更简单、更底层、性能更优异，因此更深入人心，更受企业的青睐。</p>
+<p><a href="https://github.com/mybatis" target="_blank" rel="noopener">GitHub地址</a></p>
+<p>包括了MyBatis很多子项目：</p>
+<ul>
+<li>mybatis-3:             MyBatis框架</li>
+<li>generator：            代码生成器</li>
+<li>spring:                MyBatis和Spring集成的组件</li>
+<li>spring-boot-starter：  MyBatis和Spring Boot集成的组件</li>
+<li>mybatipse：            MyBatis的Eclipse插件</li>
+</ul>
+<blockquote>
+<p>中文文档：<a href="http://www.mybatis.org/mybatis-3/zh/index.html" target="_blank" rel="noopener">入门文档</a> 和 <a href="http://www.mybatis.org/spring/zh/index.html" target="_blank" rel="noopener">Spring整合文档</a></p>
+</blockquote>
+<h4 id="Mybaties核心组件"><a href="#Mybaties核心组件" class="headerlink" title="Mybaties核心组件"></a>Mybaties核心组件</h4><p>■核心组件</p>
+<ol>
+<li>SqlSessionFactoryBuilder（构建器）：<br>根据配置信息或Java代码来构建SqlSessionFactory对象。<br>作用：创建SqlSessionFactory对象。</li>
+<li>SqlSessionFactory（会话工厂）：<br>好比是DataSource，线程安全的，在应用运行期间不要重复创建多次，建议使用单例模式。<br>作用：创建SqlSession对象</li>
+<li>SqlSession（会话）：<br>好比是Connection，线程不安全的，每次使用开启新的SqlSession对象，使用完毕正常关闭，默认使用DefaultSqlSession。<br>作用：提供操作数据库的  增删改查方法，可以调用操作方法，也可以操作Mapper组件。</li>
+<li>Executor（执行器）：<br>SqlSession本身不能直接操作数据库，需要Executor来完成，该接口有两个实现：缓存执行器（缺省）、基本执行器。</li>
+<li>MappedStatement：<br>映射语句封装执行语句时的信息如SQL、输入参数、输出结果。 </li>
+</ol>
+<blockquote>
+<p>涉及到的对象(不作要求)：</p>
+</blockquote>
+<ul>
+<li>SqlSession：表示和数据库交互的会话，完成必要数据库增删改查功能。</li>
+<li>Executor：执行器，是MyBatis 调度的核心，负责SQL语句的生成和查询缓存的维护。</li>
+<li>StatementHandler：语句处理器，封装了JDBC的DML、DQL操作、参数设置。</li>
+<li>ParameterHandler：参数处理器，把用户传入参数转换为JDBC需要的参数值。</li>
+<li>ResultSetHandler：结果集处理器，把结果集中的数据封装到List集合。</li>
+<li>TypeHandler：类型转换器，Java类型和JDBC类型的相互转换。</li>
+<li>MappedStatement：映射语句对象，维护了一条&lt;insert|update|delete|select&gt;节点的封装。</li>
+<li>SqlSource：SQL源，根据用户传入的参数生成SQL语句，并封装到BoundSql中。</li>
+<li>BoundSql：SQL绑定，封装SQL语句和对应的参数信息。</li>
+<li>Configuration：MyBatis全局配置对象，封装所有配置信息。</li>
+</ul>
+<p> 文件目录:<br> <img src="http://7s1rrm.com1.z0.glb.clouddn.com/18-5-29/82954557.jpg" alt="enter description here"></p>
+<h4 id="准备工件"><a href="#准备工件" class="headerlink" title="准备工件"></a>准备工件</h4><p>●创建工程&amp;导入jar包<br>MyBatis依赖jar包:</p>
+<ol>
+<li>MySQL驱动包：mysql-connector-java-5.1.*.jar</li>
+<li>MyBatis核心包：mybatis-3.4.5.jar</li>
+<li>其他依赖包：lib目录中的其他jar（需要时，再拷贝）</li>
+</ol>
+<p>●数据表和对象<br>创建表</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `t_user` (</span><br><span class="line">  `id` bigint(20) NOT NULL AUTO_INCREMENT,</span><br><span class="line">  `name` varchar(20) DEFAULT NULL,</span><br><span class="line">  `salary` decimal(8,2) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8;</span><br></pre></td></tr></table></figure>
+<p>创建Java文件</p>
+<p>●操作对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">package com.shanjiancaofu.smis.domain;</span><br><span class="line"></span><br><span class="line">import java.math.BigDecimal;</span><br><span class="line"></span><br><span class="line">import lombok.AllArgsConstructor;</span><br><span class="line">import lombok.Data;</span><br><span class="line">import lombok.NoArgsConstructor;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Product.java</span><br><span class="line"> * @version</span><br><span class="line"> * @date 2018年5月27日 上午11:56:48</span><br><span class="line"> * @author jeesk</span><br><span class="line"> * @since 1.0</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line">@Data</span><br><span class="line">@NoArgsConstructor</span><br><span class="line">@AllArgsConstructor</span><br><span class="line">public class User &#123;</span><br><span class="line">	private Long id;</span><br><span class="line">	private String name;</span><br><span class="line">	private BigDecimal salary;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="主要的配置文件"><a href="#主要的配置文件" class="headerlink" title="主要的配置文件"></a>主要的配置文件</h4><blockquote>
+<p>主配置文件(放在Src同级目录下面的Resources目录下,会编译到字节码编译路径)</p>
+</blockquote>
+<p>主配置文件主要包括数据库的信息，如:驱动名,url,用户名,密码，如连接池、事务等和全局的配置如关联映射日志、插件等。<br>命名: 一般使用mybatis-config.xml<br>位置: 一般放在编译路径</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span><br><span class="line">&lt;!DOCTYPE configuration</span><br><span class="line">  PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span><br><span class="line">  &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 这儿配置的是一个properties资源文件 ,可以使用$&#123;key&#125;在的形式配置连接池的value --&gt;</span><br><span class="line">	&lt;properties resource=&quot;db.properties&quot; /&gt;</span><br><span class="line"></span><br><span class="line">	&lt;typeAliases&gt;</span><br><span class="line">&lt;!--     	为某一个包下面配置别名为简单类名,如果是某一个类需要配置单独的别名可以在类止使用@Alias标签      --&gt;</span><br><span class="line">&lt;!-- 	   &lt;package name=&quot;com.shanjiancaofu.smis.domain&quot;/&gt; --&gt;</span><br><span class="line">	</span><br><span class="line">        &lt;!--                   配置单个类文件的别名 ,可以在Mapper.xml文件中使用这一些别名--&gt;</span><br><span class="line">		&lt;typeAlias type=&quot;com.shanjiancaofu.smis.domain.User&quot; alias=&quot;User&quot; /&gt;</span><br><span class="line">			&lt;!--   配置某一个包下面的别名为 --&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	&lt;/typeAliases&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- configuration表示根标签, environments表示环境,,default 灭表示默认使用那一个 --&gt;</span><br><span class="line">	&lt;environments default=&quot;development&quot;&gt;</span><br><span class="line">		&lt;environment id=&quot;development&quot;&gt;</span><br><span class="line">    &lt;!-- transation表示事务管理器  --&gt;</span><br><span class="line">			&lt;transactionManager type=&quot;JDBC&quot; /&gt;</span><br><span class="line">			&lt;dataSource type=&quot;POOLED&quot;&gt;  </span><br><span class="line">      &lt;!-- POOLD表示使用的默认的连接池 --&gt;</span><br><span class="line">				&lt;property name=&quot;driver&quot; value=&quot;$&#123;driver&#125;&quot; /&gt;</span><br><span class="line">				&lt;property name=&quot;url&quot; value=&quot;$&#123;url&#125;&quot; /&gt;</span><br><span class="line">				&lt;property name=&quot;username&quot; value=&quot;$&#123;username&#125;&quot; /&gt;</span><br><span class="line">				&lt;property name=&quot;password&quot; value=&quot;$&#123;password&#125;&quot; /&gt;</span><br><span class="line"></span><br><span class="line">			&lt;/dataSource&gt;</span><br><span class="line">		&lt;/environment&gt;</span><br><span class="line">	&lt;/environments&gt;</span><br><span class="line">	&lt;mappers&gt;</span><br><span class="line">		&lt;mapper resource=&quot;com/shanjiancaofu/smis/mapper/UserMapper.xml&quot; /&gt;</span><br><span class="line">	&lt;/mappers&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>映射文件</p>
+</blockquote>
+<p>映射文件主要是包含该对象的CRUD操作的配置和SQL。<br>命名:xxxMapper.xml    xxx表示要操作的类名   比如要操作User类  就是  UserMapper.xml<br>位置:一般放在mapper包下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span><br><span class="line">&lt;!DOCTYPE mapper</span><br><span class="line">  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span><br><span class="line">  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;</span><br><span class="line">&lt;mapper namespace=&quot;com.shanjiancaofu.smis.mapper.UserMapper&quot;&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	&lt;insert id=&quot;save&quot; parameterType=&quot;User&quot; useGeneratedKeys=&quot;true&quot;</span><br><span class="line">		keyColumn=&quot;id&quot; keyProperty=&quot;id&quot;&gt;</span><br><span class="line">    &lt;!-- 插入一个学生对象 --&gt;</span><br><span class="line">		insert into t_user(id,name,salary) values(null,#&#123;name&#125;,#&#123;salary&#125;)</span><br><span class="line"></span><br><span class="line">	&lt;/insert&gt;</span><br><span class="line">    &lt;!-- 删除指定Id的学生对象 --&gt;</span><br><span class="line">	&lt;delete id=&quot;delete&quot; parameterType=&quot;long&quot;&gt;</span><br><span class="line"></span><br><span class="line">		delete from t_user where id = #&#123;id&#125;</span><br><span class="line"></span><br><span class="line">	&lt;/delete&gt;</span><br><span class="line">    &lt;!-- 查询指定Id的学生对象 --&gt;&gt;</span><br><span class="line">	&lt;select id=&quot;get&quot; parameterType=&quot;long&quot; resultType=&quot;User&quot;&gt;  </span><br><span class="line"></span><br><span class="line">		select id,name,salary from t_user where id = #&#123;id&#125;</span><br><span class="line"></span><br><span class="line">	&lt;/select&gt;</span><br><span class="line">    &lt;!-- 获得所有的学生对象 --&gt;</span><br><span class="line">	&lt;select id=&quot;getAll&quot; resultMap=&quot;userMap&quot;&gt;</span><br><span class="line"></span><br><span class="line">		select uid,uname,usalary from t_user;</span><br><span class="line"></span><br><span class="line">	&lt;/select&gt;</span><br><span class="line">    &lt;!-- 修改某一个学生对象 --&gt;&gt;</span><br><span class="line">	&lt;update id=&quot;update&quot; parameterType=&quot;User&quot;&gt;</span><br><span class="line"></span><br><span class="line">		update t_user set name = #&#123;name&#125;,salary = #&#123;salary&#125; where id = #&#123;id&#125;;</span><br><span class="line"></span><br><span class="line">	&lt;/update&gt;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;/mapper&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="提取Mybaties的SqlSession工具类"><a href="#提取Mybaties的SqlSession工具类" class="headerlink" title="提取Mybaties的SqlSession工具类"></a>提取Mybaties的SqlSession工具类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">package com.shanjiancaofu.smis.uitl;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.InputStream;</span><br><span class="line">import org.apache.ibatis.io.Resources;</span><br><span class="line">import org.apache.ibatis.session.SqlSession;</span><br><span class="line">import org.apache.ibatis.session.SqlSessionFactory;</span><br><span class="line">import org.apache.ibatis.session.SqlSessionFactoryBuilder;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * MybatiesUtil.java</span><br><span class="line"> * @version</span><br><span class="line"> * @date 2018年5月27日 下午6:15:00</span><br><span class="line"> * @author jeesk</span><br><span class="line"> * @since 1.0</span><br><span class="line"> * </span><br><span class="line"> *  Mybaties的SqlSession工具类的设计</span><br><span class="line"> *  1): 在静态代码块中加载配置文件</span><br><span class="line"> *  2); 在静态代码块中创建SqlSeesionFactory相当于DataSource,只需要创建一次就够了</span><br><span class="line"> */</span><br><span class="line">public abstract class MybatiesUtil &#123;</span><br><span class="line"></span><br><span class="line">	private static SqlSessionFactory sqlSessionFactory = null;</span><br><span class="line">	static &#123;</span><br><span class="line"></span><br><span class="line">		try &#123;</span><br><span class="line">			InputStream resourceAsStream = Resources.getResourceAsStream(&quot;mybaties-config.xml&quot;);</span><br><span class="line">			sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceAsStream);</span><br><span class="line"></span><br><span class="line">		&#125; catch (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">			throw new RuntimeException(&quot;服务器忙!&quot;);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static SqlSession openSession() &#123;</span><br><span class="line"></span><br><span class="line">		return sqlSessionFactory.openSession();</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="DAO通用接口"><a href="#DAO通用接口" class="headerlink" title="DAO通用接口"></a>DAO通用接口</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">package com.shanjiancaofu.smis.dao;</span><br><span class="line"></span><br><span class="line">import java.util.List;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * IDAO.java</span><br><span class="line"> * @version</span><br><span class="line"> * @date 2018年5月27日 下午6:10:02</span><br><span class="line"> * @author jeesk</span><br><span class="line"> * @since 1.0</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line">public interface IDAO&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">	/**  保存操作</span><br><span class="line">	 * @param t</span><br><span class="line">	 */</span><br><span class="line">	void save(T t);</span><br><span class="line"></span><br><span class="line">	/** 更新操作</span><br><span class="line">	 * @param t</span><br><span class="line">	 */</span><br><span class="line">	void update(T t);</span><br><span class="line"></span><br><span class="line">	/** 删除操作</span><br><span class="line">	 * @param id</span><br><span class="line">	 */</span><br><span class="line">	void detele(Long id);</span><br><span class="line"></span><br><span class="line">	/** 查询指定Id的对象</span><br><span class="line">	 * @param id</span><br><span class="line">	 * @return</span><br><span class="line">	 */</span><br><span class="line">	T get(Long id);</span><br><span class="line"></span><br><span class="line">	/** 查询所有的对象</span><br><span class="line">	 * @return</span><br><span class="line">	 */</span><br><span class="line">	List&lt;T&gt; getAll();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="User类"><a href="#User类" class="headerlink" title="User类"></a>User类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">package com.shanjiancaofu.smis.domain;</span><br><span class="line">import java.math.BigDecimal;</span><br><span class="line">import lombok.AllArgsConstructor;</span><br><span class="line">import lombok.Data;</span><br><span class="line">import lombok.NoArgsConstructor;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Product.java</span><br><span class="line"> * @version</span><br><span class="line"> * @date 2018年5月27日 上午11:56:48</span><br><span class="line"> * @author jeesk</span><br><span class="line"> * @since 1.0</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line">@Data</span><br><span class="line">@NoArgsConstructor</span><br><span class="line">@AllArgsConstructor</span><br><span class="line">public class User &#123;</span><br><span class="line">	private Long id;</span><br><span class="line">	private String name;</span><br><span class="line">	private BigDecimal salary;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="测试先行-先写测试类"><a href="#测试先行-先写测试类" class="headerlink" title="测试先行,先写测试类"></a>测试先行,先写测试类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">package com.shanjiancaofu.smis.dao;</span><br><span class="line"></span><br><span class="line">import java.math.BigDecimal;</span><br><span class="line">import java.util.List;</span><br><span class="line"></span><br><span class="line">import org.junit.Test;</span><br><span class="line"></span><br><span class="line">import com.shanjiancaofu.smis.domain.User;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * UserDAOImplTest.java</span><br><span class="line"> * @version</span><br><span class="line"> * @date 2018年5月27日 下午6:24:38</span><br><span class="line"> * @author jeesk</span><br><span class="line"> * @since 1.0</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line">public class UserDAOImplTest &#123;</span><br><span class="line"></span><br><span class="line">	private IDAO&lt;User&gt; dao = new UserDAOImpl();</span><br><span class="line"></span><br><span class="line">	@Test</span><br><span class="line">	public void testSave() &#123;</span><br><span class="line"></span><br><span class="line">		User user = new User(null, &quot;掌上电脑&quot;, new BigDecimal(&quot;5999&quot;));</span><br><span class="line">		System.out.println(user);</span><br><span class="line">		dao.save(user);</span><br><span class="line">		System.out.println(user);</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Test</span><br><span class="line">	public void testUpdate() &#123;</span><br><span class="line">		User user = new User(2L, &quot;大在在&quot;, new BigDecimal(&quot;100000&quot;));</span><br><span class="line"></span><br><span class="line">		dao.update(user);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Test</span><br><span class="line">	public void testDetele() &#123;</span><br><span class="line">		dao.detele(1L);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Test</span><br><span class="line">	public void testGet() &#123;</span><br><span class="line">		User user = dao.get(3L);</span><br><span class="line">		System.out.println(user);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Test</span><br><span class="line">	public void testGetAll() &#123;</span><br><span class="line"></span><br><span class="line">		List&lt;User&gt; list = dao.getAll();</span><br><span class="line">		list.forEach(System.out::println);</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="DAO实现类"><a href="#DAO实现类" class="headerlink" title="DAO实现类"></a>DAO实现类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">package com.shanjiancaofu.smis.dao;</span><br><span class="line"></span><br><span class="line">import java.util.List;</span><br><span class="line"></span><br><span class="line">import org.apache.ibatis.session.SqlSession;</span><br><span class="line"></span><br><span class="line">import com.shanjiancaofu.smis.domain.User;</span><br><span class="line">import com.shanjiancaofu.smis.uitl.MybatiesUtil;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * UserDAOImpl.java</span><br><span class="line"> * @version</span><br><span class="line"> * @date 2018年5月27日 下午6:13:52</span><br><span class="line"> * @author jeesk</span><br><span class="line"> * @since 1.0</span><br><span class="line"> *  User的Dao类</span><br><span class="line"> */</span><br><span class="line">public class UserDAOImpl implements IDAO&lt;User&gt; &#123;</span><br><span class="line"></span><br><span class="line">	private String getStatement(String str) &#123;</span><br><span class="line"></span><br><span class="line">		return &quot;com.shanjiancaofu.smis.mapper.UserMapper.&quot; + str;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public void save(User t) &#123;</span><br><span class="line">	// 获得SqlSession对象</span><br><span class="line">		SqlSession openSession = MybatiesUtil.openSession();</span><br><span class="line">	// 获得插入语句</span><br><span class="line">		openSession.insert(getStatement(&quot;save&quot;), t);</span><br><span class="line">	// 提交事务</span><br><span class="line">		openSession.commit();</span><br><span class="line">	// 关闭资源</span><br><span class="line">		openSession.close();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public void update(User t) &#123;</span><br><span class="line"></span><br><span class="line">		SqlSession openSession = MybatiesUtil.openSession();</span><br><span class="line">		openSession.update(getStatement(&quot;update&quot;), t);</span><br><span class="line">		openSession.commit();</span><br><span class="line">		openSession.close();</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public void detele(Long id) &#123;</span><br><span class="line">		SqlSession openSession = MybatiesUtil.openSession();</span><br><span class="line">		openSession.delete(getStatement(&quot;delete&quot;), id);</span><br><span class="line">		openSession.commit();</span><br><span class="line">		openSession.close();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public User get(Long id) &#123;</span><br><span class="line">		SqlSession openSession = MybatiesUtil.openSession();</span><br><span class="line">		User user = openSession.selectOne(getStatement(&quot;get&quot;), id);</span><br><span class="line">		openSession.commit();</span><br><span class="line">		openSession.close();</span><br><span class="line">		return user;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public List&lt;User&gt; getAll() &#123;</span><br><span class="line">		SqlSession openSession = MybatiesUtil.openSession();</span><br><span class="line">		List&lt;User&gt; list = openSession.selectList(getStatement(&quot;getAll&quot;));</span><br><span class="line">		openSession.commit();</span><br><span class="line">		openSession.close();</span><br><span class="line">		return list;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="简单配置Mybaties的日志记录"><a href="#简单配置Mybaties的日志记录" class="headerlink" title="简单配置Mybaties的日志记录"></a>简单配置Mybaties的日志记录</h4><p><a href="http://www.mybatis.org/mybatis-3/zh/logging.html" target="_blank" rel="noopener">官方配置文档</a></p>
+<ol>
+<li>先把log4j-1.2.17.jar导入lib目录,build path.</li>
+<li>在resources 目录下导入log4j.properties<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># Global logging configuration</span><br><span class="line">log4j.rootLogger=ERROR, stdout</span><br><span class="line"># MyBatis logging configuration...</span><br><span class="line"># 这里的 com.shanjiancaofu.smis.mapper可以换成任意包mapper包,mapper包里放的xml文件</span><br><span class="line">log4j.logger.com.shanjiancaofu.smis.mapper=TRACE</span><br><span class="line"># Console output...</span><br><span class="line">log4j.appender.stdout=org.apache.log4j.ConsoleAppender</span><br><span class="line">log4j.appender.stdout.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.stdout.layout.ConversionPattern=%5p [%t] - %m%n</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="Mybaties的两个核心Xml文件约束DtD的导入"><a href="#Mybaties的两个核心Xml文件约束DtD的导入" class="headerlink" title="Mybaties的两个核心Xml文件约束DtD的导入"></a>Mybaties的两个核心Xml文件约束DtD的导入</h4><p>mapper.xml的约束文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;</span><br></pre></td></tr></table></figure></p>
+<p>mybaties-config.xml的约束文件 :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;</span><br></pre></td></tr></table></figure></p>
+<p>可以直接把这两个网址复制到浏览器中直接下载</p>
+<p>导入方式: </p>
+<p>打开Eclispe的window &gt; preference &gt; xml &gt; XML Catelog<br>点击ADD </p>
+<ol>
+<li>localtiont选择FileSystem的是你的dtd文件的位置</li>
+<li>Key Type 选择URI</li>
+<li>KEY就是对应的dtd网址,请直接复制</li>
+</ol>
+<h4 id="下一次我们来讲讲Mybaties的-和-的区别-再聊聊如何解决使用Mybaties的时候-表的列名和类的属性名不同的问题"><a href="#下一次我们来讲讲Mybaties的-和-的区别-再聊聊如何解决使用Mybaties的时候-表的列名和类的属性名不同的问题" class="headerlink" title="下一次我们来讲讲Mybaties的${}和#{}的区别,再聊聊如何解决使用Mybaties的时候,表的列名和类的属性名不同的问题"></a>下一次我们来讲讲Mybaties的${}和#{}的区别,再聊聊如何解决使用Mybaties的时候,表的列名和类的属性名不同的问题</h4>
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/posts/redis-shell.html" data-toggle="tooltip" data-placement="top" title="使用shell 操作Redis数据库">&larr; 上一篇文章</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/posts/JDBC-3-transaction.html" data-toggle="tooltip" data-placement="top" title="JDBC的事务介绍">下一篇文章 &rarr;</a>
+                        </li>
+                    
+                </ul>
+                
+
+                 <!-- <div class="comment" id="vcomments"></div>  -->
+                
+
+                 
+                 
+                    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<div id="gitalk-container"></div>
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: 'f6c70371be725eefc9ee',
+        clientSecret: '207610699384c4b12403200b20785daf446f3e3c',
+        id: window.location.pathname,
+        repo: 'jeesk.github.io',
+        owner: 'jeesk',
+        admin: 'jeesk'
+    })
+    gitalk.render('gitalk-container')
+</script>
+                    
+
+
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#Mybatis" title="Mybatis">Mybatis</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks" target="_blank">Kaijun&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me" target="_blank">Hux Blog</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8  col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 山间草夫 2019 
+                    <br>
+
+                    <span style="margin-top: 6px;display:inline-block;">
+                    Powered by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>  |
+                    
+                    Theme —  <a href="https://github.com/Huxpro/huxpro.github.io">Huxpro</a>   |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=jeesk&repo=jsp_servlet_mysql_basicProject&type=star&count=true">
+                    </iframe>
+<span>
+                </span></span></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!--载入js，在</body>之前插入即可-->
+    <!--Leancloud 操作库:-->
+    <!-- <script src="/js/av-min.js"></script> -->
+    <!--Valine 的核心代码库-->
+    <!-- <script src="/js/Valine.min.js"></script> -->
+
+
+<!-- <script>
+    new Valine({
+        av: AV,
+        el: '#vcomments',
+        placeholder: '欢迎留下您的评论，支持部分Markdown语法，如 *斜体*、**加粗**、`行内代码`、[超链接](链接地址)、![图片](图片地址) 等',
+        appId: 'WvcpILV0ImhrHowrLek0rAn9-gzGzoHsz',
+        appKey: 'N84KdKuNF8feKKf0bV3dM2Yc',
+        pageSize: 100,
+        avatar:'',
+        visitor: true,
+        notify: false,
+        verify: false
+    })
+</script> -->
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://shanjiancaofu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
