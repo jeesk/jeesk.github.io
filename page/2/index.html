@@ -93,14 +93,14 @@
 
                         
                         <li>
-                            <a href="/about/">关于我</a>
+                            <a href="/archives/">文章归档</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archives/">文章归档</a>
+                            <a href="/about/">关于我</a>
                         </li>
                         
                     
@@ -151,7 +151,7 @@
 
     <!-- Main Content -->
     <!-- Page Header -->
-<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+<header class="intro-header" style="background: url('/img/home-bg.jpg' );">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
@@ -183,264 +183,218 @@
             ">
             
                 <!-- Main Content -->
-
-
-<div class="post-preview">
-
-    <a href="/posts/Ubuntu-install-mysql5.7-password.html">
-        <h2 class="post-title">
-            Ubuntu 安装mysql5.7无密码解决方案
-        </h2>
-        <h3 class="post-subtitle">
-            不适合人类阅读，非常水的自我笔记
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            
-今年在Deepin上面安装Mysql5.7 ,安装后没有密码.下面提出了一解决的办法
-
-没有 密码123456mysql默认密码为空但是使用mysql -uroot -p 命令连接mysql时，报错ERROR 1045 (28000): Access denied for user &apo......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by jeesk on
-        2019-03-10
-    </p>
-
-</div>
+ <h5>最新文章</h5>
 <hr>
 
 <div class="post-preview">
-
-    <a href="/posts/Tcc-distributed-trsation.html">
-        <h2 class="post-title">
-            分布式事务Tcc原理介绍
-        </h2>
-        <h3 class="post-subtitle">
-            不适合人类阅读，非常水的自我笔记
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            Tcc事务的简单介绍
-TCC 将事务提交分为 Try - Confirm - Cancel 3个操作。
-
-
-Try  : (预留业务资源/数据效验)
-Confirm  :(确认执行业务操作)
-Cancel  :   (取消执行业务操作)
-
-这里我要说一点的,Tcc三阶段操作,  第一步执行Tr......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by jeesk on
-        2019-03-08
-    </p>
-
+    
+        <li>
+            <span>2018-05-24 » </span>
+    
+            <a href="/posts/JDBC-1-quick-start.html">
+    
+                JDBC简单入门1
+    
+            </a>
+        </li>
 </div>
-<hr>
+<!-- <hr> -->
 
 <div class="post-preview">
-
-    <a href="/posts/ThreadLocal-deepin.html">
-        <h2 class="post-title">
-            ThreadLocal部分源码解析与理解
-        </h2>
-        <h3 class="post-subtitle">
-            不适合人类阅读，非常水的自我笔记
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            
-​    提到ThreadLocal , 大家想到的就是ThreadLocal是一个本地线程副本变量的工具类, 比如方法无参数传值. 主要用于将线程和线程存放的副本对象做一个映射, 并且互不干扰.  等等.ThreadLocal是一个特别的类, 申明一个ThreadLocal成员变量,能够被......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by jeesk on
-        2019-03-06
-    </p>
-
+    
+        <li>
+            <span>2018-05-23 » </span>
+    
+            <a href="/posts/mysql-database-studenttwo.html">
+    
+                Mysql 数据库入门第三章
+    
+            </a>
+        </li>
 </div>
-<hr>
+<!-- <hr> -->
 
 <div class="post-preview">
-
-    <a href="/posts/make-tomcat-by-myself.html">
-        <h2 class="post-title">
-            30分钟手写一个Tomcat服务器
-        </h2>
-        <h3 class="post-subtitle">
-            不适合人类阅读，非常水的自我笔记
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            
-阅读本教程需要了解Http协议, Java Socket,Java反射的等相关内容. 并且本篇文章只是实现简单的web服务器, 让大家了解其原理, 大拿请无视.下面是浏览器和web服务器的一段简单的请求和相应的内容, 通过请求和相应, 同时我们也可以简单了解http协议的规范.
-
-1:  了......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by jeesk on
-        2019-02-25
-    </p>
-
+    
+        <li>
+            <span>2018-05-22 » </span>
+    
+            <a href="/posts/java8-stream-api-detailed-explanation.html">
+    
+                Java8的Stream APi详解
+    
+            </a>
+        </li>
 </div>
-<hr>
+<!-- <hr> -->
 
 <div class="post-preview">
-
-    <a href="/posts/redis-shell.html">
-        <h2 class="post-title">
-            使用shell 操作Redis数据库
-        </h2>
-        <h3 class="post-subtitle">
-            不适合人类阅读，非常水的自我笔记
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            
-将Redis数据库里面的一些key大10倍(其实这不止是这么简单的需求, 不过我这里面就简单举个例子就好,这一个例子可以举一反三实现对Redis的crud), 由于Redis里面的数据是实时用到到缓存, 项目做了集群, 所以要操作Redis也可以使用Java在项目里面操作,比如使用Sprin......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by jeesk on
-        2019-02-02
-    </p>
-
+    
+        <li>
+            <span>2018-05-22 » </span>
+    
+            <a href="/posts/Junit-test-and-use-annotation-tomake-JunitMock.html">
+    
+                java软件测试JUnit
+    
+            </a>
+        </li>
 </div>
-<hr>
+<!-- <hr> -->
 
 <div class="post-preview">
-
-    <a href="/posts/Mybaties-Introduction.html">
-        <h2 class="post-title">
-            Mybaties入门详解
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            JDBC编程存在的问题原始JDBC编程存在的问题
-代码繁琐，重复
-资源频繁创建和销毁(虽然可以使用连接池解决)
-sql语句写死在代码中，不方便维护
-?占位符参数设置当参数较多时比较麻烦
-封装处理结果集很麻烦(封装结果集)
-分析问题
-问题分析与解决
-
-
-
-
-资源的创建和销毁  同样使用连接池来管......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Jeesk on
-        2018-05-29
-    </p>
-
+    
+        <li>
+            <span>2018-05-22 » </span>
+    
+            <a href="/posts/Javase-Enhance-Reflect-detailed-explanation.html">
+    
+                javaSe基础加强之反射
+    
+            </a>
+        </li>
 </div>
-<hr>
+<!-- <hr> -->
 
 <div class="post-preview">
-
-    <a href="/posts/JDBC-3-transaction.html">
-        <h2 class="post-title">
-            JDBC的事务介绍
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            银行转账案例●银行转账案例:从xx 账户上给 苍老师 转10000块钱.   ●准备:account(账户表):
-建表语句:1234567891011事务的转账案例 创建表: create table account(  id bigint primary key auto_increment......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Jeesk on
-        2018-05-26
-    </p>
-
+    
+        <li>
+            <span>2018-05-22 » </span>
+    
+            <a href="/posts/mysql-database-studentone.html">
+    
+                Mysql 数据库入门第一章
+    
+            </a>
+        </li>
 </div>
-<hr>
+<!-- <hr> -->
 
 <div class="post-preview">
-
-    <a href="/posts/JDBC-2-template.html">
-        <h2 class="post-title">
-            抽取JDBC的模版
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            使用PrepareedStatement代替使用StatementPreparedStatement相对于Statement的优势:
-拼接SQL上,操作更简单(更好的可读性,可维护性). –能理解即可,以后使用PreparedStatement不会进行sql语句的字符串拼接
-预编译的性能会更加......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Jeesk on
-        2018-05-25
-    </p>
-
+    
+        <li>
+            <span>2018-05-19 » </span>
+    
+            <a href="/posts/xml-detailed-explanation.html">
+    
+                XML解析详解
+    
+            </a>
+        </li>
 </div>
-<hr>
+<!-- <hr> -->
 
 <div class="post-preview">
-
-    <a href="/posts/how-to-use-jdbc-Connection-pool.html">
-        <h2 class="post-title">
-            如何使用JDBC的线程池
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            数据库连接池为什么必须使用数据库连接池:
-数据库连接(Connection)是一种关键的、有限的、昂贵的资源(这一点在多用户的网页应用程序中体现得尤为突出).
-
-
-
-我们之前使用 DriverManager 来获取Connection对象，每次与数据库建立连接的时候都要将 Connection......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Jeesk on
-        2018-05-25
-    </p>
-
+    
+        <li>
+            <span>2018-05-03 » </span>
+    
+            <a href="/posts/derby-database.html">
+    
+                三分钟学会使用Derby数据库
+    
+            </a>
+        </li>
 </div>
-<hr>
+<!-- <hr> -->
 
 <div class="post-preview">
-
-    <a href="/posts/simulate-SaveMethod-of-hibernate.html">
-        <h2 class="post-title">
-            简单模拟hibernate的save方法
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            传入一个JavaBean对象, 向数据库插入这一个对象
-如果: 
-
-类的字段名和数据库的列名不同可以使用注解来区别
-类的名字和表的名字不同也可以使用注解来标注
-
-
-下面的代码会判断类和字段上面是否有相应的注解
-
-表名字的的注解12
-
-package com.shanjiancao.smis.d......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Jeesk on
-        2018-05-25
-    </p>
-
+    
+        <li>
+            <span>2017-12-13 » </span>
+    
+            <a href="/posts/backup-hexo-data-on-github.html">
+    
+                在github备份Hexo超级详细教程
+    
+            </a>
+        </li>
 </div>
-<hr>
+<!-- <hr> -->
+
+<div class="post-preview">
+    
+        <li>
+            <span>2015-12-16 » </span>
+    
+            <a href="/posts/hello-world.html">
+    
+                Hello World
+    
+            </a>
+        </li>
+</div>
+<!-- <hr> -->
+
+<div class="post-preview">
+    
+        <li>
+            <span>2015-07-09 » </span>
+    
+            <a href="/posts/js-module-7day.html">
+    
+                Example Post using Keynote Layout
+    
+            </a>
+        </li>
+</div>
+<!-- <hr> -->
+
+<div class="post-preview">
+    
+        <li>
+            <span>2015-04-14 » </span>
+    
+            <a href="/posts/unix-linux-note.html">
+    
+                Example Post With Default Header Image
+    
+            </a>
+        </li>
+</div>
+<!-- <hr> -->
+
+<div class="post-preview">
+    
+        <li>
+            <span>2014-09-22 » </span>
+    
+            <a href="/posts/js-version.html">
+    
+                Example Post
+    
+            </a>
+        </li>
+</div>
+<!-- <hr> -->
+
+<div class="post-preview">
+    
+        <li>
+            <span>2014-01-29 » </span>
+    
+            <a href="/posts/hello-2015.html">
+    
+                Welcome to Hux Blog
+    
+            </a>
+        </li>
+</div>
+<!-- <hr> -->
+
+<div class="post-preview">
+    
+        <li>
+            <span>2013-05-25 » </span>
+    
+            <a href="/posts/js-module-loader.html">
+    
+                Example Post with Code Highlight
+    
+            </a>
+        </li>
+</div>
+<!-- <hr> -->
 
 
 
@@ -452,10 +406,6 @@ package com.shanjiancao.smis.d......
             <a href="/">&larr; 上一页</a>
         </li>
     
-    
-        <li class="next">
-            <a href="/page/3/">下一页 &rarr;</a>
-        </li>
     
 </ul>
 
@@ -493,6 +443,12 @@ package com.shanjiancao.smis.d......
                             
                         
                             
+                            <a href="/tags/#JAVA-DOC" title="JAVA-DOC" rel="2">JAVA-DOC</a>
+                            
+                        
+                            
+                        
+                            
                             <a href="/tags/#Java" title="Java" rel="4">Java</a>
                             
                         
@@ -500,10 +456,6 @@ package com.shanjiancao.smis.d......
                         
                             
                         
-                            
-                        
-                            
-                            <a href="/tags/#JAVA-DOC" title="JAVA-DOC" rel="2">JAVA-DOC</a>
                             
                         
                             
@@ -519,13 +471,11 @@ package com.shanjiancao.smis.d......
                             
                         
                             
+                        
+                            
+                        
+                            
                             <a href="/tags/#Linux" title="Linux" rel="2">Linux</a>
-                            
-                        
-                            
-                        
-                            
-                        
                             
                         
                             
