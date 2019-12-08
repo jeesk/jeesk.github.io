@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="我家有两颗树,一棵树是枣树,另外一棵也是枣树.">
+    <meta name="keyword" content="xxxxxxxx">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Redis 简单入门教程 - 山间草夫
+        
+    </title>
+
+    <link rel="canonical" href="https://shanjiancaofu.com/posts/redis-start.html">
+
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+   
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">山间草夫</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">首页</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">文章归档</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">标签</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#redis" title="redis">redis</a>
+                        
+                    </div>
+                    <h1>Redis 简单入门教程</h1>
+                    <h2 class="subheading">原创</h2>
+                    <span class="meta">
+                        Posted by jeesk on
+                        2019-08-12
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-10 
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h4 id="什么是Redis"><a href="#什么是Redis" class="headerlink" title="什么是Redis"></a>什么是Redis</h4><p>Redis是一个开源（BSD许可），内存数据结构存储，用作数据库，缓存和消息代理。它支持数据结构，如字符串，散列，列表，集合，带有范围查询的排序集，位图，超级日志，具有半径查询和流的地理空间索引。Redis具有内置复制，Lua脚本，LRU驱逐，事务和不同级别的磁盘持久性，并通过Redis Sentinel提供高可用性并使用Redis Cluster自动分区。</p>
+<h4 id="安装Redis"><a href="#安装Redis" class="headerlink" title="安装Redis"></a>安装Redis</h4><ol>
+<li><p><strong>Window</strong></p>
+<ol>
+<li><strong>下载地址：</strong><a href="https://github.com/MSOpenTech/redis/releases。" target="_blank" rel="noopener">https://github.com/MSOpenTech/redis/releases。</a></li>
+</ol>
+<p>Redis 支持 32 位和 64 位。这个需要根据你系统平台的实际情况选择，这里我们下载 <strong>Redis-x64-xxx.zip</strong>压缩包到 C 盘，解压后，将文件夹重新命名为 <strong>redis</strong>。</p>
+<ol start="2">
+<li>解压后, 在目录下面执行</li>
+</ol>
+<p><code>redis-server.exe redis.windows.conf</code></p>
+</li>
+<li><p><strong>Linux</strong> </p>
+<p>​    1.    <strong>下载地址：</strong><a href="http://redis.io/download，下载最新稳定版本。" target="_blank" rel="noopener">http://redis.io/download，下载最新稳定版本。</a></p>
+<p>本教程使用的最新文档版本为 2.8.17，下载并安装：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ wget http://download.redis.io/releases/redis-5.0.5.tar.gz</span><br><span class="line">$ tar xzf redis-5.0.5.tar.gz</span><br><span class="line">$ cd redis-5.0.5</span><br><span class="line">$ make</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><p>make完后 redis-2.8.17目录下会出现编译后的redis服务程序redis-server,还有用于测试的客户端程序redis-cli,两个程序位于安装目录 src 目录下：</p>
+<p>下面启动redis服务.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd src</span><br><span class="line">$ ./redis-server</span><br></pre></td></tr></table></figure>
+<p>注意这种方式启动redis 使用的是默认配置。也可以通过启动参数告诉redis使用指定配置文件使用下面命令启动。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd src</span><br><span class="line">$ ./redis-server ../redis.conf</span><br></pre></td></tr></table></figure>
+<p><strong>redis.conf</strong> 是一个默认的配置文件。我们可以根据需要使用自己的配置文件。</p>
+<p>启动redis服务进程后，就可以使用测试客户端程序redis-cli和redis服务交互了。 比如：</p>
+</li>
+</ol>
+</li>
+</ol>
+<h4 id="redis-常用命令"><a href="#redis-常用命令" class="headerlink" title="redis 常用命令"></a>redis 常用命令</h4><blockquote>
+<p>在redis 的目录下面执行 ./redis-cli  打开redis 的客户端</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DUMP key 序列化该key , 并返回序列化的值</span><br><span class="line">EXISTS key 检查给定的key 是否存在</span><br><span class="line">EXPIRE key second  设置过期时间</span><br><span class="line">EXPIREAT key time  设置key 在什么时间过期 (不同在于 EXPIREAT 命令接受的时间参数是 UNIX 时间戳(unix timestamp)。)</span><br><span class="line"></span><br><span class="line">KEYS pattern   获得所有符合给定模式的key</span><br><span class="line">PPTL key 返回 key剩余的过期时间</span><br><span class="line">TYPE key</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>​    Redis支持五种数据类型：string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。</p>
+</blockquote>
+<h4 id="string-类型常用命令"><a href="#string-类型常用命令" class="headerlink" title="string 类型常用命令"></a>string 类型常用命令</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">SET key 设置指定 key 的值</span><br><span class="line">GET key 获取指定 key 的值</span><br><span class="line">127.0.0.1:6379&gt; set hello 12345</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; get hello</span><br><span class="line">"12345"</span><br><span class="line"></span><br><span class="line">GETRANGE key start end  获得某个key 指定的范围的值</span><br><span class="line">127.0.0.1:6379&gt; getrange hello 0 1</span><br><span class="line">"1"</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">GETSET key value 给给定的key 设置value, 并且返回key 的旧值.</span><br><span class="line">127.0.0.1:6379&gt; getset hello world</span><br><span class="line">"1"</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SETNX key value 如果key 不存在, 那么设置值. 设置成功返回1, 设置失败返回0.</span><br><span class="line">127.0.0.1:6379&gt; set key1 foo</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; mget hello key1</span><br><span class="line">1) "world"</span><br><span class="line">2) "foo"</span><br><span class="line">127.0.0.1:6379&gt; setnx key1 boo</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt; get key1</span><br><span class="line">"foo"</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line">STRLEN key  获得制定key 存储的字符串长度</span><br><span class="line">127.0.0.1:6379&gt; strlen key1</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">MSET key value [key value]  同时设置多个键值对</span><br><span class="line">MGET key1 key2 获得多个给定key 的值</span><br><span class="line">127.0.0.1:6379&gt; mset key1 val1 key2 val2</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; mget key1 key2</span><br><span class="line">1) "val1"</span><br><span class="line">2) "val2"</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">INCR  key 给定key的存储的数字自增1</span><br><span class="line">DECR key   将 key 中储存的数字值减去1</span><br><span class="line">127.0.0.1:6379&gt; set key1 100</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; incr key1</span><br><span class="line">(integer) 101</span><br><span class="line">127.0.0.1:6379&gt; get key1</span><br><span class="line">"101"</span><br><span class="line">127.0.0.1:6379&gt; DECR key1</span><br><span class="line">(integer) 100</span><br><span class="line">127.0.0.1:6379&gt; get key1</span><br><span class="line">"100"</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">INCRBY key increment 将key 所存储的数字加上给定的增量</span><br><span class="line">DECRBY key decrement key 所储存的值减去给定的减量值（decrement)</span><br><span class="line">127.0.0.1:6379&gt; INCRBY key1 6</span><br><span class="line">(integer) 106</span><br><span class="line">127.0.0.1:6379&gt; DECRBY key1 100</span><br><span class="line">(integer) 6</span><br><span class="line">127.0.0.1:6379&gt; get key1</span><br><span class="line">"6"</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">APPEND key value  如果key 已经存在, 将会追加到指定的value 到该key存储的value 的末尾</span><br><span class="line">127.0.0.1:6379&gt; set key1 helloworld</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; APPEND key1 iloveu</span><br><span class="line">(integer) 16</span><br><span class="line">127.0.0.1:6379&gt; get key1</span><br><span class="line">"helloworldiloveu"</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="Hash-的常用命令-类似于Java-中的-Map-数据类型"><a href="#Hash-的常用命令-类似于Java-中的-Map-数据类型" class="headerlink" title="Hash 的常用命令(类似于Java 中的 Map 数据类型)"></a>Hash 的常用命令(类似于Java 中的 Map 数据类型)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">HSET key filed 设置指定字段的值</span><br><span class="line">HGET key filed 获得制定字段的值</span><br><span class="line">127.0.0.1:6379&gt; hset map1 name xiaoming</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; hget map1 name</span><br><span class="line">&quot;xiaoming&quot;</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line">HMSET key filed [key filed] 设置 一个键值对和设置多个键值对</span><br><span class="line">HMGET key filed [filed] 获得指定key 下面的多个字段的值</span><br><span class="line">127.0.0.1:6379&gt; hmset map2 name xiaoming age 12</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; hmget map2 name age</span><br><span class="line">1) &quot;xiaoming&quot;</span><br><span class="line">2) &quot;12&quot;</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line">HGETALL key 获得hash表中制定key 的所有字段和值</span><br><span class="line">HKEYS Key 获得哈希表中的所有的字段</span><br><span class="line">HVALS key 获得哈希表中所有的值</span><br><span class="line">127.0.0.1:6379&gt; hgetall map2</span><br><span class="line">1) &quot;name&quot;</span><br><span class="line">2) &quot;xiaoming&quot;</span><br><span class="line">3) &quot;age&quot;</span><br><span class="line">4) &quot;12&quot;</span><br><span class="line">127.0.0.1:6379&gt; hkeys map2</span><br><span class="line">1) &quot;name&quot;</span><br><span class="line">2) &quot;age&quot;</span><br><span class="line">127.0.0.1:6379&gt; hvals map2</span><br><span class="line">1) &quot;xiaoming&quot;</span><br><span class="line">2) &quot;12&quot;</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">HEXISTS key filed 判断给定的key 是否存在给定的字段</span><br><span class="line">HDEL key field1 [field2] 删除 给定 key 下面的字段( 如果是删除key 请使用del)</span><br><span class="line">127.0.0.1:6379&gt; HEXISTS map2 name</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; HDEL map2 name</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; HEXISTS map2 name</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="Redis-列表-List"><a href="#Redis-列表-List" class="headerlink" title="Redis 列表(List)"></a>Redis 列表(List)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">LPUSH key value [value2] 将一个值或者是多个值插入到列表头部</span><br><span class="line">LINDEX key index  通过索引读取列表中的元素</span><br><span class="line">LLEN 获取列表长度</span><br><span class="line">127.0.0.1:6379&gt; lpush list1 hello</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; LINDEX list1 0</span><br><span class="line">&quot;hello&quot;</span><br><span class="line">127.0.0.1:6379&gt; llen list1</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">LPOP 移除并且获得列表中的第一个元素</span><br><span class="line">LRANGE key start stop 获得制定范围内的元素</span><br><span class="line">LREM 移除列表元素</span><br><span class="line">127.0.0.1:6379&gt; LRANGE lis1 0 -1</span><br><span class="line">(empty list or set)</span><br><span class="line">127.0.0.1:6379&gt; LRANGE lis1 0 6</span><br><span class="line">(empty list or set)</span><br><span class="line">127.0.0.1:6379&gt; LRANGE lis1 0 3</span><br><span class="line">(empty list or set)</span><br><span class="line">127.0.0.1:6379&gt; LRANGE list 0 -1</span><br><span class="line">(empty list or set)</span><br><span class="line">127.0.0.1:6379&gt; LRANGE list1 0 -1</span><br><span class="line">1) &quot;world&quot;</span><br><span class="line">2) &quot;hello&quot;</span><br><span class="line">127.0.0.1:6379&gt; LREM list1</span><br><span class="line">127.0.0.1:6379&gt; LREM list1 1 hello</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line">RPOP 移除列表中最后一个元素</span><br><span class="line">RPUSH key value1 [value2] 列表尾部添加一个 或者是多个值</span><br><span class="line">127.0.0.1:6379&gt; RPOP list1</span><br><span class="line">&quot;world&quot;</span><br><span class="line">127.0.0.1:6379&gt; rpush list1 world3</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; rpop list1</span><br><span class="line">&quot;world3&quot;</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="Redis-集合-Set"><a href="#Redis-集合-Set" class="headerlink" title="Redis 集合(Set)"></a>Redis 集合(Set)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">SADD key member1 [member2] 向集合增加一个或者多个成员</span><br><span class="line">SCARD key 获取集合的成员数</span><br><span class="line">SDIFF key1 key2 返回给定集合的差集</span><br><span class="line">SINTER key1 key2 返回给定集合的交集</span><br><span class="line">127.0.0.1:6379&gt; sadd teams m1 m2 m3</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; scard teams</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; sadd teams m3 m4</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; sadd teams1 m4 m5</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; sdiff teams1 teams</span><br><span class="line">1) &quot;m5&quot;</span><br><span class="line">127.0.0.1:6379&gt; sinter teams teams1</span><br><span class="line">1) &quot;m4&quot;</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line">SMEMBERS key 返回继承中的所有成员</span><br><span class="line">SISMMBER key member 判断 member 判断是否是集合key 的成员</span><br><span class="line">SREM key member [ member1] 移除 给定集合中的成员</span><br><span class="line">127.0.0.1:6379&gt; SISMEMBER teams1 m5</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SISMEMBER teams1 m5</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; srem teams1 m5</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; SISMEMBER teams1 m5</span><br><span class="line">(integer) 0</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="Redis-有序集合-sorted-set"><a href="#Redis-有序集合-sorted-set" class="headerlink" title="Redis 有序集合(sorted set)"></a>Redis 有序集合(sorted set)</h4><p>Redis 有序集合和集合一样也是string类型元素的集合,且不允许重复的成员。</p>
+<p>不同的是每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。</p>
+<p>有序集合的成员是唯一的,但分数(score)却可以重复。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ZADD key score member1 [score2 member2] 向有序集合中添加一个或者是多个成员, 或者更新已经存在成员的分数</span><br><span class="line">ZCARD key  获得有序集合的成员数量</span><br><span class="line">ZCOUNT key min max 获得有序集合 制定区间分数的成员数量</span><br><span class="line">ZRANGE key start stop [WITHSCORES]  通过索引区间返回有序集合中制定区间的成员</span><br><span class="line">ZSCORE key member 返回有序集合中成员的分数值</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; ZADD foo 1 p1 2 p2 0.5 p3</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; ZCARD foo</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; ZCOUNT foo 1 2</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; ZRANGE foo 1 2 </span><br><span class="line">1) &quot;p1&quot;</span><br><span class="line">2) &quot;p2&quot;</span><br><span class="line">127.0.0.1:6379&gt; zscore foo p1</span><br><span class="line">&quot;1&quot;</span><br><span class="line">127.0.0.1:6379&gt; zscore foo p3</span><br><span class="line">&quot;0.5&quot;</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="Redis-HyperLogLog"><a href="#Redis-HyperLogLog" class="headerlink" title="Redis HyperLogLog"></a>Redis HyperLogLog</h4><p>Redis HyperLogLog 是用来做基数统计的算法，HyperLogLog 的优点是，在输入元素的数量或者体积非常非常大时，计算基数所需的空间总是固定 的、并且是很小的。 一般用来记录数量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">PFADD key ele1 ele2 添加指定元素到 hyperloglog 中去</span><br><span class="line">PFCOUNT key [key1] 返回给定Hyperloglog 的技术估量值</span><br><span class="line">PFMERGE destkey sourcekey [sourcekey] 多个 hyperloglog 合并为一个Hyperloglog</span><br><span class="line">127.0.0.1:6379&gt; PFADD key1 1 2 34 4 5 6 7 78</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; PFCOUNT key1</span><br><span class="line">(integer) 8</span><br><span class="line">127.0.0.1:6379&gt; pfadd key2 12 234 5 5 4 4</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; PFMERGE key3 key1 key2</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; PFCOUNT key3</span><br><span class="line">(integer) 10</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="Redis-GEO"><a href="#Redis-GEO" class="headerlink" title="Redis GEO"></a>Redis GEO</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">GEOADD KEY 经度 维度 mem [经度 维度 mem]  給指定key 增加成员的经度和维度</span><br><span class="line">GEODIST key mem1 mem2 获得指定key 的两个成员的距离</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; GEOADD china 12 25 xiaoming</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; GEOADD china 89 78 daxiaoming</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; GEODIST china xiaoming daxiaoming</span><br><span class="line">&quot;6994515.5814&quot;</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line">GEOHAHS key mem1 mem2  获得给定key 成员的字符串hash (表明一个矩阵位置. 有足于保证隐私)</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; GEOHASH china xiaoming daxiaoming</span><br><span class="line">1) &quot;sk2w1p45s30&quot;</span><br><span class="line">2) &quot;vvz79pryfm0&quot;</span><br><span class="line"></span><br><span class="line">GEOPOS key mem1 [mem1] 获得给定key 的成员的位置</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; GEOPOS china xiaoming daxiaoming</span><br><span class="line">1) 1) &quot;12.00000196695327759&quot;</span><br><span class="line">   2) &quot;24.99999915218035795&quot;</span><br><span class="line">2) 1) &quot;89.00000005960464478&quot;</span><br><span class="line">   2) &quot;77.99999963605176845&quot;</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line">GEORADIUS key 经度 维度 半径距离 withdist  返回给定经度维度 半径距离的成员</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; GEOADD Sicily 13.361389 38.115556 &quot;Palermo&quot; 15.087269 37.502669 &quot;Catania&quot;</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; GEORADIUS Sicily 15 37 200 km WITHDIST</span><br><span class="line">1) 1) &quot;Palermo&quot;</span><br><span class="line">   2) &quot;190.4424&quot;</span><br><span class="line">2) 1) &quot;Catania&quot;</span><br><span class="line">   2) &quot;56.4413&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="Redis-的stream"><a href="#Redis-的stream" class="headerlink" title="Redis 的stream"></a>Redis 的stream</h4><p>可以简单的理解为一个消息队列, 这个消息队列中 存储的是键值对.  并且每个 key . 都有一个唯一的id. * 标识自动生成.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">XADD KEY * filed1 value1 [filed2 value2]  </span><br><span class="line">XLEN key 获得制定key 的成员个数</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; XADD mystream * name Sara surname OConnor</span><br><span class="line">&quot;1565103145158-0&quot;</span><br><span class="line">127.0.0.1:6379&gt; XADD mystream * field1 value1 field2 value2 field3 value3</span><br><span class="line">&quot;1565103165475-0&quot;</span><br><span class="line">127.0.0.1:6379&gt; xlen mystream</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; xrange mystream - +</span><br><span class="line">1) 1) &quot;1565103145158-0&quot;</span><br><span class="line">   2) 1) &quot;name&quot;</span><br><span class="line">      2) &quot;Sara&quot;</span><br><span class="line">      3) &quot;surname&quot;</span><br><span class="line">      4) &quot;OConnor&quot;</span><br><span class="line">2) 1) &quot;1565103165475-0&quot;</span><br><span class="line">   2) 1) &quot;field1&quot;</span><br><span class="line">      2) &quot;value1&quot;</span><br><span class="line">      3) &quot;field2&quot;</span><br><span class="line">      4) &quot;value2&quot;</span><br><span class="line">      5) &quot;field3&quot;</span><br><span class="line">      6) &quot;value3&quot;</span><br><span class="line">127.0.0.1:6379&gt; </span><br><span class="line"></span><br><span class="line">XRANGE key -+</span><br><span class="line">XRERANGE key -+ </span><br><span class="line">上面的两个key 相反, 虽然都是范围查询的命令. 一个是正序一个是倒序列.</span><br><span class="line"></span><br><span class="line">XREAD</span><br><span class="line">127.0.0.1:6379&gt; XREAD BLOCK 1000 STREAMS mystream $</span><br><span class="line">(nil)</span><br><span class="line">(1.04s)</span><br><span class="line">127.0.0.1:6379&gt; XREAD BLOCK 0 STREAMS mystream $</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">XGROUP 创建和管理消费组</span><br><span class="line">XREADGROUP 消费消费组 从Stream里面读取消息</span><br><span class="line">XACK 确认消息已经消费</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; XADD mystream * hello world</span><br><span class="line">&quot;1545812637199-0&quot;</span><br><span class="line">127.0.0.1:6379&gt; XGROUP CREATE mystream mygroup $</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; XREADGROUP GROUP mygroup GodCOnsumer STREAMS mystream &gt;</span><br><span class="line">(nil)</span><br><span class="line">127.0.0.1:6379&gt; XADD mystream * Michale &quot;I&apos;m Michale&quot;</span><br><span class="line">&quot;1545812666393-0&quot;</span><br><span class="line">127.0.0.1:6379&gt; XREADGROUP GROUP mygroup GodCOnsumer STREAMS mystream &gt;</span><br><span class="line">1) 1) &quot;mystream&quot;</span><br><span class="line">   2) 1) 1) &quot;1545812666393-0&quot;</span><br><span class="line">         2) 1) &quot;Michale&quot;</span><br><span class="line">            2) &quot;I&apos;m Michale&quot;</span><br><span class="line">127.0.0.1:6379&gt; XREADGROUP GROUP mygroup GodCOnsumer STREAMS mystream &gt;</span><br><span class="line">(nil)</span><br><span class="line">127.0.0.1:6379&gt; XREADGROUP GROUP mygroup Michale STREAMS mystream &gt;</span><br><span class="line">(nil)</span><br><span class="line">127.0.0.1:6379&gt; XADD mystream * Michale &quot;I&apos;m Michale&quot;</span><br><span class="line">&quot;1545812693203-0&quot;</span><br><span class="line">127.0.0.1:6379&gt; XREADGROUP GROUP mygroup Michale STREAMS mystream &gt;</span><br><span class="line">1) 1) &quot;mystream&quot;</span><br><span class="line">   2) 1) 1) &quot;1545812693203-0&quot;</span><br><span class="line">         2) 1) &quot;Michale&quot;</span><br><span class="line">            2) &quot;I&apos;m Michale&quot;</span><br><span class="line">127.0.0.1:6379&gt; XREADGROUP GROUP mygroup GodCOnsumer STREAMS mystream &gt;</span><br><span class="line">(nil)</span><br><span class="line">127.0.0.1:6379&gt; XREADGROUP GROUP mygroup GodCOnsumer STREAMS mystream 0</span><br><span class="line">1) 1) &quot;mystream&quot;</span><br><span class="line">   2) 1) 1) &quot;1545812666393-0&quot;</span><br><span class="line">         2) 1) &quot;Michale&quot;</span><br><span class="line">            2) &quot;I&apos;m Michale&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="Redis-事务"><a href="#Redis-事务" class="headerlink" title="Redis 事务"></a>Redis 事务</h4><p>Redis 事务可以一次执行多个命令， 并且带有以下三个重要的保证：</p>
+<ul>
+<li>批量操作在发送 EXEC 命令前被放入队列缓存。</li>
+<li>收到 EXEC 命令后进入事务执行，事务中任意命令执行失败，其余的命令依然被执行。</li>
+<li>在事务执行过程，其他客户端提交的命令请求不会插入到事务执行命令序列中。</li>
+</ul>
+<p>一个事务从开始到执行会经历以下三个阶段：</p>
+<ul>
+<li>开始事务。</li>
+<li>命令入队。</li>
+<li>执行事务。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MULTI 标记一个事务块内的命令</span><br><span class="line">EXEC 执行 所有事务块内的命令</span><br><span class="line">DISCARD 放弃事务块的所有的命令</span><br><span class="line">WATCH key [key1]监视一个 key 或者多个key. 如果是在事务执行之前, key 被其他命令所改动,那么事务将会被打断.</span><br><span class="line">UNWATCH 取消WATCH 命令对所有key 的监视</span><br></pre></td></tr></table></figure>
+<h4 id="Redis-数据备份与恢复"><a href="#Redis-数据备份与恢复" class="headerlink" title="Redis 数据备份与恢复"></a>Redis 数据备份与恢复</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BGSAVE 异步备份</span><br><span class="line">SAVE 备份到磁盘</span><br><span class="line">该命令将在 redis 安装目录中创建dump.rdb文件。</span><br></pre></td></tr></table></figure>
+<p>只需要将dump.rdb 文件移动到安装目录启动服务即可. 会自动恢复数据.</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/posts/create-spring-boot-starter-by-yourself.html" data-toggle="tooltip" data-placement="top" title="2分钟创建属于你自己的 spring boot starter">下一篇文章 &rarr;</a>
+                        </li>
+                    
+                </ul>
+                
+
+                 <!-- <div class="comment" id="vcomments"></div>  -->
+                
+
+                 
+                 
+                    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<div id="gitalk-container"></div>
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: 'f6c70371be725eefc9ee',
+        clientSecret: '207610699384c4b12403200b20785daf446f3e3c',
+        id: window.location.pathname,
+        repo: 'jeesk.github.io',
+        owner: 'jeesk',
+        admin: 'jeesk'
+    })
+    gitalk.render('gitalk-container')
+</script>
+                    
+
+
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#redis" title="redis">redis</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks" target="_blank">Kaijun&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me" target="_blank">Hux Blog</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8  col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 山间草夫 2019 
+                    <br>
+
+                    <span style="margin-top: 6px;display:inline-block;">
+                    Powered by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>  |
+                    
+                    Theme —  <a href="https://github.com/Huxpro/huxpro.github.io">Huxpro</a>   |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=jeesk&repo=jsp_servlet_mysql_basicProject&type=star&count=true">
+                    </iframe>
+<span>
+                </span></span></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!--载入js，在</body>之前插入即可-->
+    <!--Leancloud 操作库:-->
+    <!-- <script src="/js/av-min.js"></script> -->
+    <!--Valine 的核心代码库-->
+    <!-- <script src="/js/Valine.min.js"></script> -->
+
+
+<!-- <script>
+    new Valine({
+        av: AV,
+        el: '#vcomments',
+        placeholder: '欢迎留下您的评论，支持部分Markdown语法，如 *斜体*、**加粗**、`行内代码`、[超链接](链接地址)、![图片](图片地址) 等',
+        appId: 'WvcpILV0ImhrHowrLek0rAn9-gzGzoHsz',
+        appKey: 'N84KdKuNF8feKKf0bV3dM2Yc',
+        pageSize: 100,
+        avatar:'',
+        visitor: true,
+        notify: false,
+        verify: false
+    })
+</script> -->
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://shanjiancaofu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

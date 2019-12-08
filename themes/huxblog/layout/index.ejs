@@ -2,28 +2,22 @@
 layout: page
 ---
 <!-- Main Content -->
-
+ <h5>最新文章</h5>
+<hr>
 <% page.posts.each(function(post){ %>
 <div class="post-preview">
-
-    <a href="<%- config.root %><%- post.path %>">
-        <h2 class="post-title">
-            <%- post.title || "Untitled" %>
-        </h2>
-        <h3 class="post-subtitle">
-            <%- post.subtitle || "" %>
-        </h3>
-        <div class="post-content-preview" style="text-indent: 10px;">
-            <%- truncate(strip_html(post.content), {length: 150, omission: '...'}) %>...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by <%- post.author || config.author %> on
-        <%= post.date.format(config.date_format) %>
-    </p>
-
+    
+        <li>
+            <span><%= post.date.format(config.date_format) %> » </span>
+    
+            <a href="<%- config.root %><%- post.path %>">
+    
+                <%- post.title || "Untitled" %>
+    
+            </a>
+        </li>
 </div>
-<hr>
+<!-- <hr> -->
 <% }); %>
 
 
