@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="我家有两颗树,一棵树是枣树,另外一棵也是枣树.">
+    <meta name="keyword" content="xxxxxxxx">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          js的高级用法-1 - 山间草夫
+        
+    </title>
+
+    <link rel="canonical" href="https://shanjiancaofu.com/posts/Advanced-usage-of-js-01.html">
+
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+   
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">山间草夫</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">首页</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">文章归档</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">标签</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#JavaScript" title="JavaScript">JavaScript</a>
+                        
+                    </div>
+                    <h1>js的高级用法-1</h1>
+                    <!-- <h2 class="subheading">不适合人类阅读，非常水的自我笔记</h2>
+                    <span class="meta">
+                        Posted by jeesk on
+                        2020-01-01
+                    </span> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-10 
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="1-如何获得-js-函数的参数相关信息"><a href="#1-如何获得-js-函数的参数相关信息" class="headerlink" title="1.如何获得 js 函数的参数相关信息"></a>1.如何获得 js 函数的参数相关信息</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function print(a,b,c,d)&#123;</span><br><span class="line">       if(arguments.length == 1)&#123;</span><br><span class="line">           console.log(arguments[0]);</span><br><span class="line">       &#125;</span><br><span class="line">       if(arguments.length == 2)&#123;</span><br><span class="line">           console.log(arguments[0],arguments[1]);</span><br><span class="line">       &#125;</span><br><span class="line">       if(arguments.length == 3)&#123;</span><br><span class="line">           console.log(arguments[0],arguments[1],arguments[2]);</span><br><span class="line">       &#125;</span><br><span class="line">       if(arguments.length == 4)&#123;</span><br><span class="line">           console.log(a,b,c,d);</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>控制台输出 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">print(10);</span><br><span class="line">print(10,20);</span><br><span class="line">print(10,20,30);</span><br><span class="line">print(10,20,30,40);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>js 的参数的个数可以通过arguments 来获得.  arguments 也是一个伪数组, 可以通过 arguments来获得调用函数的参数.  那么再想一想, 既然能通过 arguments 来获得调用函数的参数. 那么就有下面的几个问题,请思考一下 .</p>
+</blockquote>
+<ul>
+<li><p>Q:  函数不申明参数, 调用方法的时候填写了参数,那么可以使用arguments 来获得参数吗?</p>
+<p>A:  可以</p>
+</li>
+<li><p>Q: 函数申明了3 个参数, 但是调用方法的时候填写了4个,参数, 这个时候能获取到参数吗?</p>
+<p>A:  使用使用arguments[3], 来获得第四个参数</p>
+</li>
+<li><p>Q:  函数申明了3 个参数, 但是实际调用方法的时候 填写了2 个参数,那么第三个参数是什么呢?</p>
+<p>A: 第三个没有申明,那么就是undefined</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">function test() &#123;</span><br><span class="line">       if (arguments.length &gt; 0) &#123;</span><br><span class="line">           console.log(arguments[0])</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"> test(&quot;hello world !&quot;);</span><br><span class="line"> console.log(&quot;---------------&quot;);</span><br><span class="line">  </span><br><span class="line">   function test2(a, b, c) &#123;</span><br><span class="line">       console.log(a);</span><br><span class="line">       console.log(b);</span><br><span class="line">       console.log(c);</span><br><span class="line">       if (arguments.length == 4) &#123;</span><br><span class="line">           console.log(arguments[3]);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">  </span><br><span class="line">   console.log(&quot;---------------&quot;);</span><br><span class="line">   test2(&apos;hello&apos;, &apos;world !&apos;, &apos; ni&apos;, &apos;hao&apos;);</span><br><span class="line">  </span><br><span class="line">   function test3(a, b, c) &#123;</span><br><span class="line">       console.log(a);</span><br><span class="line">       console.log(b);</span><br><span class="line">       console.log(c);</span><br><span class="line">  </span><br><span class="line">   &#125;</span><br><span class="line">  </span><br><span class="line">   console.log(&quot;---------------&quot;);</span><br><span class="line">   test3(&apos;hello&apos;, &apos;world !&apos;);</span><br></pre></td></tr></table></figure>
+<p>控制台输出 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">hello world !</span><br><span class="line">---------------</span><br><span class="line">---------------</span><br><span class="line">hello</span><br><span class="line">world !</span><br><span class="line"> ni</span><br><span class="line">hao</span><br><span class="line">---------------</span><br><span class="line">hello</span><br><span class="line">world !</span><br><span class="line">undefined</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>总结:</p>
+<p>函数的形参和实参:<br>1,形参个数=实参个数,函数正常执行<br>2,形参个数&gt;实参个数,函数正常执行,没有被赋值的形参为undefined,如果有使用到,结果可能会出现错误<br>3,形参个数&lt;实参个数,函数正常执行,多余的实参直接被忽略掉</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="2-函数的申明的几种方式-函数类型-函数作为参数及返回值"><a href="#2-函数的申明的几种方式-函数类型-函数作为参数及返回值" class="headerlink" title="2. 函数的申明的几种方式,函数类型,函数作为参数及返回值"></a>2. 函数的申明的几种方式,函数类型,函数作为参数及返回值</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">/*普通函数申明*/</span><br><span class="line">function s1() &#123;</span><br><span class="line">    console.log(&quot;function s1&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/*函数表达式申明*/</span><br><span class="line">var s2 = function () &#123;</span><br><span class="line">    console.log(&quot;function s2&quot;);</span><br><span class="line">&#125;</span><br><span class="line">s1();</span><br><span class="line">s2();</span><br><span class="line">// 函数自调用,只会调用一次,申明的同时直接调用</span><br><span class="line">(function () &#123;</span><br><span class="line">    console.log(&quot;function s4&quot;);</span><br><span class="line">&#125;)();</span><br><span class="line">// 如何把局部变量变为全局变量, 使用window 对象</span><br><span class="line">(function (obj) &#123;</span><br><span class="line">    obj.num = 10;</span><br><span class="line">&#125;)(window);</span><br><span class="line">console.log(window.num);</span><br><span class="line">//将浏览器的window对象传入匿名函数,同时赋值制给window.num. 这里的实参是window, 形参是obj</span><br></pre></td></tr></table></figure>
+<p>控制台输出 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function s1</span><br><span class="line">function s2</span><br><span class="line">function s4</span><br></pre></td></tr></table></figure>
+<p>上面说到函数可以作为表达式放在 = 的右边,那么js对象可以赋值函数吗? 或者说, 函数也算是js中的什么类型呢?  可以使用typeof() 方法获得js的类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var demo = &#123;&#125;;</span><br><span class="line">demo.test = function () &#123;</span><br><span class="line">    console.log(&quot;test&quot;);</span><br><span class="line">&#125;</span><br><span class="line">// 调用函数</span><br><span class="line">demo.test();</span><br><span class="line">// 打印这个函数, 如果 demo.test 加上() 表示调用这个函数</span><br><span class="line">console.log(demo.test)</span><br><span class="line">console.log(typeof (demo.test));</span><br></pre></td></tr></table></figure>
+<p>答案</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">test</span><br><span class="line">f ()&#123;</span><br><span class="line">	console.log(&quot;test&quot;);</span><br><span class="line">&#125;</span><br><span class="line">function</span><br></pre></td></tr></table></figure>
+<p>从上面我们知道函数 也是一种类型,那么函数的参数也可以是函数吗? 看看下面的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function f(obj) &#123;</span><br><span class="line">    if (typeof (obj) == &quot;function&quot;) &#123;</span><br><span class="line">        obj();</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">    	console.log(obj);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">f(function () &#123;</span><br><span class="line">    console.log(&quot;is function!!!&quot;)</span><br><span class="line">&#125;);</span><br><span class="line">f(123);</span><br></pre></td></tr></table></figure>
+<p>控制台输出 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">is function!!!</span><br><span class="line">123</span><br></pre></td></tr></table></figure>
+<p>没错,函数的参数也可以是 函数. 所以我们在使用 jquery 的时候,使用了大量的类似于下面的方法. </p>
+<p>这种使用函数的方法也叫做:  <code>回调函数</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$(function()&#123;</span><br><span class="line">	// 执行一些操作</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>上面说到, 函数不仅能够作为函数的参数, 其实还能作为函数的返回值呢. 小伙伴们试一试下面的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function f() &#123;</span><br><span class="line">    return function () &#123;</span><br><span class="line">        console.log(&quot;return a function !&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">var ff = f();</span><br><span class="line">ff(); // 或者f()();</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>总结</strong>:</p>
+<p>函数的返回值:<br>1，如果函数中没有return语句，则函数的返回值为undefined；<br>2，如果函数中有return语句，函数的返回值为return语句返回的表达式值；</p>
+<p>3,  相同名称的函数,最后一次声明的函数会覆盖之前声明的函数</p>
+</blockquote>
+<h3 id="3-js-变量的作用域-和作用域链"><a href="#3-js-变量的作用域-和作用域链" class="headerlink" title="3.  js 变量的作用域, 和作用域链"></a>3.  js 变量的作用域, 和作用域链</h3><p>​    </p>
+<ul>
+<li><p>全局变量 全局变量申明的范围都可以使用,只要当前网页不关闭,内存就不会释放</p>
+</li>
+<li><p>局部变量 申明 在{} 之间的,使用范围也是在 {} 里面.</p>
+</li>
+<li><p>隐式全局变量</p>
+<p>相信很多人都知道全局变量和局部变量,那么知道 [隐式全局变量 ] 吗? 看看下面的代码,心里思考一下结果</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">function f() &#123;</span><br><span class="line">    number = 1000;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">f()</span><br><span class="line">console.log(&quot;number =&quot; + number)</span><br><span class="line">console.log(&quot;number 的type: &quot; + typeof (number));</span><br><span class="line">console.log(&quot;number+1 = &quot; + number + 1);</span><br><span class="line">delete number;</span><br><span class="line">console.log(&quot;number 被删除后的类型: &quot; + typeof (number));</span><br><span class="line">try &#123;</span><br><span class="line">// number 被删除后,number 不存在,会导致代码执行异常, 使用try catch 捕获异常</span><br><span class="line">    console.log(number);</span><br><span class="line">&#125; catch (e) &#123;</span><br><span class="line">    console.log(e);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var number1 = 123;</span><br><span class="line">delete number1;</span><br><span class="line">console.log(&quot;number1 的类型: &quot; + typeof(number1));</span><br><span class="line">console.log(&quot;number1: &quot; + number1);</span><br></pre></td></tr></table></figure>
+<p>控制台 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">number = 1000</span><br><span class="line">number 的type: number</span><br><span class="line">number+1 = 1001</span><br><span class="line">number 被删除后的类型: undefined</span><br><span class="line">ReferenceError: number is not defined</span><br><span class="line">    at Arguments.html?_ijt=m9qtp0pfdu3s3ftu43fomus0r8:21</span><br><span class="line">number1 的类型: number</span><br><span class="line">number1: 123</span><br></pre></td></tr></table></figure>
+<p>从控制台所致, 没有使用 var 申明的叫做全局隐式变量, 并且可以通过 delete 删除,但是var 申明的变量却不能被删除. </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var num = 10;</span><br><span class="line">function f1() &#123;</span><br><span class="line">    var num = 20;</span><br><span class="line">    function f2() &#123;</span><br><span class="line">        var num = 30;</span><br><span class="line">        function f3() &#123;</span><br><span class="line">            var num = 50;</span><br><span class="line">            console.log(num);</span><br><span class="line">        &#125;</span><br><span class="line">        f3();</span><br><span class="line">    &#125;</span><br><span class="line">    f2();</span><br><span class="line">&#125;</span><br><span class="line">f1();</span><br></pre></td></tr></table></figure>
+<p>控制台:</p>
+<p><code>50</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">var num = 10;</span><br><span class="line">function f1() &#123;</span><br><span class="line">    var num = 20;</span><br><span class="line">    function f2() &#123;</span><br><span class="line">        var num = 30;</span><br><span class="line">        function f3() &#123;</span><br><span class="line">            console.log(num);</span><br><span class="line">        &#125;</span><br><span class="line">        f3();</span><br><span class="line">    &#125;</span><br><span class="line">    f2();</span><br><span class="line">&#125;</span><br><span class="line">f1();</span><br></pre></td></tr></table></figure>
+<p>控制台输出: </p>
+<p><code>30</code></p>
+<p>这个函数每个函数里面都申明了 num 变量, 如果将num 一 一 删除, 就会发现, num 变量的作用域链是就近原则, 谁近就调用谁. </p>
+<h3 id="4-js-的预解析"><a href="#4-js-的预解析" class="headerlink" title="4.   js 的预解析"></a>4.   js 的预解析</h3><p>看看下面的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(num);</span><br></pre></td></tr></table></figure>
+<p>控制台输出 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Arguments.html?_ijt=hlglkqf17uei5h5tttrgc52ran:9 Uncaught ReferenceError: num is not defined</span><br></pre></td></tr></table></figure>
+<p>因为num 并没有申明, 所以找不到</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">console.log(num);</span><br><span class="line">var num = 10;</span><br></pre></td></tr></table></figure>
+<p>控制台输出:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">undefined</span><br></pre></td></tr></table></figure>
+<p>这个又是为什么呢, js 的预解析会将会有变量的申明放在作用域的最前面. 也就是把 num 的申明靠前了, 但是并没有赋值.</p>
+<p>也就是下面的代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var num;</span><br><span class="line"> console.log(num);</span><br><span class="line">num = 10;</span><br></pre></td></tr></table></figure>
+<p>好的, 下面看看函数的调用呢?</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f1();</span><br><span class="line">function f1() &#123;</span><br><span class="line">    console.log(&quot;execute f1&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>控制台输出:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">execute f1</span><br></pre></td></tr></table></figure>
+<p>你们也会发现 js 的预解析将函数的申明也提前到了作用域的最前面.</p>
+<p>结合先前我们讲到的变量作用域就近原则,和预解析, 再看看下面的代码.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var num = 20;</span><br><span class="line">function f1() &#123;</span><br><span class="line">    console.log(num);</span><br><span class="line">    num = 30;</span><br><span class="line">&#125;</span><br><span class="line">f1();</span><br></pre></td></tr></table></figure>
+<p>控制台输出:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">20</span><br><span class="line">30</span><br></pre></td></tr></table></figure>
+<p>说说上面代码的. 首先 上面的代码变量的申明已经是第一行代码了,这个时候, 已经不需要执行其他的操作了, 就近原则发现 num = 20; 然后变量赋值 = 30, 输出30;</p>
+<p>现在再更改一下代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var num = 20;</span><br><span class="line">function f1() &#123;</span><br><span class="line">    console.log(num);</span><br><span class="line">    var num = 30;</span><br><span class="line">    console.log(num);</span><br><span class="line">&#125;</span><br><span class="line">f1();</span><br></pre></td></tr></table></figure>
+<p>控制台输出 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">undefined</span><br><span class="line">30</span><br></pre></td></tr></table></figure>
+<p>说说js 执行的操作, js 预解析会将申明变量的放在作用域的最前面, 在 f1 的{} 里面,将 var num; 放在{} 的第一行, 执行console.log 的时候没有赋值 所以第一次打印出来的结果是 undefined , 第二次赋值后 就是 30.</p>
+<blockquote>
+<ol>
+<li>js 预解析变量的声明, 提升到作用域的最前面,只提升申明, 不会提升赋值</li>
+<li>js 预解析函数的声明, 提升到作用域的最前面,只提升申明, 不会提升调用</li>
+<li>先提升 var , 再提升function</li>
+</ol>
+</blockquote>
+<h3 id="5-js-的对象和模拟类"><a href="#5-js-的对象和模拟类" class="headerlink" title="5.  js 的对象和模拟类"></a>5.  js 的对象和模拟类</h3><ul>
+<li>对象的创建</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// 1. 使用 Object 对象</span><br><span class="line">var person = new Object();</span><br><span class="line">  person.age = 12;</span><br><span class="line">  person.eat = function () &#123;</span><br><span class="line">      console.log(&quot;吃饭&quot;)</span><br><span class="line">  &#125;;</span><br><span class="line">  console.log(person.age);</span><br><span class="line">  person.eat();</span><br><span class="line">  console.log(&quot;----------------分隔符号-------------&quot;);</span><br><span class="line">  </span><br><span class="line">  // 2.或者直接在 &#123;&#125; 里面直接赋值变量, 在 &#123;&#125; 里面也可以直接申明赋值函数, 也可以在&#123;&#125;外面,再次赋值覆盖以前的赋值. 这种也叫字面量变量. 同时也可以在&#123;&#125;外面增加变量和函数.</span><br><span class="line">var dog = &#123;</span><br><span class="line">      age: 0,</span><br><span class="line">      eat: function () &#123;</span><br><span class="line">          console.log(&quot;dog eating !&quot;);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">  dog.age = 12;</span><br><span class="line">  dog.eat = function () &#123;</span><br><span class="line">      console.log(this.age + &quot;的小狗正在eat&quot;);</span><br><span class="line">  &#125;;</span><br><span class="line">  dog.name = &quot;xiaoming&quot;;</span><br><span class="line">  dog.play = function () &#123;</span><br><span class="line">      console.log(&quot;一个叫:&quot; + this.name + &quot;的小狗正在玩&quot;);</span><br><span class="line">  &#125;;</span><br><span class="line">  console.log(dog.age);</span><br><span class="line">  dog.eat();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用 函数封装创建对象(这个函数是不是有点像 java的构造函数呢, 这种方法也叫工厂模式创建对象)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function createPerson() &#123;</span><br><span class="line">        var person = new Object();</span><br><span class="line">        person.age = 12;</span><br><span class="line">        person.eat = function () &#123;</span><br><span class="line">            console.log(&quot;吃饭&quot;)</span><br><span class="line">        &#125;;</span><br><span class="line">        return person;</span><br><span class="line">    &#125;</span><br><span class="line">var person1 = createPerson();</span><br><span class="line">console.log(person1.age);</span><br><span class="line">person1.eat();</span><br><span class="line"></span><br><span class="line">var person2 = createPerson();</span><br><span class="line">console.log(person2.age);</span><br><span class="line">person2.eat();</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>创建 js 的 模拟类(class)</p>
+<blockquote>
+<p>上面说道,函数创建对象的方法有点像 java 的构造函数,那么简化一下便成为了 js 的类</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">function Person() &#123;</span><br><span class="line">	// this 当前对象, 使用new 关键字 , 表示将 当前的this 对象返回</span><br><span class="line">    this.age = 12;</span><br><span class="line">    this.eat = function () &#123;</span><br><span class="line">        console.log(&quot;吃饭&quot;)</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line">var person1 =new Person();</span><br><span class="line">console.log(person1.age);</span><br><span class="line">person1.eat();</span><br><span class="line">  </span><br><span class="line">var person2 =new Person();</span><br><span class="line">console.log(person2.age);</span><br><span class="line">person2.eat();</span><br><span class="line">if (person1 instanceof Person) &#123;</span><br><span class="line">    console.log(&quot;person1 的类型:Person&quot; );</span><br><span class="line">&#125;</span><br><span class="line">if (person2 instanceof Person) &#123;</span><br><span class="line">    console.log(&quot;person2 的类型:Person&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 类似于java 的有参构造函数</span><br><span class="line">function Dog(age) &#123;</span><br><span class="line">    // this 当前对象, 使用new 关键字 , 表示将 当前的this 对象返回</span><br><span class="line">    this.age = age;</span><br><span class="line">    this.eat = function () &#123;</span><br><span class="line">        console.log(this.age + &quot; 吃饭&quot;)</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line">var dog = new Dog(12);</span><br><span class="line">console.log(dog.age);</span><br><span class="line">dog.eat();</span><br></pre></td></tr></table></figure>
+<p>你们就会发现 js 的 类型 判断和java 一样都是用 instanceof 来判断对象的引用类型的.</p>
+</li>
+<li><p>赋值变量的另外一种方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var dog = &#123;</span><br><span class="line">    age: 0,</span><br><span class="line">    eat: function () &#123;</span><br><span class="line">        console.log(&quot;dog eating !&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">dog[&apos;age&apos;] = 14;</span><br><span class="line">dog[&quot;eat&quot;] = function () &#123;</span><br><span class="line">    console.log(this[&quot;age&quot;]);</span><br><span class="line">&#125;</span><br><span class="line">dog.eat();</span><br></pre></td></tr></table></figure>
+<p>控制台输出 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">14</span><br></pre></td></tr></table></figure>
+<p>使用 <code>[]</code> 可以访问和赋值对象的属性和方法,  <strong>同时方法中的this, 表示当前调用该方法的对象.</strong></p>
+<p><strong>如果是构造器中的this, 表示当前创建的对象.</strong></p>
+<blockquote>
+<p>Tips: </p>
+<p>在js中分两种对象<br>1.基本类型/原生类型/简单类型(通过字面量赋值的)<br>2.引用类型(通过new创建的)</p>
+<p>结论:<br>instanceof 只能判断引用类型,如果判断的是基本类型,结果都为false<br>typeof 一般用来判断基本类型,如果传入的是引用类型,结果都为object<br>证明arguments不是数组:</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="6-JSON和对象的互转-及遍历对象"><a href="#6-JSON和对象的互转-及遍历对象" class="headerlink" title="6. JSON和对象的互转, 及遍历对象"></a>6. JSON和对象的互转, 及遍历对象</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">var person = &#123;</span><br><span class="line">    name: &apos;xiaoming&apos;,</span><br><span class="line">    age: 12</span><br><span class="line">&#125;;</span><br><span class="line">console.log(&quot;person: &quot; + person);</span><br><span class="line">// json 对象转换成字符串, 在我们提交 ajax 请求的时候, 一般需要将 对象转换成字符串提交</span><br><span class="line">let s = JSON.stringify(person);</span><br><span class="line"></span><br><span class="line">console.log(&quot;jsonStr: &quot; + s);</span><br><span class="line">// 将json字符串转换成 json对象</span><br><span class="line">var person1 = JSON.parse(s);</span><br><span class="line">console.log(&quot;person1: &quot; + person1);</span><br><span class="line">// 遍历 json的对象不能使用 fori 循环, 这里的对象可以 简单的当做 java 中的map对象看待, 其实就是键值对</span><br><span class="line">for (var x in person1) &#123;</span><br><span class="line">    console.log(x + &quot;=&quot; + person1[x]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/posts/redis-start.html" data-toggle="tooltip" data-placement="top" title="Redis 简单入门教程">下一篇文章&rarr;</a>
+                        </li>
+                    
+                </ul>
+                
+
+                 <!-- <div class="comment" id="vcomments"></div>  -->
+                
+
+                 
+                 
+                    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<div id="gitalk-container"></div>
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: 'f6c70371be725eefc9ee',
+        clientSecret: '207610699384c4b12403200b20785daf446f3e3c',
+        id: window.location.pathname,
+        repo: 'jeesk.github.io',
+        owner: 'jeesk',
+        admin: 'jeesk'
+    })
+    gitalk.render('gitalk-container')
+</script>
+                    
+
+
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#JavaScript" title="JavaScript">JavaScript</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks" target="_blank">Kaijun&#39;s Blog</a></li>
+                    
+                        <li><a href="http://huangxuan.me" target="_blank">Hux Blog</a></li>
+                    
+                        <li><a href="#" target="_blank">Foo</a></li>
+                    
+                        <li><a href="#" target="_blank">Bar</a></li>
+                    
+                        <li><a href="#" target="_blank">Example Friends</a></li>
+                    
+                        <li><a href="#" target="_blank">It helps SEO</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8  col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 山间草夫 2020 
+                    <br>
+
+                    <span style="margin-top: 6px;display:inline-block;">
+                    Powered by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>  |
+                    
+                    Theme —  <a href="https://github.com/Huxpro/huxpro.github.io">Huxpro</a>   |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=jeesk&repo=jsp_servlet_mysql_basicProject&type=star&count=true">
+                    </iframe>
+<span>
+                </span></span></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!--载入js，在</body>之前插入即可-->
+    <!--Leancloud 操作库:-->
+    <!-- <script src="/js/av-min.js"></script> -->
+    <!--Valine 的核心代码库-->
+    <!-- <script src="/js/Valine.min.js"></script> -->
+
+
+<!-- <script>
+    new Valine({
+        av: AV,
+        el: '#vcomments',
+        placeholder: '欢迎留下您的评论，支持部分Markdown语法，如 *斜体*、**加粗**、`行内代码`、[超链接](链接地址)、![图片](图片地址) 等',
+        appId: 'WvcpILV0ImhrHowrLek0rAn9-gzGzoHsz',
+        appKey: 'N84KdKuNF8feKKf0bV3dM2Yc',
+        pageSize: 100,
+        avatar:'',
+        visitor: true,
+        notify: false,
+        verify: false
+    })
+</script> -->
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://shanjiancaofu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://shanjiancaofu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
