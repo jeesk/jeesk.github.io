@@ -93,14 +93,14 @@
 
                         
                         <li>
-                            <a href="/archives/">文章归档</a>
+                            <a href="/about/">关于我</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">关于我</a>
+                            <a href="/archives/">文章归档</a>
                         </li>
                         
                     
@@ -168,9 +168,9 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#前端开发" title="前端开发">前端开发</a>
-                        
                           <a class="tag" href="/tags/#JavaScript" title="JavaScript">JavaScript</a>
+                        
+                          <a class="tag" href="/tags/#前端开发" title="前端开发">前端开发</a>
                         
                           <a class="tag" href="/tags/#翻译" title="翻译">翻译</a>
                         
@@ -239,7 +239,7 @@
 
                 <hr>
 
-                
+
 
                 <ul class="pager">
                     
@@ -270,7 +270,9 @@
         id: window.location.pathname,
         repo: 'jeesk.github.io',
         owner: 'jeesk',
-        admin: 'jeesk'
+        admin: 'jeesk',
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
     })
     gitalk.render('gitalk-container')
 </script>
@@ -296,9 +298,9 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#前端开发" title="前端开发">前端开发</a>
-                        
                           <a class="tag" href="/tags/#JavaScript" title="JavaScript">JavaScript</a>
+                        
+                          <a class="tag" href="/tags/#前端开发" title="前端开发">前端开发</a>
                         
                           <a class="tag" href="/tags/#翻译" title="翻译">翻译</a>
                         
@@ -332,7 +334,6 @@
         </div>
     </div>
 </article>
-
 
 
 
@@ -427,27 +428,9 @@
 <script src="/js/hux-blog.min.js"></script>
 
 
-<!--载入js，在</body>之前插入即可-->
-    <!--Leancloud 操作库:-->
-    <!-- <script src="/js/av-min.js"></script> -->
-    <!--Valine 的核心代码库-->
-    <!-- <script src="/js/Valine.min.js"></script> -->
 
 
-<!-- <script>
-    new Valine({
-        av: AV,
-        el: '#vcomments',
-        placeholder: '欢迎留下您的评论，支持部分Markdown语法，如 *斜体*、**加粗**、`行内代码`、[超链接](链接地址)、![图片](图片地址) 等',
-        appId: 'WvcpILV0ImhrHowrLek0rAn9-gzGzoHsz',
-        appKey: 'N84KdKuNF8feKKf0bV3dM2Yc',
-        pageSize: 100,
-        avatar:'',
-        visitor: true,
-        notify: false,
-        verify: false
-    })
-</script> -->
+
 
 
 <!-- async load function -->
