@@ -76,9 +76,12 @@
             if (/githubusercontent\.com/.test(vm.route.file)) {
               url = vm.route.file
                 .replace('raw.githubusercontent.com', 'github.com')
-                .replace(/\/master/, '/blob/master')
+                .replace(/\/master/, '/blob/master');
+                console.log("1"+ url);
             } else {
-              url = 'https://github.com/jeesk/jeesk.github.io/master/' + vm.route.file
+              
+              url = 'https://github.com/jeesk/jeesk.github.io/blob/master/' + vm.route.file;
+              console.log("2"+ url);
             }
             var editHtml = '[:memo: Edit Document](' + url + ')\n'
 
