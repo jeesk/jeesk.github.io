@@ -26,7 +26,7 @@
 	-	[JWT的使用流程](java-security/JWT的使用流程.md)
 - JAVA相关 
 
-    - [深入理解SPI机制](java/深入理解SPI机制.md)
+    - [深入理解SPI机制](java/深入理解SPI机制.html.md)
 
     - [JDBC的初步使用](java/jdbc/JDBC-1-quick-start.md)
     - [JDBC模板](java/jdbc/JDBC-2-template.md)
