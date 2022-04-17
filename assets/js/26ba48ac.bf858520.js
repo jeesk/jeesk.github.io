@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[4282],{4575:function(s){s.exports=JSON.parse('{"allTagsPath":"/devops/tags","slug":"/devops/tags/nfs","name":"nfs","count":1,"permalink":"/devops/tags/nfs"}')}}]);

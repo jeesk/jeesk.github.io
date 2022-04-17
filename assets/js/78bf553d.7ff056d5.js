@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[7754],{6071:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"h2\u6570\u636e\u5e93\u7814\u7a76","permalink":"/database/first-blog-post"}]}')}}]);

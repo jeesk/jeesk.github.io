@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[1262],{5241:function(a){a.exports=JSON.parse('{"allTagsPath":"/java/tags","slug":"/java/tags/di","name":"DI","count":1,"permalink":"/java/tags/di"}')}}]);

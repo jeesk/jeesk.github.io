@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[7677],{9818:function(a){a.exports=JSON.parse('{"/data-structure-and-algorithm/tags/algorithm":{"allTagsPath":"/data-structure-and-algorithm/tags","slug":"/data-structure-and-algorithm/tags/algorithm","name":"algorithm","count":2,"permalink":"/data-structure-and-algorithm/tags/algorithm"}}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[9985],{5990:function(s){s.exports=JSON.parse('{"allTagsPath":"/devops/tags","slug":"/devops/tags/linux","name":"linux","count":1,"permalink":"/devops/tags/linux"}')}}]);

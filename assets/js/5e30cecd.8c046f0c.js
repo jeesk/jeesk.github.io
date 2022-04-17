@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[9525],{9698:function(a){a.exports=JSON.parse('{"allTagsPath":"/java/tags","slug":"/java/tags/ioc","name":"IOC","count":1,"permalink":"/java/tags/ioc"}')}}]);

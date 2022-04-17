@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>山间草夫的小站 Blog</title>
+        <link>https://shanjiancaofu.com/database</link>
+        <description>山间草夫的小站 Blog</description>
+        <lastBuildDate>Tue, 28 May 2019 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[h2数据库研究]]></title>
+            <link>https://shanjiancaofu.com/database/first-blog-post</link>
+            <guid>first-blog-post</guid>
+            <pubDate>Tue, 28 May 2019 00:00:00 GMT</pubDate>
+            <description><![CDATA[1. 阅读h2 database的全部文档]]></description>
+            <content:encoded><![CDATA[<ol><li>阅读h2 database的全部文档</li><li>数据库的insert 语句如何实现，原理解析</li><li>数据库的delete 语句如何实现，原理解析</li><li>数据库的update 语句如何实现，原理解析</li><li>数据库的order by 语句如何实现，原理解析</li><li>数据库的聚合函数count,max,min 语句如何实现，原理解析</li></ol>]]></content:encoded>
+            <category>hola</category>
+            <category>docusaurus</category>
+        </item>
+    </channel>
+</rss>

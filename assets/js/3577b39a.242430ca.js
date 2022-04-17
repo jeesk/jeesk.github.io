@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[6838],{3135:function(e){e.exports=JSON.parse('{"allTagsPath":"/microservice/tags","slug":"/microservice/tags/hello","name":"hello","count":3,"permalink":"/microservice/tags/hello"}')}}]);
