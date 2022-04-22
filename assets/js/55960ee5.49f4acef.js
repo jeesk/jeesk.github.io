@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[4121],{8070:function(a){a.exports=JSON.parse('[{"name":"java","permalink":"/docs/tags/java","count":2},{"name":"DI","permalink":"/docs/tags/di","count":1},{"name":"IOC","permalink":"/docs/tags/ioc","count":1},{"name":"spring","permalink":"/docs/tags/spring","count":1}]')}}]);

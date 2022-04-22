@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[2504],{2349:function(a){a.exports=JSON.parse('{"allTagsPath":"/java/tags","slug":"/java/tags/flink","name":"flink","count":1,"permalink":"/java/tags/flink"}')}}]);

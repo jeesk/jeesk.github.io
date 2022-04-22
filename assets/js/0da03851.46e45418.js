@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[9789],{2333:function(e){e.exports=JSON.parse('{"allTagsPath":"/java/tags","slug":"/java/tags/servlet","name":"servlet","count":1,"permalink":"/java/tags/servlet"}')}}]);

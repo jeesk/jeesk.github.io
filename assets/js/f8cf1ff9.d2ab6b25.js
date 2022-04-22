@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[3435],{6744:function(a){a.exports=JSON.parse('{"allTagsPath":"/java/tags","slug":"/java/tags/webflux","name":"webflux","count":1,"permalink":"/java/tags/webflux"}')}}]);

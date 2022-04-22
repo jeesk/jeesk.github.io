@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[1713],{3457:function(s){s.exports=JSON.parse('{"/blog/tags/soft":{"allTagsPath":"/blog/tags","slug":"/blog/tags/soft","name":"soft","count":1,"permalink":"/blog/tags/soft"}}')}}]);

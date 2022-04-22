@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[6068],{9588:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"First Blog Post","permalink":"/spring/first-blog-post"}]}')}}]);
